@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="3"
+    tools:context=".SignInActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_weight="1.5"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/TextViewEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Email"
+            android:textSize="30sp" />
+
+        <EditText
+            android:id="@+id/editTextEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:hint="Put your Email address"
+            android:inputType="textEmailAddress"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/TextViewPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Password"
+            android:textSize="30sp" />
+
+        <EditText
+            android:id="@+id/editTextPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:hint="Put your Password"
+            android:inputType="textPassword" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/signin_login_btn"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:text="LOG IN"
+            android:gravity="center"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:onClick="userPressed"
+            />
+        <Button
+            android:id="@+id/signin_register_btn"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:text="REGISTER"
+            android:gravity="center"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:onClick="userPressed"
+            />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/forget_password_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:gravity="center"
+        android:text="Forgot password?"
+        android:layout_margin="10dp"
+        android:onClick="userPressed"
+        />
+</LinearLayout>

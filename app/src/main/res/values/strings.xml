@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">HANDYCHAT</string>
+    <string name="emailpassword_title_text">Email and Password</string>
+    <string name="hint_email">user@gmail.com</string>
+    <string name="hint_password">Put your Password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="create_account">Create Account</string>
 </resources>

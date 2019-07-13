@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "232393386991",
+    "firebase_url": "https://handychat-439d6.firebaseio.com",
+    "project_id": "handychat-439d6",
+    "storage_bucket": "handychat-439d6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:232393386991:android:1c1db8d9e5fc5f58",
+        "android_client_info": {
+          "package_name": "com.example.handychat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "232393386991-c10bs96r19p7hnbvm4ijejne1k8p293t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.handychat",
+            "certificate_hash": "2715c0c5aeb3a69ed602a8de6ab146bf584ccd28"
+          }
+        },
+        {
+          "client_id": "232393386991-bfv5d2fucgb1h20mnjl36oh45itji344.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQPPcwjNML2dKYSEUUrJS01TnhAYNH19M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "232393386991-bfv5d2fucgb1h20mnjl36oh45itji344.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
