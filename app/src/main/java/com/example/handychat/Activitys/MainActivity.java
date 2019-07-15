@@ -1,7 +1,9 @@
-package com.example.handychat;
+package com.example.handychat.Activitys;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.example.handychat.R;
 
 public class MainActivity extends AppCompatActivity {
 

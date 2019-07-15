@@ -1,12 +1,14 @@
-package com.example.handychat;
+package com.example.handychat.Activitys;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.handychat.Fragments.RegisterFragment;
+import com.example.handychat.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -14,8 +16,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -54,11 +57,22 @@ public class SignInActivity extends AppCompatActivity {
                 break;
             case R.id.signin_register_btn:
                 Toast.makeText(this,"register button was pressed",Toast.LENGTH_SHORT).show();
+                addRegisterFragment();
                 break;
             case R.id.forget_password_text:
                 Toast.makeText(this,"forget password was pressed",Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    private void addRegisterFragment() {
+        // Lets go to our register fragment
+        RegisterFragment fragment = RegisterFragment.newInstance();
+        FragmentManager supportFragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.main_frame_layout,fragment);
+        fragmentTransaction.addToBackStack("TAG");
+        fragmentTransaction.commit();
     }
 
     /************************* Activity functions *******************/
@@ -144,7 +158,27 @@ public class SignInActivity extends AppCompatActivity {
     /************************* Validation functions *******************/
     // This will validate user filled the form correctly.
     private boolean validateFrom() {
-        return true;
+        boolean valid = true;
+
+        // Validate email
+        String email = mEmailField.getText().toString();
+        if (TextUtils.isEmpty(email)){
+            mEmailField.setError("Required.");
+            valid = false;
+        } else {
+            mEmailField.setError(null);
+        }
+
+        // Validate password
+        String password = mPasswordField.getText().toString();
+        if (TextUtils.isEmpty(password)){
+            mEmailField.setError("Required.");
+            valid = false;
+        } else {
+            mEmailField.setError(null);
+        }
+
+        return valid;
     }
 
 }
