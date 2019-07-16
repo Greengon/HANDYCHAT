@@ -1,11 +1,21 @@
 <resources>
     <string name="app_name">HANDYCHAT</string>
-    <string name="emailpassword_title_text">Email and Password</string>
-    <string name="hint_email">user@gmail.com</string>
-    <string name="hint_password">Put your Password</string>
-    <string name="sign_in">Sign in</string>
-    <string name="create_account">Create Account</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="categories">
+        <item>All fields</item>
+        <item>Plumbing</item>
+        <item>Woodwork</item>
+        <item>Electricity</item>
+        <item>Car mechanics</item>
+        <item>Air conditioning</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="areas">
+        <item>Tel Aviv</item>
+        <item>Jerusalem</item>
+        <item>Haifa</item>
+        <item>Ber-sheva</item>
+        <item>Eilat</item>
+        <item>Katsrin</item>
+        <item>Other</item>
+    </string-array>
 </resources>

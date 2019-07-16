@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!-- Name input -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,11 +35,11 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:layout_toRightOf="@id/textViewName"
-                android:layout_marginTop="20dp"
                 android:inputType="textPersonName" />
 
         </RelativeLayout>
 
+        <!-- Email input -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_weight="1"
@@ -64,6 +65,7 @@
 
         </RelativeLayout>
 
+        <!-- Password input -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_weight="1"
@@ -89,6 +91,7 @@
 
         </RelativeLayout>
 
+        <!-- Address input -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_weight="1"
@@ -113,6 +116,7 @@
                 android:inputType="textPersonName" />
         </RelativeLayout>
 
+        <!-- Customer button -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -130,13 +134,13 @@
                 android:id="@+id/CustomerRadioBtnTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:layout_toEndOf="@+id/CustomerRadioButton"
                 android:text="Customer"
                 android:textAlignment="textStart"
                 android:textSize="18sp" />
         </RelativeLayout>
 
+        <!-- Handy man button -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -154,33 +158,39 @@
                 android:id="@+id/HandyManRadioBtnTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:layout_toEndOf="@+id/HandyManRadioButton"
                 android:text="Handy-man"
                 android:textAlignment="textStart"
                 android:textSize="18sp" />
         </RelativeLayout>
 
+        <!-- Categories drop down menu -->
         <Spinner
             android:id="@+id/DropDownCategories"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_margin="15dp"
+            android:background="?attr/colorButtonNormal"
             android:spinnerMode="dropdown" />
 
+        <!-- Areas drop down menu -->
         <Spinner
             android:id="@+id/DropDownAreas"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_margin="15dp"
+            android:background="?attr/colorButtonNormal"
             android:spinnerMode="dropdown" />
 
+        <!-- Save button -->
         <Button
+            android:id="@+id/saveBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/saveBtn"
-            android:text="Save"
-            />
+            android:background="@color/colorAccent"
+            android:text="Save" />
     </LinearLayout>
 </LinearLayout>
