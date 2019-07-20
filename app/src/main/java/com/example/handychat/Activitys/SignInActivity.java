@@ -1,5 +1,6 @@
 package com.example.handychat.Activitys;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -106,6 +107,8 @@ public class SignInActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                             mProgressBar.setVisibility(View.GONE);
+                            onLoginSuccess();
+                            finish();
                         }else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG,"signInWithEmail:failure",task.getException());
@@ -136,6 +139,11 @@ public class SignInActivity extends AppCompatActivity {
 
         }
     }
+
+    public void onLoginSuccess(){
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
+    }
     /************************* Auth functions *******************/
 
 
@@ -157,10 +165,10 @@ public class SignInActivity extends AppCompatActivity {
         // Validate password
         String password = mPasswordField.getText().toString();
         if (TextUtils.isEmpty(password)){
-            mEmailField.setError("Required.");
+            mPasswordField.setError("Required.");
             valid = false;
         } else {
-            mEmailField.setError(null);
+            mPasswordField.setError(null);
         }
 
         return valid;

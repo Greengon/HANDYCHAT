@@ -1,18 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     tools:context=".Activitys.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:id="@+id/main_linearlayout"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageButton
+            android:id="@+id/imageButtonSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="25dp"
+            android:background="@color/common_google_signin_btn_text_dark_default"
+            android:scaleType="center"
+            app:srcCompat="@drawable/searchimagebtn" />
+
+
+        <ImageButton
+            android:id="@+id/imageButtonUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:background="@color/common_google_signin_btn_text_dark_default"
+            android:layout_gravity="center"
+            android:scaleType="center"
+            app:srcCompat="@drawable/userimagebtn" />
+
+        <ImageButton
+            android:id="@+id/gpsButtonUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:layout_gravity="center"
+            android:background="@color/common_google_signin_btn_text_dark_default"
+            android:scaleType="center"
+            app:srcCompat="@drawable/gpsimagebtn" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/main_divder"
+        android:layout_width="3dp"
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@id/main_linearlayout"
+        android:background="@android:color/background_dark"></ImageView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/main_recyclerview"
+        android:layout_width="wrap_content"
+        android:layout_toEndOf="@id/main_divder"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>
