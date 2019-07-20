@@ -114,6 +114,7 @@
                 android:ems="10"
                 android:layout_toRightOf="@id/textViewAddress"
                 android:inputType="textPersonName" />
+
         </RelativeLayout>
 
         <!-- Customer button -->
@@ -192,5 +193,15 @@
             android:layout_weight="1"
             android:background="@color/colorAccent"
             android:text="Save" />
+
+        <!-- Progress bar will be shown only after saved pressed -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="30dp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="20dp"
+            android:visibility="gone"
+            android:layout_height="30dp" />
     </LinearLayout>
 </LinearLayout>

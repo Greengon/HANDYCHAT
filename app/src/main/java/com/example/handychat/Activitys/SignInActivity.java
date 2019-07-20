@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.handychat.Fragments.RegisterFragment;
@@ -27,6 +28,7 @@ public class SignInActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private EditText mEmailField;
     private EditText mPasswordField;
+    private ProgressBar mProgressBar;
 
     /************************* Activity functions *******************/
     @Override
@@ -34,9 +36,13 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // Get shared instance of the FirebaseAuth object
         mAuth = FirebaseAuth.getInstance();
+
+        // Lets find all our view components
         setContentView(R.layout.activity_signin);
-        mEmailField = findViewById(R.id.editTextEmail);
-        mPasswordField = findViewById(R.id.editTextPassword);
+        mEmailField = (EditText) findViewById(R.id.editTextEmail);
+        mPasswordField = (EditText) findViewById(R.id.editTextPassword);
+        mProgressBar = (ProgressBar) findViewById(R.id.signin_progressbar);
+
     }
 
     @Override
@@ -75,6 +81,7 @@ public class SignInActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+
     /************************* Activity functions *******************/
 
 
@@ -84,6 +91,9 @@ public class SignInActivity extends AppCompatActivity {
         if (!validateFrom()){
             return;
         }
+
+        // Show progress bar for the user
+        mProgressBar.setVisibility(View.VISIBLE);
 
         // Start signing in user with email
         mAuth.signInWithEmailAndPassword(email,password)
@@ -95,11 +105,13 @@ public class SignInActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+                            mProgressBar.setVisibility(View.GONE);
                         }else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG,"signInWithEmail:failure",task.getException());
                             Toast.makeText(SignInActivity.this,"Authentication failed.",Toast.LENGTH_SHORT).show();
                             updateUI(null);
+                            mProgressBar.setVisibility(View.GONE);
                         }
                     }
                 });

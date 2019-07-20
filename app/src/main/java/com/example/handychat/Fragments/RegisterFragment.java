@@ -15,9 +15,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.handychat.Models.Model;
+import com.example.handychat.Models.User;
 import com.example.handychat.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -33,8 +37,17 @@ import java.util.concurrent.Executor;
 public class RegisterFragment extends Fragment {
     private FirebaseAuth mAuth;
     private static final String TAG = "EmailPassword"; // Used for Logging
-    EditText mEmailField;
-    EditText mPasswordField;
+    private ProgressBar progressBar;
+    private View view;
+    private EditText mNameField;
+    private EditText mEmailField;
+    private EditText mPasswordField;
+    private EditText mAddressField;
+    private RadioButton mCustomerRadioButton;
+    private RadioButton mHandyManRadioButton;
+    private Spinner mCategoriesSpinner;
+    private Spinner mAreasSpinner;
+    private Button button;
 
 
     public RegisterFragment() {
@@ -58,26 +71,31 @@ public class RegisterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_register, container, false);
+        view = inflater.inflate(R.layout.fragment_register, container, false);
 
-        mEmailField = view.findViewById(R.id.editTextEmail);
-        mPasswordField = view.findViewById(R.id.editTextPassword);
+        // Lets find all our view components
+        mNameField = (EditText) view.findViewById(R.id.editTextName);
+        mEmailField = (EditText) view.findViewById(R.id.editTextEmail);
+        mPasswordField = (EditText) view.findViewById(R.id.editTextPassword);
+        mAddressField = (EditText) view.findViewById(R.id.editTextAddress);
+        mCustomerRadioButton = (RadioButton) view.findViewById(R.id.CustomerRadioButton);
+        mHandyManRadioButton = (RadioButton) view.findViewById(R.id.HandyManRadioButton);
+        mCategoriesSpinner = (Spinner) view.findViewById(R.id.DropDownCategories);
+        mAreasSpinner = (Spinner) view.findViewById(R.id.DropDownAreas);
+        button = (Button) view.findViewById(R.id.saveBtn);
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 
-        // Lets creates the categories categoriesSpinner.
-        Spinner categoriesSpinner = (Spinner) view.findViewById(R.id.DropDownCategories);
-
-        // Create an ArrayAdapter using the string array and a default categoriesSpinner layout
+        // Lets creates the categories mCategoriesSpinner.
+        // Create an ArrayAdapter using the string array and a default mCategoriesSpinner layout
         ArrayAdapter<CharSequence> categoriesAdapter = ArrayAdapter.createFromResource(getContext(),R.array.categories,R.layout.support_simple_spinner_dropdown_item);
 
         // Specify the layout to use when the list of choices appears
         categoriesAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
 
-        // Apply the categoriesAdapter to the categoriesSpinner
-        categoriesSpinner.setAdapter(categoriesAdapter);
+        // Apply the categoriesAdapter to the mCategoriesSpinner
+        mCategoriesSpinner.setAdapter(categoriesAdapter);
 
         // And the same for areas
-        Spinner areasSpinner = (Spinner) view.findViewById(R.id.DropDownAreas);
-
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> areasAdapter = ArrayAdapter.createFromResource(getContext(),R.array.areas,R.layout.support_simple_spinner_dropdown_item);
 
@@ -85,10 +103,9 @@ public class RegisterFragment extends Fragment {
         areasAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
 
         // Apply the areasAdapter to the spinner
-        areasSpinner.setAdapter(areasAdapter);
+        mAreasSpinner.setAdapter(areasAdapter);
 
         // Create a listener to catch if someone pressed on to save.
-        Button button = (Button) view.findViewById(R.id.saveBtn);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,13 +127,21 @@ public class RegisterFragment extends Fragment {
         super.onDetach();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        progressBar.setVisibility(View.GONE);
+    }
+
     /************************* Auth functions *******************/
-    private void createAccount(String email, String password){
+    private void createAccount(final String email, String password){
         Log.d(TAG, "createAccount:" + email);
         if (!validateFrom()){
             return;
         }
 
+        // Show Progress bar to user
+        progressBar.setVisibility(View.VISIBLE);
         // Start creating user with email
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener((Activity) getContext(), new OnCompleteListener<AuthResult>() {
@@ -125,8 +150,26 @@ public class RegisterFragment extends Fragment {
                         if (task.isSuccessful()){
                             // Sign in success, Update UI with the singed-in user's information.
                             Log.d(TAG, "createUserWithEmail:success");
+
+                            // Create user object
+                            User userObject = new User(
+                                    mNameField.getText().toString(),
+                                    mEmailField.getText().toString(),
+                                    mAddressField.getText().toString(),
+                                    mCustomerRadioButton.isChecked(),
+                                    mHandyManRadioButton.isChecked(),
+                                    mCategoriesSpinner.getSelectedItem().toString(),
+                                    mAreasSpinner.getSelectedItem().toString()
+                                    );
+                            Model.instance.addUser(userObject, new Model.AddUserListener() {
+                                @Override
+                                public void onComplete(boolean success) {
+                                    progressBar.setVisibility(View.GONE);
+                                }
+                            });
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+                            getActivity().onBackPressed();
                         } else{
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -179,7 +222,7 @@ public class RegisterFragment extends Fragment {
             /*********************** Test ************************/
             Toast.makeText(getContext(), "Failed user created.", Toast.LENGTH_SHORT).show();
             /*********************** Test ************************/
-
+            progressBar.setVisibility(View.GONE);
         }
     }
 }
