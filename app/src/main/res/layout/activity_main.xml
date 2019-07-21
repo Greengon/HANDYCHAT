@@ -21,6 +21,7 @@
             android:adjustViewBounds="true"
             android:layout_gravity="center"
             android:layout_marginTop="25dp"
+            android:onClick="userPressedMainActivity"
             android:background="@color/common_google_signin_btn_text_dark_default"
             android:scaleType="center"
             app:srcCompat="@drawable/searchimagebtn" />
@@ -32,19 +33,32 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
             android:background="@color/common_google_signin_btn_text_dark_default"
+            android:onClick="userPressedMainActivity"
             android:layout_gravity="center"
             android:scaleType="center"
             app:srcCompat="@drawable/userimagebtn" />
 
         <ImageButton
-            android:id="@+id/gpsButtonUser"
+            android:id="@+id/imageButtonGps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
             android:layout_gravity="center"
+            android:onClick="userPressedMainActivity"
             android:background="@color/common_google_signin_btn_text_dark_default"
             android:scaleType="center"
             app:srcCompat="@drawable/gpsimagebtn" />
+
+        <ImageButton
+            android:id="@+id/imageButtonAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:layout_gravity="center"
+            android:onClick="userPressedMainActivity"
+            android:background="@color/common_google_signin_btn_text_dark_default"
+            android:scaleType="center"
+            app:srcCompat="@android:drawable/ic_input_add" />
     </LinearLayout>
 
     <ImageView
@@ -54,10 +68,11 @@
         android:layout_toEndOf="@id/main_linearlayout"
         android:background="@android:color/background_dark"></ImageView>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/main_recyclerview"
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:id="@+id/main_fragment_container"
+        android:layout_width="match_parent"
         android:layout_toEndOf="@id/main_divder"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" >
+    </FrameLayout>
 
 </RelativeLayout>

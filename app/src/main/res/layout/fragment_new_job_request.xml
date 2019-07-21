@@ -1,0 +1,206 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:clickable="true"
+    tools:context=".Fragments.NewJobRequestFragment">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Name input -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            >
+
+            <TextView
+                android:id="@+id/textViewName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:layout_marginLeft="60dp"
+                android:layout_marginRight="20dp"
+                android:textAlignment="viewStart"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/editTextName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_toRightOf="@id/textViewName"
+                android:inputType="textPersonName" />
+
+        </RelativeLayout>
+
+        <!-- Email input -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textViewEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="60dp"
+                android:layout_marginRight="20dp"
+                android:text="Email"
+                android:textAlignment="viewStart"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/editTextEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_toRightOf="@id/textViewEmail"
+                android:inputType="textPersonName" />
+
+        </RelativeLayout>
+
+        <!-- Password input -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textViewPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="20dp"
+                android:text="Password"
+                android:textAlignment="viewStart"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/editTextPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_toRightOf="@id/textViewPassword"
+                android:inputType="textPersonName" />
+
+        </RelativeLayout>
+
+        <!-- Address input -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textViewAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Address"
+                android:textAlignment="viewStart"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="20dp"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/editTextAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_toRightOf="@id/textViewAddress"
+                android:inputType="textPersonName" />
+
+        </RelativeLayout>
+
+        <!-- Customer button -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <RadioButton
+                android:id="@+id/CustomerRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="100dp"
+                android:layout_marginRight="80dp"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/CustomerRadioBtnTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/CustomerRadioButton"
+                android:text="Customer"
+                android:textAlignment="textStart"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <!-- Handy man button -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <RadioButton
+                android:id="@+id/HandyManRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="100dp"
+                android:layout_marginRight="80dp"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/HandyManRadioBtnTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/HandyManRadioButton"
+                android:text="Handy-man"
+                android:textAlignment="textStart"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <!-- Categories drop down menu -->
+        <Spinner
+            android:id="@+id/DropDownCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="15dp"
+            android:background="?attr/colorButtonNormal"
+            android:spinnerMode="dropdown" />
+
+        <!-- Areas drop down menu -->
+        <Spinner
+            android:id="@+id/DropDownAreas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="15dp"
+            android:background="?attr/colorButtonNormal"
+            android:spinnerMode="dropdown" />
+
+        <!-- Save button -->
+        <Button
+            android:id="@+id/saveBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:text="Save" />
+
+        <!-- Progress bar will be shown only after saved pressed -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="30dp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="20dp"
+            android:visibility="gone"
+            android:layout_height="30dp" />
+    </LinearLayout>
+</FrameLayout>
