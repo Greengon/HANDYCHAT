@@ -1,16 +1,12 @@
 package com.example.handychat.Models;
 
-import android.graphics.Bitmap;
-
-import java.sql.Date;
-
 public class JobRequest {
     public String id;
-    public Bitmap image;
+    public String imageUrl;
     public String userCreated;
-    public Date date;
-    public String area;
-    public String descroption;
+    public String date;
+    public String address;
+    public String description;
 
     public String getId() {
         return id;
@@ -20,12 +16,12 @@ public class JobRequest {
         this.id = id;
     }
 
-    public Bitmap getImage() {
-        return image;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImage(Bitmap image) {
-        this.image = image;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getUserCreated() {
@@ -36,27 +32,27 @@ public class JobRequest {
         this.userCreated = userCreated;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public String getArea() {
-        return area;
+    public String getAddress() {
+        return address;
     }
 
-    public void setArea(String area) {
-        this.area = area;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public String getDescroption() {
-        return descroption;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescroption(String descroption) {
-        this.descroption = descroption;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

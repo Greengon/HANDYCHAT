@@ -27,4 +27,16 @@ public class ModelFirebase {
         });
     }
     /****************** User handling ********************/
+
+    /****************** JobRequest handling ********************/
+    public void addJobRequest(JobRequest jobRequest,final Model.AddJobRequestListener listener){
+        db.collection("jobRequests").document(jobRequest.id)
+                .set(jobRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                listener.onComplete(task.isSuccessful());
+            }
+        });
+    }
+    /****************** JobRequest handling ********************/
 }

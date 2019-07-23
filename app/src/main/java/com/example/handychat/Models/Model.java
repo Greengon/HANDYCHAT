@@ -20,4 +20,15 @@ public class Model {
         modelFirebase.addUser(user,listener);
     }
     /******** User handling **********/
+
+    /******** JobRequest handling **********/
+    public interface AddJobRequestListener{
+        void onComplete(boolean success);
+    }
+
+    public void addJobRequest(JobRequest jobRequest, AddJobRequestListener listener){
+        modelSql.addJobRequest(jobRequest);
+        modelFirebase.addJobRequest(jobRequest,listener);
+    }
+    /******** JobRequest handling **********/
 }
