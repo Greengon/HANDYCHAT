@@ -14,8 +14,8 @@
         android:orientation="vertical">
 
         <!-- Image input -->
-        <ImageView
-            android:id="@+id/newJobImageView"
+        <ImageButton
+            android:id="@+id/newJobImageButton"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,8 +41,8 @@
                 android:id="@+id/newJobEditTextAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_toRightOf="@id/newFragmenttextViewAddress"
+                android:layout_marginTop="15dp"
+                android:layout_toRightOf="@id/newJobTextViewAddress"
                 android:ems="10"
                 android:inputType="textPersonName" />
 
