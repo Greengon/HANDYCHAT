@@ -1,5 +1,7 @@
 package com.example.handychat.Models;
 
+import android.graphics.Bitmap;
+
 public class Model {
     final public static Model instance = new Model();
     ModelSql modelSql;
@@ -31,4 +33,14 @@ public class Model {
         modelFirebase.addJobRequest(jobRequest,listener);
     }
     /******** JobRequest handling **********/
+
+    /******** Image saving *********/
+    public interface SaveImageListener{
+        void onComplete(String url);
+    }
+
+    public void saveImage(Bitmap imageBitmap, SaveImageListener listener){
+        modelFirebase.saveImage(imageBitmap,listener);
+    }
+    /******** Image saving *********/
 }

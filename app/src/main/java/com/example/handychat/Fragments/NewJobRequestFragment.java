@@ -14,10 +14,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.handychat.Activitys.MainActivity;
+import com.example.handychat.Models.Model;
 import com.example.handychat.R;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,10 +39,13 @@ import com.example.handychat.R;
 public class NewJobRequestFragment extends Fragment {
 
     private View view;
-    private ImageButton imageButton;
+    private ImageView imageView;
     Bitmap imageBitmap;
+    private ProgressBar progressBar;
     private PackageManager packageManager;
 
+    // Next to int are used for takePic function
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     public NewJobRequestFragment() {
         // Required empty public constructor
@@ -62,43 +75,57 @@ public class NewJobRequestFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_new_job_request, container, false);
-        imageButton = (ImageButton) view.findViewById(R.id.newJobImageButton);
+        imageView = (ImageView) view.findViewById(R.id.newJobImageView);
         packageManager = view.getContext().getPackageManager();
+        progressBar = (ProgressBar) view.findViewById(R.id.new_job_pb);
+        progressBar.setVisibility(View.INVISIBLE);
 
-        imageButton.setOnClickListener(new View.OnClickListener() {
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openCamera();
+                takePic();
             }
         });
         return view;
     }
 
-    private void openCamera() {
-        // First lets check if there is a camera on the device.
-        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)){
-            // Lets create camera intent and fire it out.
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePictureIntent.resolveActivity(packageManager) != null){
-
-                // Randomly chosen request code for the intent.
-                startActivityForResult(takePictureIntent, 111);
-            }
-        } else { // If no camera is found.
-            Toast.makeText(view.getContext(),"Device has no camera.",Toast.LENGTH_SHORT).show();
+    /*
+    In takePic function we will create and start an intent
+    to take a picture with the phones camera, after that we should
+    create a function to catch the result of the activity created from
+    the intent
+     */
+    private void takePic() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(packageManager) != null){
+            startActivityForResult(takePictureIntent,REQUEST_IMAGE_CAPTURE);
         }
     }
 
-    // This function will catch the returned image from the camera.
+
+    /*
+    onActivityResult catches the result of the camera activity for
+    us getting the image taken
+     */
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 111){
-            // Lets retrieve the image and display it.
+        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
             Bundle extras = data.getExtras();
             imageBitmap = (Bitmap) extras.get("data");
-            imageButton.setImageBitmap(imageBitmap);
+            imageView.setImageBitmap(imageBitmap);
+
+            // Save image
+            progressBar.setVisibility(View.VISIBLE);
+            Model.instance.saveImage(imageBitmap, new Model.SaveImageListener() {
+                @Override
+                public void onComplete(String url) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+            });
         }
     }
+
 
     @Override
     public void onAttach(Context context) {
