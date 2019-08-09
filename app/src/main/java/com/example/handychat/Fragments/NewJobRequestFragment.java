@@ -1,31 +1,27 @@
 package com.example.handychat.Fragments;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.Model;
 import com.example.handychat.R;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -43,8 +39,9 @@ public class NewJobRequestFragment extends Fragment {
     Bitmap imageBitmap;
     private ProgressBar progressBar;
     private PackageManager packageManager;
+    private static final int REQUEST_WRITE_STORAGE = 112;
 
-    // Next to int are used for takePic function
+    // Next int is used for takePic function
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
     public NewJobRequestFragment() {
@@ -117,10 +114,24 @@ public class NewJobRequestFragment extends Fragment {
 
             // Save image
             progressBar.setVisibility(View.VISIBLE);
+
+            // First let's make sure we have permission to access
+            // the sd card
+            boolean hasPermission = (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+            if (!hasPermission){
+                ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_STORAGE);
+            }
+
+
             Model.instance.saveImage(imageBitmap, new Model.SaveImageListener() {
                 @Override
                 public void onComplete(String url) {
                     progressBar.setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void fail() {
+                    Toast.makeText(getContext(),"Failed to save image",Toast.LENGTH_SHORT).show();
                 }
             });
         }
