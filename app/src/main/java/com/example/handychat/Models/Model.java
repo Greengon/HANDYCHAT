@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 public class Model {
     final public static Model instance = new Model();
@@ -24,6 +25,7 @@ public class Model {
         modelSql = new ModelSql();
         modelFirebase = new ModelFirebase();
     }
+
 
     /******** User handling **********/
     public interface AddUserListener{
@@ -44,6 +46,14 @@ public class Model {
     public void addJobRequest(JobRequest jobRequest, AddJobRequestListener listener){
         modelSql.addJobRequest(jobRequest);
         modelFirebase.addJobRequest(jobRequest,listener);
+    }
+
+    public interface GetAllJobRequestListener{
+        void onComplete(List<JobRequest> data);
+    }
+
+    public void getAllJobRequest(GetAllJobRequestListener listener) {
+        modelFirebase.getAllJobRequest(listener);
     }
     /******** JobRequest handling **********/
 

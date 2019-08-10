@@ -8,6 +8,11 @@ public class JobRequest {
     public String address;
     public String description;
 
+    // Empty constructor is needed for firebase loading
+    public JobRequest(){
+
+    }
+
     public JobRequest(String id, String imageUrl, String userCreated, String date, String address, String description) {
         this.id = id;
         this.imageUrl = imageUrl;

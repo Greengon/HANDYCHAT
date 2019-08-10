@@ -7,14 +7,22 @@ import android.widget.ProgressBar;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.rpc.Help;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
+import java.util.LinkedList;
+
+import javax.annotation.Nullable;
 
 import androidx.annotation.NonNull;
 
@@ -50,6 +58,23 @@ public class ModelFirebase {
         });
     }
 
+    public void getAllJobRequest(final Model.GetAllJobRequestListener listener) {
+        db.collection("jobRequests").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                LinkedList<JobRequest> data = new LinkedList<>();
+                if (e != null) {
+                    listener.onComplete(data);
+                    return;
+                }
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots){
+                    JobRequest jobRequest = doc.toObject(JobRequest.class);
+                    data.add(jobRequest);
+                }
+                listener.onComplete(data);
+            }
+        });
+    }
     /****************** JobRequest handling ********************/
 
     /******** Image saving *********/
@@ -92,6 +117,5 @@ public class ModelFirebase {
             }
         });
     }
-
     /******** Image saving *********/
 }
