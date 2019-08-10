@@ -58,7 +58,7 @@
             android:layout_weight="1">
 
             <TextView
-                android:id="@+id/textViewDescription"
+                android:id="@+id/newFragmentTextViewDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Description:"
@@ -66,10 +66,10 @@
                 android:textSize="24sp" />
 
             <EditText
-                android:id="@+id/editTextDescription"
+                android:id="@+id/newFragmentEditTextDescription"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_toRightOf="@id/textViewDescription"
+                android:layout_toRightOf="@id/newFragmentTextViewDescription"
                 android:ems="10"
                 android:gravity="top|left"
                 android:hint="Put job request description here...."

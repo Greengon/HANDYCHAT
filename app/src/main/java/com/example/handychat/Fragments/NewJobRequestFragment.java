@@ -15,13 +15,20 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.handychat.Models.JobRequest;
 import com.example.handychat.Models.Model;
 import com.example.handychat.R;
 
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -36,7 +43,10 @@ public class NewJobRequestFragment extends Fragment {
 
     private View view;
     private ImageView imageView;
+    private EditText addressEditText;
+    private EditText descriptionEditText;
     Bitmap imageBitmap;
+    private Button saveBtn;
     private ProgressBar progressBar;
     private PackageManager packageManager;
     private static final int REQUEST_WRITE_STORAGE = 112;
@@ -73,7 +83,10 @@ public class NewJobRequestFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_new_job_request, container, false);
         imageView = (ImageView) view.findViewById(R.id.newJobImageView);
+        addressEditText = (EditText) view.findViewById(R.id.newJobEditTextAddress);
+        descriptionEditText = (EditText) view.findViewById(R.id.newFragmentEditTextDescription);
         packageManager = view.getContext().getPackageManager();
+        saveBtn = (Button) view.findViewById(R.id.newJobSaveBtn);
         progressBar = (ProgressBar) view.findViewById(R.id.new_job_pb);
         progressBar.setVisibility(View.INVISIBLE);
 
@@ -83,7 +96,58 @@ public class NewJobRequestFragment extends Fragment {
                 takePic();
             }
         });
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                save();
+            }
+        });
         return view;
+    }
+
+    private void save() {
+        // Active progress bar
+        progressBar.setVisibility(View.VISIBLE);
+
+        // save image
+
+        // First let's make sure we have permission to access
+        // the sd card
+        boolean hasPermission = (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+        if (!hasPermission){
+            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_STORAGE);
+        }
+
+        Model.instance.saveImage(imageBitmap, new Model.SaveImageListener() {
+            @Override
+            public void onComplete(String url) {
+
+                // Lets create our new jobRequest object
+                JobRequest jobRequest = new JobRequest(UUID.randomUUID().toString(),
+                        url,"",
+                        Calendar.getInstance().getTime().toString(),
+                        addressEditText.getText().toString(),
+                        descriptionEditText.getText().toString());
+
+                // Now let's save it to remote firebase and locally
+                Model.instance.addJobRequest(jobRequest, new Model.AddJobRequestListener() {
+                    @Override
+                    public void onComplete(boolean success) {
+                        // Stop progress bar
+                        progressBar.setVisibility(View.INVISIBLE);
+
+                        // Close fragment
+                        getActivity().getSupportFragmentManager().popBackStackImmediate();
+                    }
+                });
+
+            }
+
+            @Override
+            public void fail() {
+                Toast.makeText(getContext(),"Failed to save image",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /*
@@ -111,29 +175,6 @@ public class NewJobRequestFragment extends Fragment {
             Bundle extras = data.getExtras();
             imageBitmap = (Bitmap) extras.get("data");
             imageView.setImageBitmap(imageBitmap);
-
-            // Save image
-            progressBar.setVisibility(View.VISIBLE);
-
-            // First let's make sure we have permission to access
-            // the sd card
-            boolean hasPermission = (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
-            if (!hasPermission){
-                ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_STORAGE);
-            }
-
-
-            Model.instance.saveImage(imageBitmap, new Model.SaveImageListener() {
-                @Override
-                public void onComplete(String url) {
-                    progressBar.setVisibility(View.INVISIBLE);
-                }
-
-                @Override
-                public void fail() {
-                    Toast.makeText(getContext(),"Failed to save image",Toast.LENGTH_SHORT).show();
-                }
-            });
         }
     }
 

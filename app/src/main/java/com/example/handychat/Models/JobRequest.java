@@ -8,6 +8,15 @@ public class JobRequest {
     public String address;
     public String description;
 
+    public JobRequest(String id, String imageUrl, String userCreated, String date, String address, String description) {
+        this.id = id;
+        this.imageUrl = imageUrl;
+        this.userCreated = userCreated;
+        this.date = date;
+        this.address = address;
+        this.description = description;
+    }
+
     public String getId() {
         return id;
     }
