@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,12 @@ public class JobRequestList extends Fragment {
 
         // Specify an adapter
         adapter = new jobRequestListAdapter(mData);
+        adapter.setOnItemClickListener(new jobRequestListAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(int position) {
+                Log.d("TAG","item click: " + position);
+            }
+        });
         jobRequestList.setAdapter(adapter);
 
         Model.instance.getAllJobRequest(new Model.GetAllJobRequestListener() {

@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class jobRequestListAdapter extends RecyclerView.Adapter<jobRequestListAdapter.jobRequestViewHolder> {
     List<JobRequest> mData;
+    private OnItemClickListener mListener;
 
     // Constructor to the adapter that receive the list of objects to display
     public jobRequestListAdapter(List<JobRequest> data){
@@ -32,7 +33,7 @@ public class jobRequestListAdapter extends RecyclerView.Adapter<jobRequestListAd
     public jobRequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Create a new view
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.job_request_row,parent,false);
-        jobRequestViewHolder viewHolder = new jobRequestViewHolder(view);
+        jobRequestViewHolder viewHolder = new jobRequestViewHolder(view, mListener);
         return viewHolder;
     }
 
@@ -60,8 +61,19 @@ public class jobRequestListAdapter extends RecyclerView.Adapter<jobRequestListAd
         TextView descriptionText;
         ProgressBar jobImageProgressBar;
 
-        public jobRequestViewHolder(@NonNull View itemView) {
+        public jobRequestViewHolder(@NonNull View itemView,final OnItemClickListener listener) {
             super(itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null){
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            listener.onClick(position);
+                        }
+                    }
+                }
+            });
             jobImage = (ImageView) itemView.findViewById(R.id.jobImageInRow);
             userImage = (ImageView) itemView.findViewById(R.id.userImageInRow);
             dateText = (TextView) itemView.findViewById(R.id.dateTextViewInRow);
@@ -105,4 +117,16 @@ public class jobRequestListAdapter extends RecyclerView.Adapter<jobRequestListAd
             /****** Get user image ********/
         }
     }
+
+    /************** On Item Click ***************/
+
+    interface OnItemClickListener{
+        void onClick(int position);
+    }
+
+    void setOnItemClickListener(OnItemClickListener listener){
+        mListener = listener;
+    }
+
+    /************** On Item Click ***************/
 }

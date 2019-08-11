@@ -1,72 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-android:layout_height="wrap_content">
+    android:padding="10dp"
+    android:layout_margin="20dp"
+    app:cardCornerRadius="5dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/jobImageInRow"
-        android:layout_width="256dp"
-        android:layout_height="134dp"
-        android:layout_marginStart="77dp"
-        android:layout_marginEnd="78dp"
-        android:layout_marginBottom="11dp"
-        app:layout_constraintBottom_toTopOf="@+id/dateTextViewInRow"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:color/darker_gray" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:orientation="vertical"
+        android:background="@color/common_google_signin_btn_text_dark_default"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/userImageInRow"
-        android:layout_width="85dp"
-        android:layout_height="66dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="31dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/descriptionTextViewInRow"
-        app:layout_constraintTop_toBottomOf="@+id/jobImageInRow"
-        tools:srcCompat="@tools:sample/avatars" />
+        <ImageView
+            android:id="@+id/jobImageInRow"
+            android:layout_width="256dp"
+            android:layout_height="134dp"
+            android:layout_marginStart="77dp"
+            android:layout_marginEnd="78dp"
+            android:layout_marginBottom="11dp"
+            app:layout_constraintBottom_toTopOf="@+id/dateTextViewInRow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:color/darker_gray" />
 
-    <TextView
-        android:id="@+id/dateTextViewInRow"
-        android:layout_width="182dp"
-        android:layout_height="16dp"
-        android:layout_marginStart="108dp"
-        android:layout_marginTop="11dp"
-        android:layout_marginEnd="121dp"
-        android:layout_marginBottom="13dp"
-        android:text="Date"
-        app:layout_constraintBottom_toTopOf="@+id/descriptionTextViewInRow"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/jobImageInRow" />
+        <ImageView
+            android:id="@+id/userImageInRow"
+            android:layout_width="85dp"
+            android:layout_height="66dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="31dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/descriptionTextViewInRow"
+            app:layout_constraintTop_toBottomOf="@+id/jobImageInRow"
+            tools:srcCompat="@tools:sample/avatars" />
 
-    <TextView
-        android:id="@+id/descriptionTextViewInRow"
-        android:layout_width="182dp"
-        android:layout_height="57dp"
-        android:layout_marginStart="108dp"
-        android:layout_marginTop="13dp"
-        android:layout_marginEnd="20dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/userImageInRow"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateTextViewInRow" />
+        <TextView
+            android:id="@+id/dateTextViewInRow"
+            android:layout_width="182dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="70dp"
+            android:layout_marginTop="11dp"
+            android:layout_marginEnd="121dp"
+            android:layout_marginBottom="13dp"
+            android:text="Date"
+            app:layout_constraintBottom_toTopOf="@+id/descriptionTextViewInRow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/jobImageInRow" />
 
-    <ProgressBar
-        android:id="@+id/jobImageProgressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/jobImageInRow"
-        app:layout_constraintEnd_toEndOf="@+id/jobImageInRow"
-        app:layout_constraintStart_toStartOf="@+id/jobImageInRow"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/descriptionTextViewInRow"
+            android:layout_width="182dp"
+            android:layout_height="57dp"
+            android:layout_marginStart="70dp"
+            android:layout_marginTop="13dp"
+            android:layout_marginEnd="20dp"
+            android:text="TextView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/userImageInRow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dateTextViewInRow" />
+
+        <ProgressBar
+            android:id="@+id/jobImageProgressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/jobImageInRow"
+            app:layout_constraintEnd_toEndOf="@+id/jobImageInRow"
+            app:layout_constraintStart_toStartOf="@+id/jobImageInRow"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
