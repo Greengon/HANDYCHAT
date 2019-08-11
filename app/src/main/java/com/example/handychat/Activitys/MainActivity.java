@@ -10,10 +10,11 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.handychat.Fragments.JobRequestList;
+import com.example.handychat.Fragments.JobRequestView;
 import com.example.handychat.Fragments.NewJobRequestFragment;
 import com.example.handychat.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements JobRequestList.ListJobsListener {
     private static Context context;
 
     @Override
@@ -53,6 +54,15 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
         }
+    }
+
+    // Move to the fragment of the selected item
+    public void onJobRequestSelected(String id) {
+        JobRequestView jobRequestView = JobRequestView.newInstance(id);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_fragment_container, jobRequestView);
+        transaction.addToBackStack("A jobRequest as been selected");
+        transaction.commit();
     }
     /************************* Activity functions *******************/
 }

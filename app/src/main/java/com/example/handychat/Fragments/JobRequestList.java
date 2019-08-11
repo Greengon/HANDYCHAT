@@ -1,9 +1,11 @@
 package com.example.handychat.Fragments;
 
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +31,7 @@ public class JobRequestList extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
     private jobRequestListAdapter adapter;
     private List<JobRequest> mData = new LinkedList<>();
+    ListJobsListener listJobsListener;
 
 
     public JobRequestList() {
@@ -61,6 +64,8 @@ public class JobRequestList extends Fragment {
             @Override
             public void onClick(int position) {
                 Log.d("TAG","item click: " + position);
+                // Lets move the the fragment of the selected request
+                listJobsListener.onJobRequestSelected(mData.get(position).getId());
             }
         });
         jobRequestList.setAdapter(adapter);
@@ -75,6 +80,24 @@ public class JobRequestList extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        /*
+         Lets connect to our main activity so
+         we could handle user pressing on job
+         in the view
+          */
+        if (context instanceof ListJobsListener){
+            listJobsListener = (ListJobsListener) context;
+        }
+    }
+
+    public interface ListJobsListener{
+        void onJobRequestSelected(String jobId);
     }
 
     public static JobRequestList newInstance() {
