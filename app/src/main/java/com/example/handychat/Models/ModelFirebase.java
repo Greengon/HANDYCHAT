@@ -1,12 +1,16 @@
 package com.example.handychat.Models;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.widget.ProgressBar;
+import android.util.Log;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -16,7 +20,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.google.rpc.Help;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
@@ -56,6 +59,27 @@ public class ModelFirebase {
                 listener.onComplete(task.isSuccessful());
             }
         });
+    }
+
+
+    public void getJobRequest(String jobId, final Model.GetJobListener listener){
+        db.collection("jobRequests").document(jobId).get().
+                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()){
+                            DocumentSnapshot snapshot = task.getResult();
+                            if (snapshot.exists()){
+                                JobRequest jobRequest = snapshot.toObject(JobRequest.class);
+                                listener.onComplete(jobRequest);
+                                return;
+                            }
+                        }else{
+                            Log.d("TAG","get failed with ", task.getException());
+                        }
+                        listener.onComplete(null);
+                    }
+                });
     }
 
     public void getAllJobRequest(final Model.GetAllJobRequestListener listener) {
@@ -118,4 +142,27 @@ public class ModelFirebase {
         });
     }
     /******** Image saving *********/
+
+    /******** Image loading *********/
+
+    public void getImage(String url, final Model.GetImageListener listener){
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference httpReference = storage.getReferenceFromUrl(url);
+        final long ONE_MEGABYTE = 1024 * 1024;
+        httpReference.getBytes(3 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap image = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                listener.onSuccess(image);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("TAG",e.getMessage());
+                listener.onFail();
+            }
+        });
+    }
+
+    /******** Image loading *********/
 }

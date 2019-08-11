@@ -1,14 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragments.JobRequestView">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="15dp"
+            android:layout_weight="1.25">
+
+            <ImageView
+                android:id="@+id/job_view_image"
+                android:layout_width="273dp"
+                android:layout_height="92dp"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="68dp"
+                android:src="@android:drawable/ic_menu_camera"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/job_view_user_image"
+                android:layout_width="86dp"
+                android:layout_height="68dp"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="39dp"
+                android:layout_marginEnd="42dp"
+                android:layout_marginBottom="59dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/job_view_description_value"
+                app:layout_constraintTop_toBottomOf="@+id/job_view_image"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/job_view_date_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="127dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="9dp"
+                android:text="Date:"
+                app:layout_constraintBottom_toTopOf="@+id/job_view_address_text"
+                app:layout_constraintEnd_toStartOf="@+id/job_view_date_value"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/job_view_date_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="300dp"
+                android:layout_marginBottom="10dp"
+                android:text="TextView"
+                app:layout_constraintBottom_toTopOf="@+id/job_view_address_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/job_view_date_text"
+                app:layout_constraintTop_toBottomOf="@+id/job_view_image" />
+
+            <TextView
+                android:id="@+id/job_view_address_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="9dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="13dp"
+                android:text="Address:"
+                app:layout_constraintBottom_toTopOf="@+id/job_view_description_value"
+                app:layout_constraintEnd_toStartOf="@+id/job_view_address_value"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/job_view_date_text" />
+
+            <TextView
+                android:id="@+id/job_view_address_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="147dp"
+                android:layout_marginBottom="13dp"
+                android:text="TextView"
+                app:layout_constraintBottom_toTopOf="@+id/job_view_description_value"
+                app:layout_constraintEnd_toStartOf="@+id/job_view_user_image"
+                app:layout_constraintStart_toEndOf="@+id/job_view_address_text"
+                app:layout_constraintTop_toBottomOf="@+id/job_view_date_value" />
+
+            <TextView
+                android:id="@+id/job_view_description_value"
+                android:layout_width="255dp"
+                android:layout_height="78dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="18dp"
+                android:layout_marginBottom="4dp"
+                android:text="TextView"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/job_view_user_image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/job_view_address_text" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.75"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="397dp" />
+    </LinearLayout>
 </FrameLayout>
