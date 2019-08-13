@@ -2,6 +2,10 @@ package com.example.handychat.Models;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.example.handychat.Activitys.MainActivity;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
@@ -9,10 +13,11 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {JobRequest.class,User.class}, version = 1)
+@Database(entities = {JobRequest.class,User.class,Comment.class}, version = 1)
 abstract class AppLocalDbRepository extends RoomDatabase {
     public abstract JobRequestDao jobRequestDao();
     public abstract UserDao userDao();
+    public abstract CommentDao commentDao();
 }
 
 public class ModelSql {
@@ -43,15 +48,19 @@ public class ModelSql {
     }
 
     private static class PopulateDbAsync extends AsyncTask<Void,Void,Void> {
-        private final JobRequestDao mDao;
+        private final JobRequestDao mJobDao;
+        private final CommentDao mCommentDao;
 
         public PopulateDbAsync(AppLocalDbRepository instance) {
-            mDao = instance.jobRequestDao();
+            mJobDao = instance.jobRequestDao();
+            mCommentDao = instance.commentDao();
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            mDao.deleteAll();
+            mJobDao.deleteAll();
+            mCommentDao.deleteAll();
+            Log.d("TAG","Delete all was excuted");
             // What to do on open app
             return null;
         }

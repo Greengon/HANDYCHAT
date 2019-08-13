@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragments.JobRequestView">
@@ -14,7 +15,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="15dp"
             android:layout_weight="1.25">
 
             <ImageView
@@ -22,95 +22,73 @@
                 android:layout_width="273dp"
                 android:layout_height="92dp"
                 android:layout_marginStart="70dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="68dp"
+                android:layout_marginBottom="10dp"
                 android:src="@android:drawable/ic_menu_camera"
+                app:layout_constraintBottom_toTopOf="@+id/job_view_date_value"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/job_view_user_image"
-                android:layout_width="86dp"
-                android:layout_height="68dp"
-                android:layout_marginStart="18dp"
-                android:layout_marginTop="39dp"
-                android:layout_marginEnd="42dp"
-                android:layout_marginBottom="59dp"
+                android:layout_width="82dp"
+                android:layout_height="80dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="36dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/job_view_description_value"
-                app:layout_constraintTop_toBottomOf="@+id/job_view_image"
+                app:layout_constraintHorizontal_bias="0.965"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0"
                 tools:src="@tools:sample/avatars" />
 
             <TextView
-                android:id="@+id/job_view_date_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="127dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="9dp"
-                android:text="Date:"
-                app:layout_constraintBottom_toTopOf="@+id/job_view_address_text"
-                app:layout_constraintEnd_toStartOf="@+id/job_view_date_value"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
                 android:id="@+id/job_view_date_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="300dp"
-                android:layout_marginBottom="10dp"
+                android:layout_width="0dp"
+                android:layout_height="23dp"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="28dp"
                 android:text="TextView"
-                app:layout_constraintBottom_toTopOf="@+id/job_view_address_text"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/job_view_date_text"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/job_view_image" />
 
             <TextView
-                android:id="@+id/job_view_address_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="9dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginBottom="13dp"
-                android:text="Address:"
-                app:layout_constraintBottom_toTopOf="@+id/job_view_description_value"
-                app:layout_constraintEnd_toStartOf="@+id/job_view_address_value"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/job_view_date_text" />
-
-            <TextView
                 android:id="@+id/job_view_address_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="147dp"
-                android:layout_marginBottom="13dp"
+                android:layout_width="177dp"
+                android:layout_height="19dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="310dp"
+                android:layout_marginBottom="8dp"
                 android:text="TextView"
                 app:layout_constraintBottom_toTopOf="@+id/job_view_description_value"
-                app:layout_constraintEnd_toStartOf="@+id/job_view_user_image"
-                app:layout_constraintStart_toEndOf="@+id/job_view_address_text"
-                app:layout_constraintTop_toBottomOf="@+id/job_view_date_value" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.108"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/job_view_date_value"
+                app:layout_constraintVertical_bias="0.19" />
 
             <TextView
                 android:id="@+id/job_view_description_value"
-                android:layout_width="255dp"
+                android:layout_width="0dp"
                 android:layout_height="78dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="18dp"
-                android:layout_marginBottom="4dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="56dp"
+                android:layout_marginBottom="16dp"
                 android:text="TextView"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/job_view_user_image"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/job_view_address_text" />
+                app:layout_constraintTop_toBottomOf="@+id/job_view_address_value" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView

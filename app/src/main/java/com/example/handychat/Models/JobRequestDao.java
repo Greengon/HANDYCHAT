@@ -23,6 +23,9 @@ interface JobRequestDao {
     @Query("DELETE FROM job_requests")
     void deleteAll();
 
-    @Query("SELECT * from job_requests")
+    @Query("SELECT * FROM job_requests")
     List<JobRequest> getAllJobRequests();
+
+    @Query("SELECT * FROM job_requests WHERE id=:id")
+    JobRequest getJobRequest(String id);
 }

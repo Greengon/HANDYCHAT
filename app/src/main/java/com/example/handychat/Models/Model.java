@@ -28,7 +28,6 @@ public class Model {
     static ModelSql modelSql;
     static ModelFirebase modelFirebase;
 
-    JobRequestListData jobRequestListData = new JobRequestListData();
 
     private Model(){
         modelSql = new ModelSql();
@@ -45,74 +44,6 @@ public class Model {
         modelFirebase.addUser(user,listener);
     }
     /******** User handling **********/
-
-    /******** JobRequest handling **********/
-    public interface AddJobRequestListener{
-        void onComplete(boolean success);
-    }
-
-    public void addJobRequest(JobRequest jobRequest, AddJobRequestListener listener){
-//        modelSql.addJobRequest(jobRequest);
-//        modelFirebase.addJobRequest(jobRequest,listener);
-    }
-
-    public LiveData<List<JobRequest>> getAllJobRequest() {
-       return jobRequestListData;
-    }
-
-    public interface GetJobListener{
-        void onComplete(JobRequest jobRequest);
-    }
-
-    public void getJobRequest(String jobId,GetJobListener listener) {
-        // Lets first try to get it locally form SQLite
-//    JobRequest resultJobRequest = ModelSql.instance.getJobRequest(jobId);
-//        if (resultJobRequest == null){ // If we didn't find it locally we will download it from firebase
-//        modelFirebase.getJobRequest(jobId, new GetJobListener() {
-//            @Override
-//            public void onComplete(JobRequest jobRequest) {
-//                modelSql.addJobRequest(jobRequest);
-//            }
-//        });
-//        resultJobRequest = ModelSql.instance.getJobRequest(jobId);
-//    }
-//        listener.onComplete(resultJobRequest);
-}
-
-    class JobRequestListData extends MutableLiveData<List<JobRequest>>{
-
-        @Override
-        protected void onActive() {
-            super.onActive();
-            modelFirebase.getAllJobRequest(new ModelFirebase.getAllJobRequestListener() {
-                @Override
-                public void OnSuccess(List<JobRequest> jobRequestList) {
-                    Log.d("TAG","FB data = " + jobRequestList.size());
-                    // SetValue invokes onChange in the observers listeners
-                    setValue(jobRequestList);
-                    for(JobRequest jobRequest: jobRequestList){
-                        // AppLocalDb.dv.jobRequestDao().insertAll(jobRequest);
-                    }
-                }
-            });
-        }
-
-        @Override
-        protected void onInactive() {
-            super.onInactive();
-//            modelFirebase.cancelGetAllJobRequests();
-            Log.d("TAG","cancelGetAllJobRequests");
-
-        }
-
-        public JobRequestListData(){
-            super();
-            //setValue(AppLocalDb.db.JobRequestsDao().getAll());
-            setValue(new LinkedList<JobRequest>());
-        }
-    }
-
-    /******** JobRequest handling **********/
 
     /******** Image saving *********/
     public interface SaveImageListener{

@@ -13,7 +13,6 @@ import androidx.lifecycle.MutableLiveData;
 public class JobRequestRepository {
     private JobRequestDao mJobRequestDao;
     private JobRequestListData mAllJobRequests;
-//    static ModelSql modelSql;
     static ModelFirebase modelFirebase;
 
     public JobRequestRepository(Application application){
@@ -47,6 +46,16 @@ public class JobRequestRepository {
     }
     /******************* Get all ***********************/
 
+    /******************* Get Job request ***********************/
+    public interface GetJobRequestsListener{
+        void onComplete(JobRequest data);
+    }
+
+    public void getJobRequest(String id,final GetJobRequestsListener listener){
+        JobRequestAsyncDao.getJobRequests(id,listener);
+    }
+    /******************* Get Job request ***********************/
+
     public static class JobRequestAsyncDao {
         public static void getAllJobRequests(final GetAllJobRequestsListener listener){
             new AsyncTask<Void,Void,List<JobRequest>>(){
@@ -66,6 +75,17 @@ public class JobRequestRepository {
             }.execute();
         }
 
+        public static void getJobRequests(String id,GetJobRequestsListener listener) {
+            new AsyncTask<Void,Void,JobRequest>(){
+
+                @Override
+                protected JobRequest doInBackground(Void... voids) {
+                    JobRequest jobRequest = ModelSql.INSTANCE.jobRequestDao().getJobRequest(id);
+                    listener.onComplete(jobRequest);
+                    return jobRequest;
+                }
+            }.execute();
+        }
     }
 
     /******************* Insert ***********************/
@@ -88,22 +108,7 @@ public class JobRequestRepository {
         @Override
         protected void onActive() {
             super.onActive();
-            modelFirebase.getAllJobRequest(new ModelFirebase.getAllJobRequestListener() {
-                @Override
-                public void OnSuccess(List<JobRequest> jobRequestList) {
-                    Log.d("TAG","FB data = " + jobRequestList.size());
-                    // SetValue invokes onChange in the observers listeners
-                    setValue(jobRequestList);
-                    for(JobRequest jobRequest: jobRequestList){
-                        insert(jobRequest, new AddJobRequestListener() {
-                            @Override
-                            public void onComplete(boolean success) {
-                                Log.d("TAG","New FB data as been added");
-                            }
-                        });
-                    }
-                }
-            });
+            GetCurrentList();
         }
 
         @Override
@@ -116,13 +121,27 @@ public class JobRequestRepository {
 
         public JobRequestListData(){
             super();
-//            setValue(JobRequestRepository.getAllJobRequests(new GetAllJobRequestsListener() {
-//                @Override
-//                public void onComplete(List<JobRequest> data) {
-//
-//                }
-//            }));
-            setValue(new LinkedList<JobRequest>());
+//            setValue(new LinkedList<JobRequest>());
+            GetCurrentList();
+        }
+
+        private void GetCurrentList(){
+            modelFirebase.getAllJobRequest(new ModelFirebase.getAllJobRequestListener() {
+                @Override
+                public void OnSuccess(List<JobRequest> jobRequestList) {
+                    Log.d("TAG","FB data = " + jobRequestList.size());
+                    // SetValue invokes onChange in the observers listeners
+                    setValue(jobRequestList);
+                    for(JobRequest jobRequest: jobRequestList){
+                        insert(jobRequest, new AddJobRequestListener() {
+                            @Override
+                            public void onComplete(boolean success) {
+                                Log.d("TAG","New FB data with id: " + jobRequest.getId());
+                            }
+                        });
+                    }
+                }
+            });
         }
     }
 }

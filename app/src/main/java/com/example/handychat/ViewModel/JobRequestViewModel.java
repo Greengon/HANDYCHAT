@@ -20,7 +20,12 @@ public class JobRequestViewModel extends AndroidViewModel {
         mAllJobRequests = mRepository.getmAllJobRequests();
     }
 
+
     public MutableLiveData<List<JobRequest>> getmAllJobRequests() {return mAllJobRequests;}
+
+    public void getJobRequest(String id, JobRequestRepository.GetJobRequestsListener listener){
+        mRepository.getJobRequest(id,listener);
+    }
 
     public void insert(JobRequest jobRequest, JobRequestRepository.AddJobRequestListener listener) {
         mRepository.insert(jobRequest, listener);

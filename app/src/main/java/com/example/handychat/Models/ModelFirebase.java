@@ -63,7 +63,11 @@ public class ModelFirebase {
     }
 
 
-    public void getJobRequest(String jobId, final Model.GetJobListener listener){
+    public interface GetJobRequestListener{
+        void onComplete(JobRequest jobRequest);
+    }
+
+    public void getJobRequest(String jobId, final GetJobRequestListener listener){
         db.collection("jobRequests").document(jobId).get().
                 addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -105,6 +109,65 @@ public class ModelFirebase {
         void OnSuccess(List<JobRequest> jobRequestList);
     }
     /****************** JobRequest handling ********************/
+
+    /****************** Comment handling ********************/
+     public void addComment(Comment comment,final CommentRepository.AddCommentListener listener){
+        db.collection("comments").document(comment.id)
+                .set(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                listener.onComplete(task.isSuccessful());
+            }
+        });
+    }
+
+
+    public interface GetCommentListener{
+        void onComplete(Comment comment);
+    }
+
+    public void getComment(String commentId, final GetCommentListener listener){
+        db.collection("comments").document(commentId).get().
+                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()){
+                            DocumentSnapshot snapshot = task.getResult();
+                            if (snapshot.exists()){
+                                Comment comment = snapshot.toObject(Comment.class);
+                                listener.onComplete(comment);
+                                return;
+                            }
+                        }else{
+                            Log.d("TAG","get failed with ", task.getException());
+                        }
+                        listener.onComplete(null);
+                    }
+                });
+    }
+
+    public void getAllComment(getAllCommentListener listener) {
+        db.collection("comments").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                LinkedList<Comment> data = new LinkedList<>();
+                if (e != null) {
+                    listener.OnSuccess(data);
+                    return;
+                }
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots){
+                    Comment comment = doc.toObject(Comment.class);
+                    data.add(comment);
+                }
+                listener.OnSuccess(data);
+            }
+        });
+    }
+
+    public interface getAllCommentListener {
+        void OnSuccess(List<Comment> commentList);
+    }
+    /****************** Comment handling ********************/
 
     /******** Image saving *********/
 
