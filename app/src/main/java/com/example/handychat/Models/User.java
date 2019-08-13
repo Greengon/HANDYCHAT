@@ -1,20 +1,43 @@
 package com.example.handychat.Models;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "users")
 public class User {
+    @ColumnInfo(name = "name")
     public String name;
+
+    @ColumnInfo(name = "image")
     public String image = null;
+
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "email")
     public String email;
+
+    @ColumnInfo(name = "address")
     public String address;
+
+    @ColumnInfo(name = "customer")
     public boolean customer = false;
+
+    @ColumnInfo(name = "handyman")
     public boolean handyMan = false;
+
+    @ColumnInfo(name = "category")
     public String category;
+
+    @ColumnInfo(name = "area")
     public String area;
 
     public User(){
 
     }
 
-    public User(String name,String email,String address,boolean customer, boolean handyMan,String category, String area){
+    public User(String name,@NonNull String email,String address,boolean customer, boolean handyMan,String category, String area){
         this.name = name;
         this.email = email;
         this.address = address;

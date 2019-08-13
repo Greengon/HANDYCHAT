@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -22,8 +23,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.handychat.Models.JobRequest;
+import com.example.handychat.Models.JobRequestRepository;
 import com.example.handychat.Models.Model;
 import com.example.handychat.R;
+import com.example.handychat.ViewModel.JobRequestViewModel;
 
 
 import java.util.Calendar;
@@ -50,6 +53,7 @@ public class NewJobRequestFragment extends Fragment {
     private ProgressBar progressBar;
     private PackageManager packageManager;
     private static final int REQUEST_WRITE_STORAGE = 112;
+    private JobRequestViewModel mJobRequestViewModel;
 
     // Next int is used for takePic function
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -75,6 +79,7 @@ public class NewJobRequestFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mJobRequestViewModel = ViewModelProviders.of(this).get(JobRequestViewModel.class);
     }
 
     @Override
@@ -130,7 +135,7 @@ public class NewJobRequestFragment extends Fragment {
                         descriptionEditText.getText().toString());
 
                 // Now let's save it to remote firebase and locally
-                Model.instance.addJobRequest(jobRequest, new Model.AddJobRequestListener() {
+                mJobRequestViewModel.insert(jobRequest, new JobRequestRepository.AddJobRequestListener() {
                     @Override
                     public void onComplete(boolean success) {
                         // Stop progress bar

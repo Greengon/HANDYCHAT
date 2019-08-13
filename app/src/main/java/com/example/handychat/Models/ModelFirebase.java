@@ -24,6 +24,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -51,7 +52,7 @@ public class ModelFirebase {
     /****************** User handling ********************/
 
     /****************** JobRequest handling ********************/
-    public void addJobRequest(JobRequest jobRequest,final Model.AddJobRequestListener listener){
+    public void addJobRequest(JobRequest jobRequest,final JobRequestRepository.AddJobRequestListener listener){
         db.collection("jobRequests").document(jobRequest.id)
                 .set(jobRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -82,22 +83,26 @@ public class ModelFirebase {
                 });
     }
 
-    public void getAllJobRequest(final Model.GetAllJobRequestListener listener) {
+    public void getAllJobRequest(getAllJobRequestListener listener) {
         db.collection("jobRequests").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 LinkedList<JobRequest> data = new LinkedList<>();
                 if (e != null) {
-                    listener.onComplete(data);
+                    listener.OnSuccess(data);
                     return;
                 }
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots){
                     JobRequest jobRequest = doc.toObject(JobRequest.class);
                     data.add(jobRequest);
                 }
-                listener.onComplete(data);
+                listener.OnSuccess(data);
             }
         });
+    }
+
+    public interface getAllJobRequestListener {
+        void OnSuccess(List<JobRequest> jobRequestList);
     }
     /****************** JobRequest handling ********************/
 
@@ -163,6 +168,7 @@ public class ModelFirebase {
             }
         });
     }
+
 
     /******** Image loading *********/
 }

@@ -28,6 +28,12 @@ public class jobRequestListAdapter extends RecyclerView.Adapter<jobRequestListAd
         mData = data;
     }
 
+    // Setters
+    void setJobRequests(List<JobRequest> data){
+        mData = data;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public jobRequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -50,6 +56,9 @@ public class jobRequestListAdapter extends RecyclerView.Adapter<jobRequestListAd
     // Returns the number of objects to display in the list
     @Override
     public int getItemCount() {
+        if (mData == null){
+            return 0;
+        }
         return mData.size();
     }
 

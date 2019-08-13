@@ -2,6 +2,7 @@ package com.example.handychat.Activitys;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import com.example.handychat.Fragments.JobRequestList;
 import com.example.handychat.Fragments.JobRequestView;
 import com.example.handychat.Fragments.NewJobRequestFragment;
 import com.example.handychat.R;
+import com.example.handychat.ViewModel.JobRequestViewModel;
 
 public class MainActivity extends AppCompatActivity implements JobRequestList.ListJobsListener {
     private static Context context;

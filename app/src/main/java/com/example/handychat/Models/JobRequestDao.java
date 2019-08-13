@@ -1,0 +1,28 @@
+package com.example.handychat.Models;
+
+import java.util.List;
+
+import androidx.room.Dao;
+import androidx.room.Delete;
+import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
+import androidx.room.Query;
+import androidx.room.Update;
+
+@Dao
+interface JobRequestDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(JobRequest... jobRequests);
+
+    @Delete
+    void Delete(JobRequest... jobRequests);
+
+    @Update
+    void Update(JobRequest... jobRequests);
+
+    @Query("DELETE FROM job_requests")
+    void deleteAll();
+
+    @Query("SELECT * from job_requests")
+    List<JobRequest> getAllJobRequests();
+}

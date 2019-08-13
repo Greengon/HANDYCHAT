@@ -9,7 +9,6 @@ import android.util.Log;
 import android.webkit.URLUtil;
 
 import com.example.handychat.MyApplication;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,12 +17,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.LinkedList;
 import java.util.List;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 public class Model {
     final public static Model instance = new Model();
-    ModelSql modelSql;
-    ModelFirebase modelFirebase;
+    static ModelSql modelSql;
+    static ModelFirebase modelFirebase;
+
+    JobRequestListData jobRequestListData = new JobRequestListData();
 
     private Model(){
         modelSql = new ModelSql();
@@ -36,7 +41,7 @@ public class Model {
     }
 
     public void addUser(User user, AddUserListener listener){
-        modelSql.addUser(user);
+//        modelSql.addUser(user);
         modelFirebase.addUser(user,listener);
     }
     /******** User handling **********/
@@ -47,16 +52,12 @@ public class Model {
     }
 
     public void addJobRequest(JobRequest jobRequest, AddJobRequestListener listener){
-        modelSql.addJobRequest(jobRequest);
-        modelFirebase.addJobRequest(jobRequest,listener);
+//        modelSql.addJobRequest(jobRequest);
+//        modelFirebase.addJobRequest(jobRequest,listener);
     }
 
-    public interface GetAllJobRequestListener{
-        void onComplete(List<JobRequest> data);
-    }
-
-    public void getAllJobRequest(GetAllJobRequestListener listener) {
-        modelFirebase.getAllJobRequest(listener);
+    public LiveData<List<JobRequest>> getAllJobRequest() {
+       return jobRequestListData;
     }
 
     public interface GetJobListener{
@@ -65,18 +66,52 @@ public class Model {
 
     public void getJobRequest(String jobId,GetJobListener listener) {
         // Lets first try to get it locally form SQLite
-        JobRequest resultJobRequest = ModelSql.instance.getJobRequest(jobId);
-        if (resultJobRequest == null){ // If we didn't find it locally we will download it from firebase
-            modelFirebase.getJobRequest(jobId, new GetJobListener() {
+//    JobRequest resultJobRequest = ModelSql.instance.getJobRequest(jobId);
+//        if (resultJobRequest == null){ // If we didn't find it locally we will download it from firebase
+//        modelFirebase.getJobRequest(jobId, new GetJobListener() {
+//            @Override
+//            public void onComplete(JobRequest jobRequest) {
+//                modelSql.addJobRequest(jobRequest);
+//            }
+//        });
+//        resultJobRequest = ModelSql.instance.getJobRequest(jobId);
+//    }
+//        listener.onComplete(resultJobRequest);
+}
+
+    class JobRequestListData extends MutableLiveData<List<JobRequest>>{
+
+        @Override
+        protected void onActive() {
+            super.onActive();
+            modelFirebase.getAllJobRequest(new ModelFirebase.getAllJobRequestListener() {
                 @Override
-                public void onComplete(JobRequest jobRequest) {
-                    modelSql.addJobRequest(jobRequest);
+                public void OnSuccess(List<JobRequest> jobRequestList) {
+                    Log.d("TAG","FB data = " + jobRequestList.size());
+                    // SetValue invokes onChange in the observers listeners
+                    setValue(jobRequestList);
+                    for(JobRequest jobRequest: jobRequestList){
+                        // AppLocalDb.dv.jobRequestDao().insertAll(jobRequest);
+                    }
                 }
             });
-            resultJobRequest = ModelSql.instance.getJobRequest(jobId);
         }
-        listener.onComplete(resultJobRequest);
+
+        @Override
+        protected void onInactive() {
+            super.onInactive();
+//            modelFirebase.cancelGetAllJobRequests();
+            Log.d("TAG","cancelGetAllJobRequests");
+
+        }
+
+        public JobRequestListData(){
+            super();
+            //setValue(AppLocalDb.db.JobRequestsDao().getAll());
+            setValue(new LinkedList<JobRequest>());
+        }
     }
+
     /******** JobRequest handling **********/
 
     /******** Image saving *********/
