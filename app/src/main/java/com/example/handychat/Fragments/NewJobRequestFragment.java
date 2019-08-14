@@ -27,6 +27,7 @@ import com.example.handychat.Models.JobRequestRepository;
 import com.example.handychat.Models.Model;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.JobRequestViewModel;
+import com.google.firebase.Timestamp;
 
 
 import java.util.Calendar;
@@ -130,7 +131,7 @@ public class NewJobRequestFragment extends Fragment {
                 // Lets create our new jobRequest object
                 JobRequest jobRequest = new JobRequest(UUID.randomUUID().toString(),
                         url,"",
-                        Calendar.getInstance().getTime().toString(),
+                        Timestamp.now().toString(),
                         addressEditText.getText().toString(),
                         descriptionEditText.getText().toString());
 

@@ -12,11 +12,12 @@ import android.widget.Toast;
 
 import com.example.handychat.Fragments.JobRequestList;
 import com.example.handychat.Fragments.JobRequestView;
+import com.example.handychat.Fragments.NewCommentFragment;
 import com.example.handychat.Fragments.NewJobRequestFragment;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.JobRequestViewModel;
 
-public class MainActivity extends AppCompatActivity implements JobRequestList.ListJobsListener {
+public class MainActivity extends AppCompatActivity implements JobRequestList.ListJobsListener,JobRequestView.UserPressedListener,JobRequestView.ListCommentListener {
     private static Context context;
 
     @Override
@@ -64,6 +65,20 @@ public class MainActivity extends AppCompatActivity implements JobRequestList.Li
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment_container, jobRequestView);
         transaction.addToBackStack("A jobRequest as been selected");
+        transaction.commit();
+    }
+
+    @Override
+    public void OnCommentSelected(String id) {
+        Toast.makeText(this,"Comment selected: " + id,Toast.LENGTH_SHORT);
+    }
+
+    @Override
+    public void OnPressed(String id) {
+        NewCommentFragment newCommentFragment = NewCommentFragment.newInstance(id);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_fragment_container, newCommentFragment);
+        transaction.addToBackStack("Add comment as been selected");
         transaction.commit();
     }
     /************************* Activity functions *******************/

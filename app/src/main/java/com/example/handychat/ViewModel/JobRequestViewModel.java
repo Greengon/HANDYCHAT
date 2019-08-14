@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.example.handychat.Models.JobRequest;
 import com.example.handychat.Models.JobRequestRepository;
+import com.example.handychat.Models.ModelFirebase;
 
 import java.util.List;
 
@@ -30,4 +31,10 @@ public class JobRequestViewModel extends AndroidViewModel {
     public void insert(JobRequest jobRequest, JobRequestRepository.AddJobRequestListener listener) {
         mRepository.insert(jobRequest, listener);
     }
+
+    // Test
+    public void fetchRemoteData(String jobId, JobRequestRepository.GetJobRequestsListener listener) {
+        ModelFirebase.getRemoteData(jobId,listener);
+    }
+    // Test
 }

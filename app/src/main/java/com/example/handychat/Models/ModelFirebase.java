@@ -87,13 +87,36 @@ public class ModelFirebase {
                 });
     }
 
+    // Testing only
+    public static void getRemoteData(String jobId, final JobRequestRepository.GetJobRequestsListener listener){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+         db.collection("jobRequests").document(jobId).get().
+                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()){
+                            DocumentSnapshot snapshot = task.getResult();
+                            if (snapshot.exists()){
+                                JobRequest jobRequest = snapshot.toObject(JobRequest.class);
+                                listener.onComplete(jobRequest);
+                                return;
+                            }
+                        }else{
+                            Log.d("TAG","get failed with ", task.getException());
+                        }
+                        listener.onComplete(null);
+                    }
+                });
+    }
+
+
     public void getAllJobRequest(getAllJobRequestListener listener) {
         db.collection("jobRequests").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 LinkedList<JobRequest> data = new LinkedList<>();
                 if (e != null) {
-                    listener.OnSuccess(data);
+                    Log.d("TAG","Failed getting the comments from remote.");
                     return;
                 }
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots){
@@ -146,26 +169,26 @@ public class ModelFirebase {
                 });
     }
 
-    public void getAllComment(getAllCommentListener listener) {
-        db.collection("comments").addSnapshotListener(new EventListener<QuerySnapshot>() {
+    public void getAllCommentOfJob(String jobId,GetAllCommentListener listener) {
+        db.collection("comments").whereEqualTo("job_request_id",jobId).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                LinkedList<Comment> data = new LinkedList<>();
                 if (e != null) {
-                    listener.OnSuccess(data);
+                    Log.d("TAG","Failed getting the comments from remote.");
                     return;
                 }
+                LinkedList<Comment> data = new LinkedList<>();
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots){
                     Comment comment = doc.toObject(Comment.class);
                     data.add(comment);
                 }
-                listener.OnSuccess(data);
+                listener.OnSuccess(jobId,data);
             }
         });
     }
 
-    public interface getAllCommentListener {
-        void OnSuccess(List<Comment> commentList);
+    public interface GetAllCommentListener {
+        void OnSuccess(String jobId, List<Comment> commentList);
     }
     /****************** Comment handling ********************/
 

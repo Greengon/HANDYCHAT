@@ -122,7 +122,6 @@ public class JobRequestRepository {
         public JobRequestListData(){
             super();
 //            setValue(new LinkedList<JobRequest>());
-            GetCurrentList();
         }
 
         private void GetCurrentList(){

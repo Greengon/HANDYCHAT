@@ -13,7 +13,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {JobRequest.class,User.class,Comment.class}, version = 1)
+@Database(entities = {JobRequest.class,User.class,Comment.class}, version = 3)
 abstract class AppLocalDbRepository extends RoomDatabase {
     public abstract JobRequestDao jobRequestDao();
     public abstract UserDao userDao();
@@ -27,7 +27,7 @@ public class ModelSql {
                 @Override
                 public void onOpen(@NonNull SupportSQLiteDatabase db) {
                     super.onOpen(db);
-                    new PopulateDbAsync(INSTANCE).execute();
+//                    new PopulateDbAsync(INSTANCE).execute();
                 }
             };
 
@@ -38,7 +38,6 @@ public class ModelSql {
                     // Create database here
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             AppLocalDbRepository.class,"database")
-                            .fallbackToDestructiveMigration()
                             .addCallback(sRoomDatabaseCallback)
                             .build();
             }
@@ -47,22 +46,22 @@ public class ModelSql {
     return INSTANCE;
     }
 
-    private static class PopulateDbAsync extends AsyncTask<Void,Void,Void> {
-        private final JobRequestDao mJobDao;
-        private final CommentDao mCommentDao;
-
-        public PopulateDbAsync(AppLocalDbRepository instance) {
-            mJobDao = instance.jobRequestDao();
-            mCommentDao = instance.commentDao();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            mJobDao.deleteAll();
-            mCommentDao.deleteAll();
-            Log.d("TAG","Delete all was excuted");
-            // What to do on open app
-            return null;
-        }
-    }
+//    private static class PopulateDbAsync extends AsyncTask<Void,Void,Void> {
+//        private final JobRequestDao mJobDao;
+//        private final CommentDao mCommentDao;
+//
+//        public PopulateDbAsync(AppLocalDbRepository instance) {
+//            mJobDao = instance.jobRequestDao();
+//            mCommentDao = instance.commentDao();
+//        }
+//
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//            mJobDao.deleteAll();
+//            mCommentDao.deleteAll();
+//            Log.d("TAG","Delete all was excuted");
+//            // What to do on open app
+//            return null;
+//        }
+//    }
 }
