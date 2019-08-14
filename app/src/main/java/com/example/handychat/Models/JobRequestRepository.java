@@ -12,15 +12,34 @@ import androidx.lifecycle.MutableLiveData;
 
 public class JobRequestRepository {
     private JobRequestDao mJobRequestDao;
-    private JobRequestListData mAllJobRequests;
+    private List<JobRequest> mAllJobRequests;
     static ModelFirebase modelFirebase;
 
     public JobRequestRepository(Application application){
         AppLocalDbRepository db = ModelSql.getDatabase(application);
         mJobRequestDao = db.jobRequestDao();
         modelFirebase = new ModelFirebase();
-        mAllJobRequests = new JobRequestListData();
     }
+
+    public void GetRemoteJobRequestList(){
+        modelFirebase.getAllJobRequest(new ModelFirebase.getAllJobRequestListener() {
+            @Override
+            public void OnSuccess(List<JobRequest> jobRequestList) {
+                if(jobRequestList != null){
+                    for (JobRequest jobRequest: jobRequestList){
+                        if (!jobRequest.getId().isEmpty()){
+                            insert(jobRequest, new AddJobRequestListener() {
+                                @Override
+                                public void onComplete(boolean success) {
+                                    Log.d("TAG","Added new job request with id: " + jobRequest.getId());
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        });
+     }
 
     public interface AddJobRequestListener{
         void onComplete(boolean success);
@@ -31,17 +50,13 @@ public class JobRequestRepository {
         modelFirebase.addJobRequest(jobRequest,listener);
     }
 
-    // Getters
-    public JobRequestListData getmAllJobRequests(){
-        return mAllJobRequests;
-    }
-
     /******************* Get all ***********************/
     public interface GetAllJobRequestsListener{
         void onComplete(List<JobRequest> data);
     }
 
-    public static void getAllJobRequests(final GetAllJobRequestsListener listener){
+    public void getAllJobRequests(final GetAllJobRequestsListener listener){
+        GetRemoteJobRequestList();
         JobRequestAsyncDao.getAllJobRequests(listener);
     }
     /******************* Get all ***********************/
@@ -104,43 +119,43 @@ public class JobRequestRepository {
     }
     /******************* Insert ***********************/
 
-    public class JobRequestListData extends MutableLiveData<List<JobRequest>> {
-        @Override
-        protected void onActive() {
-            super.onActive();
-            GetCurrentList();
-        }
-
-        @Override
-        protected void onInactive() {
-            super.onInactive();
-//            modelFirebase.cancelGetAllJobRequests();
-            Log.d("TAG","cancelGetAllJobRequests");
-
-        }
-
-        public JobRequestListData(){
-            super();
-//            setValue(new LinkedList<JobRequest>());
-        }
-
-        private void GetCurrentList(){
-            modelFirebase.getAllJobRequest(new ModelFirebase.getAllJobRequestListener() {
-                @Override
-                public void OnSuccess(List<JobRequest> jobRequestList) {
-                    Log.d("TAG","FB data = " + jobRequestList.size());
-                    // SetValue invokes onChange in the observers listeners
-                    setValue(jobRequestList);
-                    for(JobRequest jobRequest: jobRequestList){
-                        insert(jobRequest, new AddJobRequestListener() {
-                            @Override
-                            public void onComplete(boolean success) {
-                                Log.d("TAG","New FB data with id: " + jobRequest.getId());
-                            }
-                        });
-                    }
-                }
-            });
-        }
-    }
+//    public class JobRequestListData extends MutableLiveData<List<JobRequest>> {
+//        @Override
+//        protected void onActive() {
+//            super.onActive();
+//            GetCurrentList();
+//        }
+//
+//        @Override
+//        protected void onInactive() {
+//            super.onInactive();
+////            modelFirebase.cancelGetAllJobRequests();
+//            Log.d("TAG","cancelGetAllJobRequests");
+//
+//        }
+//
+//        public JobRequestListData(){
+//            super();
+////            setValue(new LinkedList<JobRequest>());
+//        }
+//
+//        private void GetCurrentList(){
+//            modelFirebase.getAllJobRequest(new ModelFirebase.getAllJobRequestListener() {
+//                @Override
+//                public void OnSuccess(List<JobRequest> jobRequestList) {
+//                    Log.d("TAG","FB data = " + jobRequestList.size());
+//                    // SetValue invokes onChange in the observers listeners
+//                    setValue(jobRequestList);
+//                    for(JobRequest jobRequest: jobRequestList){
+//                        insert(jobRequest, new AddJobRequestListener() {
+//                            @Override
+//                            public void onComplete(boolean success) {
+//                                Log.d("TAG","New FB data with id: " + jobRequest.getId());
+//                            }
+//                        });
+//                    }
+//                }
+//            });
+//        }
+//    }
 }

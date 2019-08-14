@@ -65,8 +65,8 @@ public class JobRequestList extends Fragment {
             @Override
             public void onChanged(List<JobRequest> jobRequestList) {
                 // update UI
-                mJobRequestList = viewModel.getmAllJobRequests().getValue();
-                adapter.setJobRequests(mJobRequestList);
+                mJobRequestList = jobRequestList;
+                adapter.setJobRequests(jobRequestList);
         }
         };
 

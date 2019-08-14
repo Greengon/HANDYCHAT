@@ -13,16 +13,28 @@ import androidx.lifecycle.MutableLiveData;
 
 public class JobRequestViewModel extends AndroidViewModel {
     private JobRequestRepository mRepository;
-    private JobRequestRepository.JobRequestListData mAllJobRequests;
+    private MutableLiveData<List<JobRequest>> mAllJobRequests;
 
     public JobRequestViewModel(Application application){
         super(application);
         mRepository = new JobRequestRepository(application);
-        mAllJobRequests = mRepository.getmAllJobRequests();
     }
 
 
-    public MutableLiveData<List<JobRequest>> getmAllJobRequests() {return mAllJobRequests;}
+    public MutableLiveData<List<JobRequest>> getmAllJobRequests() {
+        if (mAllJobRequests == null){
+            mAllJobRequests = new MutableLiveData<>();
+        }
+        mRepository.getAllJobRequests(new JobRequestRepository.GetAllJobRequestsListener() {
+            @Override
+            public void onComplete(List<JobRequest> data) {
+                if (data != null){
+                    mAllJobRequests.postValue(data);
+                }
+            }
+        });
+        return mAllJobRequests;
+    }
 
     public void getJobRequest(String id, JobRequestRepository.GetJobRequestsListener listener){
         mRepository.getJobRequest(id,listener);
@@ -31,10 +43,4 @@ public class JobRequestViewModel extends AndroidViewModel {
     public void insert(JobRequest jobRequest, JobRequestRepository.AddJobRequestListener listener) {
         mRepository.insert(jobRequest, listener);
     }
-
-    // Test
-    public void fetchRemoteData(String jobId, JobRequestRepository.GetJobRequestsListener listener) {
-        ModelFirebase.getRemoteData(jobId,listener);
-    }
-    // Test
 }
