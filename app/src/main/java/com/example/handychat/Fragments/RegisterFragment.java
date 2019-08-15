@@ -20,6 +20,7 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.handychat.Activitys.SignInActivity;
 import com.example.handychat.Models.Model;
 import com.example.handychat.Models.User;
 import com.example.handychat.R;
@@ -105,7 +106,7 @@ public class RegisterFragment extends Fragment {
         // Apply the areasAdapter to the spinner
         mAreasSpinner.setAdapter(areasAdapter);
 
-        // Create a listener to catch if someone pressed on to save.
+        // Create a listener to catch if someone pressed on the save.
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,7 +145,7 @@ public class RegisterFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         // Start creating user with email
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener((Activity) getContext(), new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
@@ -168,13 +169,11 @@ public class RegisterFragment extends Fragment {
                                 }
                             });
                             FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
-                            getActivity().onBackPressed();
+                            ((SignInActivity)getActivity()).getNavController().popBackStack();
                         } else{
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getContext(),"Authentication failed.",Toast.LENGTH_SHORT).show();
-                            updateUI(null);
                         }
                     }
                 });
@@ -206,23 +205,5 @@ public class RegisterFragment extends Fragment {
         }
 
         return valid;
-    }
-    private void updateUI(FirebaseUser user) {
-        if (user != null) {
-            /*
-            Code when user is logged in.
-             */
-            /*********************** Test ************************/
-            Toast.makeText(getContext(), "User created.", Toast.LENGTH_SHORT).show();
-            /*********************** Test ************************/
-        } else {
-            /*
-            Code when user is not logged in.
-             */
-            /*********************** Test ************************/
-            Toast.makeText(getContext(), "Failed user created.", Toast.LENGTH_SHORT).show();
-            /*********************** Test ************************/
-            progressBar.setVisibility(View.GONE);
-        }
     }
 }

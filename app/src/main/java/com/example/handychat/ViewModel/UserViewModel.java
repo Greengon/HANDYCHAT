@@ -12,14 +12,11 @@ import androidx.lifecycle.MutableLiveData;
 
 public class UserViewModel extends AndroidViewModel {
     private UserRepository mRepository;
-    private MutableLiveData<List<User>> mAllUsers = new MutableLiveData<>();
 
     public UserViewModel(Application application){
         super(application);
         mRepository = new UserRepository(application);
-        mAllUsers.setValue(mRepository.getAllUsers());
     }
 
-    MutableLiveData<List<User>> getmAllUsers() {return mAllUsers;}
     public void insert(User user) {mRepository.insert(user);}
 }

@@ -23,7 +23,6 @@ import com.example.handychat.R;
 import com.example.handychat.ViewModel.JobRequestViewModel;
 
 public class MainActivity extends AppCompatActivity {
-    private static Context context;
     private ImageButton addNewRequestBtn;
     private NavController navController;
 
@@ -31,14 +30,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        context = getApplicationContext();
-
-        if (savedInstanceState == null){
-            JobRequestList jobRequestList = JobRequestList.newInstance();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.nav_host_fragment,jobRequestList);
-            transaction.commit();
-        }
 
         navController = Navigation.findNavController(this,R.id.nav_host_fragment);
 
