@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.Comment;
 import com.example.handychat.Models.CommentRepository;
 import com.example.handychat.Models.Model;
@@ -115,7 +116,9 @@ public class NewCommentFragment extends Fragment {
         // Now let's save it to remote firebase and locally
         mCommentViewModel.insert(comment);
         progressBar.setVisibility(View.INVISIBLE);
-        // Close fragment
-        getActivity().getSupportFragmentManager().popBackStackImmediate();
+
+        //TODO: When returning to view comment isn't showing
+        // Close fragment and return to job view
+        ((MainActivity)getActivity()).getNavController().popBackStack();
     }
 }

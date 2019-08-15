@@ -3,10 +3,15 @@ package com.example.handychat.Activitys;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.content.Context;
+import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -17,8 +22,10 @@ import com.example.handychat.Fragments.NewJobRequestFragment;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.JobRequestViewModel;
 
-public class MainActivity extends AppCompatActivity implements JobRequestList.ListJobsListener,JobRequestView.UserPressedListener,JobRequestView.ListCommentListener {
+public class MainActivity extends AppCompatActivity {
     private static Context context;
+    private ImageButton addNewRequestBtn;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +36,27 @@ public class MainActivity extends AppCompatActivity implements JobRequestList.Li
         if (savedInstanceState == null){
             JobRequestList jobRequestList = JobRequestList.newInstance();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.main_fragment_container,jobRequestList);
+            transaction.add(R.id.nav_host_fragment,jobRequestList);
             transaction.commit();
         }
+
+        navController = Navigation.findNavController(this,R.id.nav_host_fragment);
+
+        // TODO: fix the exception that happens when someone press on add button out of
+        addNewRequestBtn = (ImageButton) findViewById(R.id.imageButtonAdd);
+        navController = Navigation.findNavController(this,R.id.nav_host_fragment);
+        addNewRequestBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getNavController().navigate(R.id.action_jobRequestList_to_newJobRequestFragment);
+            }
+        });
+
     }
 
+    public NavController getNavController() {
+        return navController;
+    }
 
     /************************* Activity functions *******************/
     public void userPressedMainActivity(View view) {
@@ -47,39 +70,8 @@ public class MainActivity extends AppCompatActivity implements JobRequestList.Li
             case R.id.imageButtonGps:
                 Toast.makeText(this,"GPS button was pressed.",Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.imageButtonAdd:
-                Toast.makeText(this,"Add button was pressed.",Toast.LENGTH_SHORT).show();
-                NewJobRequestFragment newJobRequestFragment = NewJobRequestFragment.newInstance();
-                FragmentTransaction tranAdd = getSupportFragmentManager().beginTransaction();
-                tranAdd.replace(R.id.main_fragment_container,newJobRequestFragment);
-                tranAdd.addToBackStack("Add new request");
-                tranAdd.commit();
-                break;
-
         }
     }
 
-    // Move to the fragment of the selected item
-    public void onJobRequestSelected(String id) {
-        JobRequestView jobRequestView = JobRequestView.newInstance(id);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_fragment_container, jobRequestView);
-        transaction.addToBackStack("A jobRequest as been selected");
-        transaction.commit();
-    }
-
-    @Override
-    public void OnCommentSelected(String id) {
-        Toast.makeText(this,"Comment selected: " + id,Toast.LENGTH_SHORT);
-    }
-
-    @Override
-    public void OnPressed(String id) {
-        NewCommentFragment newCommentFragment = NewCommentFragment.newInstance(id);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_fragment_container, newCommentFragment);
-        transaction.addToBackStack("Add comment as been selected");
-        transaction.commit();
-    }
     /************************* Activity functions *******************/
 }

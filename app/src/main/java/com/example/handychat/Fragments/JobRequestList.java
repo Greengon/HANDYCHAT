@@ -4,6 +4,7 @@ package com.example.handychat.Fragments;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -15,10 +16,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.JobRequest;
 import com.example.handychat.Models.Model;
 import com.example.handychat.MyApplication;
@@ -40,7 +43,6 @@ public class JobRequestList extends Fragment {
     private JobRequestViewModel viewModel;
     List<JobRequest> mJobRequestList;
     String userId;
-    ListJobsListener listJobsListener;
 
 
     public JobRequestList() {
@@ -71,6 +73,7 @@ public class JobRequestList extends Fragment {
         };
 
         viewModel.getmAllJobRequests().observe(this, jobRequestListObserver);
+
     }
 
     @Override
@@ -102,7 +105,9 @@ public class JobRequestList extends Fragment {
             public void onClick(int position) {
                 Log.d("TAG","item click: " + position);
                 // Lets move the the fragment of the selected request
-                listJobsListener.onJobRequestSelected(mJobRequestList.get(position).getId());
+                Bundle bundle = new Bundle();
+                bundle.putString("jobID",mJobRequestList.get(position).getId());
+                ((MainActivity)getActivity()).getNavController().navigate(R.id.action_jobRequestList_to_jobRequestView,bundle);
             }
         });
 
@@ -111,23 +116,6 @@ public class JobRequestList extends Fragment {
         return view;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        /*
-         Lets connect to our main activity so
-         we could handle user pressing on job
-         in the view
-          */
-        if (context instanceof ListJobsListener){
-            listJobsListener = (ListJobsListener) context;
-        }
-    }
-
-    public interface ListJobsListener{
-        void onJobRequestSelected(String jobId);
-    }
 
     public static JobRequestList newInstance() {
         JobRequestList fragment = new JobRequestList();

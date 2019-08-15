@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.Comment;
 import com.example.handychat.Models.CommentRepository;
 import com.example.handychat.Models.JobRequest;
@@ -221,7 +224,9 @@ public class JobRequestView extends Fragment {
             addCommentBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    userPressedListener.OnPressed(jobId);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("jobID",jobId);
+                    ((MainActivity)getActivity()).getNavController().navigate(R.id.action_jobRequestView_to_newCommentFragment,bundle);
                 }
             });
 
@@ -234,12 +239,16 @@ public class JobRequestView extends Fragment {
                    jobRequestViewModel.delete(jobId, new JobRequestRepository.JobDeletedListener() {
                        @Override
                        public void onComplete() {
-                           getActivity().getSupportFragmentManager().popBackStack();
+                           ((MainActivity)getActivity()).getNavController().popBackStack();
                        }
                    });
                 }
             });
+
+            //TODO: Create an edit button.
+
             /************ Buttons Section ***************/
+
         }
         return view;
     }

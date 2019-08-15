@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.JobRequest;
 import com.example.handychat.Models.JobRequestRepository;
 import com.example.handychat.Models.Model;
@@ -124,6 +125,8 @@ public class NewJobRequestFragment extends Fragment {
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_STORAGE);
         }
 
+        // TODO: Do something when user press save without taking a picture
+        // TODO: Enable polling image from gallery
         Model.instance.saveImage(imageBitmap, new Model.SaveImageListener() {
             @Override
             public void onComplete(String url) {
@@ -142,8 +145,9 @@ public class NewJobRequestFragment extends Fragment {
                         // Stop progress bar
                         progressBar.setVisibility(View.INVISIBLE);
 
-                        // Close fragment
-                        getActivity().getSupportFragmentManager().popBackStackImmediate();
+                        // Close fragment and navigate back to list
+                        ((MainActivity)getActivity()).getNavController().popBackStack();
+
                     }
                 });
 
