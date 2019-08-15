@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ProgressBar;
 
+import com.google.common.base.Strings;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class CommentRepository {
         mCommentDao = db.commentDao();
         modelFirebase = new ModelFirebase();
     }
+
 
     public void getCommentFormRemote(String jobId) {
         modelFirebase.getAllCommentOfJob(jobId, new ModelFirebase.GetAllCommentListener() {
@@ -88,9 +91,21 @@ public class CommentRepository {
                 }
             }.execute();
         }
+
+        public static void deleteAllCommentsOfJob(String jobId){
+            new AsyncTask<Void,Void,Void>(){
+
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    ModelSql.INSTANCE.commentDao().deleteAllCommentsByJob(jobId);
+                    return null;
+                }
+            }.execute();
+        }
     }
 
         /******************* Insert ***********************/
+        // TODO: Merge next class with generic class CommentAsyncTask
         private class insertAsyncTask extends AsyncTask<Comment, Void, Void> {
             private CommentDao mAsyncTaskDao;
 
@@ -105,6 +120,15 @@ public class CommentRepository {
             }
         }
         /******************* Insert ***********************/
+
+    /******************* Delete ***********************/
+        public static void deleteAllCommentForJob(String jobId) {
+            // Step 1: Delete the remote comments for the job
+            modelFirebase.deleteAllCommentForJob(jobId);
+            // Step 2: Delete the local comments for the job
+            CommentAsyncDao.deleteAllCommentsOfJob(jobId);
+        }
+    /******************* Delete ***********************/
 
 //    public class CommentListData extends MutableLiveData<List<Comment>> {
 //        private String mJobId;

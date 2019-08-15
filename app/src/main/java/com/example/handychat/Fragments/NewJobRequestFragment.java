@@ -131,7 +131,7 @@ public class NewJobRequestFragment extends Fragment {
                 // Lets create our new jobRequest object
                 JobRequest jobRequest = new JobRequest(UUID.randomUUID().toString(),
                         url,"",
-                        Timestamp.now().toString(),
+                        Calendar.getInstance().getTime().toString(),
                         addressEditText.getText().toString(),
                         descriptionEditText.getText().toString());
 

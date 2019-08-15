@@ -34,6 +34,7 @@ public class Model {
         modelFirebase = new ModelFirebase();
     }
 
+
     /******** User handling **********/
     public interface AddUserListener{
         void onComplete(boolean success);
@@ -157,6 +158,12 @@ public class Model {
     }
 
     /******** Image loading *********/
+
+    /******** Image deleting *********/
+    // TODO: Complete image deleting if there is time
+    public void deleteImage() {
+    }
+    /******** Image deleting *********/
 
     private String getLocalImageFileName(String url) {
         String name = URLUtil.guessFileName(url,null,null);

@@ -41,6 +41,32 @@ public class JobRequestRepository {
         });
      }
 
+    /******************* Delete ***********************/
+    // TODO: Below solution didn't fix the problem
+    /*
+    Note that a listener was created here because
+    deleting job takes time and happens async,
+    so we want to force the user to wait for the final delete
+    to avoid reinserting
+     */
+    public interface JobDeletedListener{
+        void onComplete();
+    }
+    public void delete(String jobId, final JobDeletedListener listener) {
+        // Step 1+2: Delete the remote and local comments for the job
+        CommentRepository.deleteAllCommentForJob(jobId);
+
+        // Step 3: Delete the job in the remote Database
+        modelFirebase.deleteJob(jobId);
+
+        // Step 4: Delete the job image in the local Database
+        Model.instance.deleteImage();
+
+        // Step 5: Delete the job in the local Database
+        JobRequestAsyncDao.deleteJob(jobId,listener);
+    }
+    /******************* Delete ***********************/
+
     public interface AddJobRequestListener{
         void onComplete(boolean success);
     }
@@ -98,6 +124,18 @@ public class JobRequestRepository {
                     JobRequest jobRequest = ModelSql.INSTANCE.jobRequestDao().getJobRequest(id);
                     listener.onComplete(jobRequest);
                     return jobRequest;
+                }
+            }.execute();
+        }
+
+        public static void deleteJob(String jobId,JobDeletedListener listener) {
+            new AsyncTask<Void,Void,Void>(){
+
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    ModelSql.INSTANCE.jobRequestDao().DeleteById(jobId);
+                    listener.onComplete();
+                    return null;
                 }
             }.execute();
         }

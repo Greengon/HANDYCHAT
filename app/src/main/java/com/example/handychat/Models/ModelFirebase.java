@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -32,11 +33,13 @@ import androidx.annotation.NonNull;
 
 public class ModelFirebase {
     FirebaseFirestore db;
+    FirebaseStorage storage;
 
     public ModelFirebase(){
         db = FirebaseFirestore.getInstance();
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build();
         db.setFirestoreSettings(settings);
+        storage = FirebaseStorage.getInstance();
     }
 
     /****************** User handling ********************/
@@ -61,6 +64,34 @@ public class ModelFirebase {
             }
         });
     }
+
+    public void deleteJob(String jobId) {
+        // Step 1: Find the job
+        db.collection("jobRequests").document(jobId).get().
+                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()){
+                            DocumentSnapshot snapshot = task.getResult();
+                            if (snapshot.exists()){
+                                JobRequest jobRequest = snapshot.toObject(JobRequest.class);
+                                // Step 2: Delete the image
+                                if (jobRequest.getImageUrl() != null && !jobRequest.getImageUrl().isEmpty()){
+                                    deleteImageOfJob(jobRequest.imageUrl);
+                                }else{
+                                    Log.d("TAG","No image url was saved for this job");
+                                }
+                                // Step 3: Delete job
+                                db.collection("jobRequests").document(jobId).delete();
+                                return;
+                            }
+                        }else{
+                            Log.d("TAG","get failed with ", task.getException());
+                        }
+                    }
+                });
+    }
+
 
 
     public interface GetJobRequestListener{
@@ -190,13 +221,27 @@ public class ModelFirebase {
     public interface GetAllCommentListener {
         void OnSuccess(String jobId, List<Comment> commentList);
     }
+
+    public void deleteAllCommentForJob(String jobId) {
+         db.collection("comments").whereEqualTo("job_request_id",jobId).addSnapshotListener(new EventListener<QuerySnapshot>() {
+             @Override
+             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                 if (e != null) {
+                     Log.d("TAG","Failed getting the comments from remote.");
+                     return;
+                 }
+                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots){
+                     db.collection("comments").document(doc.getId()).delete();
+                 }
+             }
+         });
+
+    }
     /****************** Comment handling ********************/
 
     /******** Image saving *********/
 
     public void saveImage(Bitmap imageBitmap, final Model.SaveImageListener listener) {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-
         // Create a storage reference from our app
         StorageReference storageRef = storage.getReference();
 
@@ -237,7 +282,7 @@ public class ModelFirebase {
     /******** Image loading *********/
 
     public void getImage(String url, final Model.GetImageListener listener){
-        FirebaseStorage storage = FirebaseStorage.getInstance();
+        // Create a reference to the image
         StorageReference httpReference = storage.getReferenceFromUrl(url);
         final long ONE_MEGABYTE = 1024 * 1024;
         httpReference.getBytes(3 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -254,7 +299,18 @@ public class ModelFirebase {
             }
         });
     }
-
-
     /******** Image loading *********/
+
+    /******** Image deleting *********/
+    private void deleteImageOfJob(String imageUrl) {
+        // Create a reference to the image
+        StorageReference httpReference = storage.getReferenceFromUrl(imageUrl);
+        httpReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("TAG","Success in deleting the image");
+            }
+        });
+    }
+    /******** Image deleting *********/
 }

@@ -30,6 +30,7 @@ import com.example.handychat.ViewModel.CommentViewModel;
 import com.google.firebase.Timestamp;
 
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -109,7 +110,7 @@ public class NewCommentFragment extends Fragment {
         // Lets create our new comment object
         Comment comment = new Comment(UUID.randomUUID().toString(),jobId
                 ,""
-                , Timestamp.now().toString(),
+                , Calendar.getInstance().getTime().toString(),
                 commentEditText.getText().toString());
         // Now let's save it to remote firebase and locally
         mCommentViewModel.insert(comment);

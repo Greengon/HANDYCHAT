@@ -17,7 +17,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -55,10 +57,12 @@ public class JobRequestView extends Fragment {
     private JobRequest mJobRequest;
     private ImageView jobImage;
     private ImageView userImage;
+    private ImageButton deleteJob;
     private TextView date;
     private TextView address;
     private TextView description;
     private RecyclerView commentList;
+    private ProgressBar progressBar;
     private Button addCommentBtn;
 
 
@@ -211,11 +215,28 @@ public class JobRequestView extends Fragment {
             /************ Comments Section ***************/
 
             /************ Buttons Section ***************/
+            progressBar = (ProgressBar) view.findViewById(R.id.job_request_view_pb);
+            progressBar.setVisibility(View.INVISIBLE);
             addCommentBtn = (Button) view.findViewById(R.id.add_comment_button);
             addCommentBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     userPressedListener.OnPressed(jobId);
+                }
+            });
+
+            // TODO: Fix async problem here, if you go back faster to list fragment it will reinsert
+            deleteJob = (ImageButton) view.findViewById(R.id.delete_job_request);
+            deleteJob.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    progressBar.setVisibility(View.VISIBLE);
+                   jobRequestViewModel.delete(jobId, new JobRequestRepository.JobDeletedListener() {
+                       @Override
+                       public void onComplete() {
+                           getActivity().getSupportFragmentManager().popBackStack();
+                       }
+                   });
                 }
             });
             /************ Buttons Section ***************/

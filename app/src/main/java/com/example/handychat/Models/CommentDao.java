@@ -30,4 +30,7 @@ interface CommentDao {
 
     @Query("SELECT * FROM comments WHERE id=:id")
     Comment getComment(String id);
+
+    @Query("DELETE FROM comments WHERE job_request_id=:jobId")
+    void deleteAllCommentsByJob(String jobId);
 }
