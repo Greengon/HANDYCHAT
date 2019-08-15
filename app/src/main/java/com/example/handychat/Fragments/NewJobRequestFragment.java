@@ -29,6 +29,8 @@ import com.example.handychat.Models.Model;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.JobRequestViewModel;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
 import java.util.Calendar;
@@ -127,13 +129,17 @@ public class NewJobRequestFragment extends Fragment {
 
         // TODO: Do something when user press save without taking a picture
         // TODO: Enable polling image from gallery
+
+        // Lets get the current user for his email
+        FirebaseUser user  = FirebaseAuth.getInstance().getCurrentUser();
         Model.instance.saveImage(imageBitmap, new Model.SaveImageListener() {
             @Override
             public void onComplete(String url) {
 
                 // Lets create our new jobRequest object
                 JobRequest jobRequest = new JobRequest(UUID.randomUUID().toString(),
-                        url,"",
+                        url,
+                        user.getEmail(),
                         Calendar.getInstance().getTime().toString(),
                         addressEditText.getText().toString(),
                         descriptionEditText.getText().toString());

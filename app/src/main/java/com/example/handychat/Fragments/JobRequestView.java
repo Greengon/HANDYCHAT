@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.Comment;
@@ -35,6 +36,8 @@ import com.example.handychat.MyApplication;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.CommentViewModel;
 import com.example.handychat.ViewModel.JobRequestViewModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -205,12 +208,11 @@ public class JobRequestView extends Fragment {
 
             // Specify an adapter
             adapter = new CommentListAdapter(mCommentList);
+            //TODO: Create delete comment option, not a must...
             adapter.setOnItemClickListener(new CommentListAdapter.OnItemClickListener() {
                 @Override
                 public void onClick(int position) {
                     Log.d("TAG","item click: " + position);
-                    // Lets move the the fragment of the selected request
-                    listCommentListener.OnCommentSelected(mCommentList.get(position).getId());
                 }
             });
 
@@ -235,13 +237,17 @@ public class JobRequestView extends Fragment {
             deleteJob.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    progressBar.setVisibility(View.VISIBLE);
-                   jobRequestViewModel.delete(jobId, new JobRequestRepository.JobDeletedListener() {
-                       @Override
-                       public void onComplete() {
-                           ((MainActivity)getActivity()).getNavController().popBackStack();
-                       }
-                   });
+                    if (hasPremmison()){
+                        progressBar.setVisibility(View.VISIBLE);
+                        jobRequestViewModel.delete(jobId, new JobRequestRepository.JobDeletedListener() {
+                            @Override
+                            public void onComplete() {
+                                ((MainActivity)getActivity()).getNavController().popBackStack();
+                            }
+                        });
+                    }else{
+                        Toast.makeText(getContext(),"Only the created user can do that.",Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 
@@ -253,22 +259,14 @@ public class JobRequestView extends Fragment {
         return view;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        /*
-         Lets connect to our main activity so
-         we could handle user pressing on comment
-         in the view
-          */
-        if (context instanceof ListCommentListener) {
-            listCommentListener = (ListCommentListener) context;
+    private boolean hasPremmison() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user.getEmail().equals(mJobRequest.getUserCreated())){
+            return true;
         }
-        if (context instanceof UserPressedListener){
-            userPressedListener = (UserPressedListener) context;
-        }
+        return false;
     }
+
 
     public interface ListCommentListener{
         void OnCommentSelected(String id);

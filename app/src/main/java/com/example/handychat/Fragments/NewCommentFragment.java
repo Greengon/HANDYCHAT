@@ -29,6 +29,8 @@ import com.example.handychat.Models.Model;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.CommentViewModel;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
 import java.time.LocalDateTime;
@@ -108,9 +110,12 @@ public class NewCommentFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
 
 
+        // Lets get the current user for his email
+        FirebaseUser user  = FirebaseAuth.getInstance().getCurrentUser();
+
         // Lets create our new comment object
         Comment comment = new Comment(UUID.randomUUID().toString(),jobId
-                ,""
+                ,user.getEmail()
                 , Calendar.getInstance().getTime().toString(),
                 commentEditText.getText().toString());
         // Now let's save it to remote firebase and locally
