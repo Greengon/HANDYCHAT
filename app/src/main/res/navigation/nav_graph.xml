@@ -32,10 +32,26 @@
         <action
             android:id="@+id/action_jobRequestView_to_newCommentFragment"
             app:destination="@id/newCommentFragment" />
+        <action
+            android:id="@+id/action_jobRequestView_to_viewCommentFragment"
+            app:destination="@id/viewCommentFragment" />
+        <action
+            android:id="@+id/action_jobRequestView_to_editJobRequestFragment"
+            app:destination="@id/editJobRequestFragment" />
     </fragment>
     <fragment
         android:id="@+id/newCommentFragment"
         android:name="com.example.handychat.Fragments.NewCommentFragment"
         android:label="fragment_new_comment"
         tools:layout="@layout/fragment_new_comment" />
+    <fragment
+        android:id="@+id/viewCommentFragment"
+        android:name="com.example.handychat.Fragments.ViewCommentFragment"
+        android:label="fragment_view_comment"
+        tools:layout="@layout/fragment_view_comment" />
+    <fragment
+        android:id="@+id/editJobRequestFragment"
+        android:name="com.example.handychat.Fragments.EditJobRequestFragment"
+        android:label="fragment_edit_job_request"
+        tools:layout="@layout/fragment_edit_job_request" />
 </navigation>

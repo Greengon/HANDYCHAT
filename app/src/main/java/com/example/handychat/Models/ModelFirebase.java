@@ -24,6 +24,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -92,6 +93,17 @@ public class ModelFirebase {
                 });
     }
 
+    public void UpdateJobRequest(JobRequest jobRequest,UpdateJobRequestListener listener){
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("id", jobRequest.getId());
+        result.put("date", jobRequest.getDate());
+        result.put("address", jobRequest.getAddress());
+        result.put("userCreated", jobRequest.getUserCreated());
+        result.put("imageUrl", jobRequest.getImageUrl());
+        result.put("description", jobRequest.getDescription());
+        db.collection("jobRequests").document(jobRequest.getId()).update(result);
+        listener.OnSuccess(true);
+    }
 
 
     public interface GetJobRequestListener{
@@ -161,6 +173,10 @@ public class ModelFirebase {
 
     public interface getAllJobRequestListener {
         void OnSuccess(List<JobRequest> jobRequestList);
+    }
+
+    public interface UpdateJobRequestListener{
+        void OnSuccess(boolean result);
     }
     /****************** JobRequest handling ********************/
 

@@ -37,9 +37,10 @@ public class User {
 
     }
 
-    public User(String name,@NonNull String email,String address,boolean customer, boolean handyMan,String category, String area){
+    public User(String name,@NonNull String email,String image,String address,boolean customer, boolean handyMan,String category, String area){
         this.name = name;
         this.email = email;
+        this.image = image;
         this.address = address;
         this.customer = customer;
         this.handyMan = handyMan;

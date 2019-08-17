@@ -64,6 +64,7 @@ public class JobRequestView extends Fragment {
     private ImageView jobImage;
     private ImageView userImage;
     private ImageButton deleteJob;
+    private ImageButton editJob;
     private TextView date;
     private TextView address;
     private TextView description;
@@ -81,6 +82,7 @@ public class JobRequestView extends Fragment {
     this fragment using the provided parameters
      */
 
+    // TODO: Check if next function could be deleted.
     public static JobRequestView newInstance(String jobID) {
 
         JobRequestView fragment = new JobRequestView();
@@ -112,6 +114,7 @@ public class JobRequestView extends Fragment {
             @Override
             public void onChanged(List<Comment> commentList) {
                 // update UI
+                mCommentList = commentList;
                 adapter.setComments(commentList);
             }
         };
@@ -128,8 +131,6 @@ public class JobRequestView extends Fragment {
 
         Bundle myBundle = this.getArguments();
         jobId = getArguments().getString(JOB_ID);
-
-
 
         // TODO: this next function creates a problem of producing data = null. Need to fix that
         jobRequestViewModel.getJobRequest(jobId, new JobRequestRepository.GetJobRequestsListener() {
@@ -212,7 +213,9 @@ public class JobRequestView extends Fragment {
             adapter.setOnItemClickListener(new CommentListAdapter.OnItemClickListener() {
                 @Override
                 public void onClick(int position) {
-                    Log.d("TAG","item click: " + position);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("commentID",mCommentList.get(position).getId());
+                    ((MainActivity)getActivity()).getNavController().navigate(R.id.action_jobRequestView_to_viewCommentFragment,bundle);
                 }
             });
 
@@ -251,8 +254,21 @@ public class JobRequestView extends Fragment {
                 }
             });
 
-            //TODO: Create an edit button.
 
+            editJob = (ImageButton) view.findViewById(R.id.edit_job_request);
+            editJob.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (hasPremmison()){
+                        progressBar.setVisibility(View.VISIBLE);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("jobID",jobId);
+                        ((MainActivity)getActivity()).getNavController().navigate(R.id.action_jobRequestView_to_editJobRequestFragment,bundle);
+                    }else{
+                        Toast.makeText(getContext(),"Only the created user can do that.",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
             /************ Buttons Section ***************/
 
         }

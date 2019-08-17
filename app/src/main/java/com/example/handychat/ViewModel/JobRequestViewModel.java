@@ -1,5 +1,6 @@
 package com.example.handychat.ViewModel;
 
+
 import android.app.Application;
 
 import com.example.handychat.Models.JobRequest;
@@ -47,4 +48,9 @@ public class JobRequestViewModel extends AndroidViewModel {
     public void delete(String jobId, JobRequestRepository.JobDeletedListener listener) {
         mRepository.delete(jobId, listener);
     }
+
+    public void update(JobRequest jobRequest, ModelFirebase.UpdateJobRequestListener listener) {
+        mRepository.update(jobRequest,listener);
+    }
 }
+

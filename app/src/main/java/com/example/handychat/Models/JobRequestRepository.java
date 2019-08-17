@@ -9,10 +9,10 @@ import java.util.List;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.room.Update;
 
 public class JobRequestRepository {
     private JobRequestDao mJobRequestDao;
-    private List<JobRequest> mAllJobRequests;
     static ModelFirebase modelFirebase;
 
     public JobRequestRepository(Application application){
@@ -41,6 +41,18 @@ public class JobRequestRepository {
         });
      }
 
+    /******************* Update ***********************/
+    public void update(JobRequest jobRequest, ModelFirebase.UpdateJobRequestListener listener) {
+        modelFirebase.UpdateJobRequest(jobRequest,listener);
+        JobRequestAsyncDao.updateJob(jobRequest);
+    }
+
+    public interface UpdateJobRequestListener {
+        public void onComplete(boolean success);
+    }
+
+    /******************* Update ***********************/
+
     /******************* Delete ***********************/
     // TODO: Below solution didn't fix the problem
     /*
@@ -63,6 +75,7 @@ public class JobRequestRepository {
         Model.instance.deleteImage();
 
         // Step 5: Delete the job in the local Database
+        // TODO: Check why Job..
         JobRequestAsyncDao.deleteJob(jobId,listener);
     }
     /******************* Delete ***********************/
@@ -95,6 +108,7 @@ public class JobRequestRepository {
     public void getJobRequest(String id,final GetJobRequestsListener listener){
         JobRequestAsyncDao.getJobRequests(id,listener);
     }
+
     /******************* Get Job request ***********************/
 
     public static class JobRequestAsyncDao {
@@ -139,9 +153,21 @@ public class JobRequestRepository {
                 }
             }.execute();
         }
+
+        public static void updateJob(JobRequest jobRequest){
+            new AsyncTask<Void,Void,Void>(){
+
+                @Override
+                protected Void doInBackground(Void... Voids) {
+                    ModelSql.INSTANCE.jobRequestDao().Update(jobRequest);
+                    return null;
+                }
+            }.execute();
+        }
     }
 
     /******************* Insert ***********************/
+    // TODO: Merge next function with JobRequestAsyncDao
     private class insertAsyncTask extends AsyncTask<JobRequest,Void,Void> {
         private JobRequestDao mAsyncTaskDao;
 

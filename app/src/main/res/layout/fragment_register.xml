@@ -186,13 +186,29 @@
             android:spinnerMode="dropdown" />
 
         <!-- Save button -->
-        <Button
-            android:id="@+id/saveBtn"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:text="Save" />
+            android:background="@color/colorPrimaryWhite"
+            >
+            <Button
+                android:id="@+id/saveBtn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:background="@color/colorPrimary"
+                android:text="Save" />
+            <Button
+                android:id="@+id/addPictureBtn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:layout_marginLeft="5dp"
+                android:background="@color/colorPrimary"
+                android:text="Add picture" />
+
+        </LinearLayout>
 
         <!-- Progress bar will be shown only after saved pressed -->
         <ProgressBar

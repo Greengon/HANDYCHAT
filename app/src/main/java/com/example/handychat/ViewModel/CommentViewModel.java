@@ -47,15 +47,9 @@ public class CommentViewModel extends AndroidViewModel implements ViewModelProvi
         return mCommentList;
     }
 
-
-
-//    public void SetJobId(String jobId, LifecycleOwner lifecycleOwner, Observer<List<Comment>> observer){
-//        mCommentList.observe(lifecycleOwner,observer);
-//        mRepository.observeCommentsLiveData(jobId,lifecycleOwner,commentList ->{
-//            mCommentList.postValue(commentList);
-//        });
-//    }
-
+    public void getComment(String commentId, CommentRepository.GetCommentListener listener){
+        mRepository.getComment(commentId, listener);
+    }
 
     public void insert(Comment comment) {
         mRepository.insert(comment);

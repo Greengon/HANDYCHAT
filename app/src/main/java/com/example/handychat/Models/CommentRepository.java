@@ -55,6 +55,15 @@ public class CommentRepository {
         });
     }
 
+    /******************* Get comment ***********************/
+    public interface GetCommentListener{
+        void onComplete(Comment data);
+    }
+    public void getComment(String commentId,final GetCommentListener listener){
+        CommentAsyncDao.getComment(commentId,listener);
+    }
+    /******************* Get comment ***********************/
+
     /******************* Get all ***********************/
     public interface GetAllCommentsListener{
         void onComplete(List<Comment> data);
@@ -99,6 +108,18 @@ public class CommentRepository {
                 protected Void doInBackground(Void... voids) {
                     ModelSql.INSTANCE.commentDao().deleteAllCommentsByJob(jobId);
                     return null;
+                }
+            }.execute();
+        }
+
+        public static void getComment(String commentId, final GetCommentListener listener){
+            new AsyncTask<Void,Void,Comment>(){
+
+                @Override
+                protected Comment doInBackground(Void... voids) {
+                    Comment comment = ModelSql.INSTANCE.commentDao().getComment(commentId);
+                    listener.onComplete(comment);
+                    return comment;
                 }
             }.execute();
         }
