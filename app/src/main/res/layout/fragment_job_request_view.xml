@@ -109,7 +109,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1.75"
+            android:layout_weight="1.55"
             android:orientation="horizontal">
 
             <Button
