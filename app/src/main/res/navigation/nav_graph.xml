@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/jobRequestList">
+
     <fragment
         android:id="@+id/jobRequestList"
         android:name="com.example.handychat.Fragments.JobRequestList"
@@ -13,11 +14,13 @@
             android:id="@+id/action_jobRequestList_to_jobRequestView"
             app:destination="@id/jobRequestView" />
     </fragment>
+
     <fragment
-        android:id="@+id/newJobRequestFragment"
+        android:id="@+id/imageButtonAdd"
         android:name="com.example.handychat.Fragments.NewJobRequestFragment"
         android:label="fragment_new_job_request"
         tools:layout="@layout/fragment_new_job_request" />
+
     <fragment
         android:id="@+id/jobRequestView"
         android:name="com.example.handychat.Fragments.JobRequestView"
@@ -36,20 +39,26 @@
             android:id="@+id/action_jobRequestView_to_editJobRequestFragment"
             app:destination="@id/editJobRequestFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/newCommentFragment"
         android:name="com.example.handychat.Fragments.NewCommentFragment"
         android:label="fragment_new_comment"
         tools:layout="@layout/fragment_new_comment" />
+
     <fragment
         android:id="@+id/viewCommentFragment"
         android:name="com.example.handychat.Fragments.ViewCommentFragment"
         android:label="fragment_view_comment"
         tools:layout="@layout/fragment_view_comment" />
+
     <fragment
         android:id="@+id/editJobRequestFragment"
         android:name="com.example.handychat.Fragments.EditJobRequestFragment"
         android:label="fragment_edit_job_request"
         tools:layout="@layout/fragment_edit_job_request" />
-    <action android:id="@+id/action_global_newJobRequestFragment" app:destination="@id/newJobRequestFragment" />
+
+    <!-- Global actions-->
+    <action android:id="@+id/action_global_imageButtonAdd" app:destination="@id/imageButtonAdd"/>
+
 </navigation>

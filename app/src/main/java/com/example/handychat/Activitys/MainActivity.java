@@ -3,7 +3,10 @@ package com.example.handychat.Activitys;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
+
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
 import com.example.handychat.R;
 
@@ -42,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
             // TODO: Create this listener for what happens when we press the gps button
         });
         addNewRequestBtn.setOnClickListener(view -> {
-            navController.navigate(R.id.action_global_newJobRequestFragment);
+            navController.navigate(R.id.action_global_imageButtonAdd);
         });
     }
 }

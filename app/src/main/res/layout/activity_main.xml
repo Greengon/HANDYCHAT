@@ -10,7 +10,7 @@
 
 
     <LinearLayout
-        android:id="@+id/main_linearlayout"
+        android:id="@+id/main_app_menu"
         android:layout_width="50dp"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -62,7 +62,7 @@
         android:id="@+id/main_divder"
         android:layout_width="3dp"
         android:layout_height="match_parent"
-        android:layout_toEndOf="@id/main_linearlayout"
+        android:layout_toEndOf="@id/main_app_menu"
         android:background="@android:color/background_dark"/>
 
     <fragment

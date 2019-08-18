@@ -1,30 +1,22 @@
 package com.example.handychat.Fragments;
 
-
 import android.os.Bundle;
-
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.JobRequest;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.JobRequestViewModel;
-
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class JobRequestList extends Fragment {
 
 
@@ -32,8 +24,7 @@ public class JobRequestList extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
     private JobRequestListAdapter adapter;
     private JobRequestViewModel viewModel;
-    List<JobRequest> mJobRequestList;
-    String userId;
+    private List<JobRequest> mJobRequestList;
 
 
     public JobRequestList() {
@@ -42,25 +33,22 @@ public class JobRequestList extends Fragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.d("TAG","JobRequestList onCreate");
         super.onCreate(savedInstanceState);
-//        userId = getArguments().getString(UID_KEY);
 
         /*
         Create a ViewModel the first time the system calls an
         Fragment onCreate() method.
-        Re-created fragments recevie the viewModel instance created
+        Re-created fragments receive the viewModel instance created
         by the first fragment.
          */
         viewModel = ViewModelProviders.of(this).get(JobRequestViewModel.class);
 
         // Create the observer which updates the UI
-        final Observer<List<JobRequest>> jobRequestListObserver = new Observer<List<JobRequest>>() {
-            @Override
-            public void onChanged(List<JobRequest> jobRequestList) {
-                // update UI
-                mJobRequestList = jobRequestList;
-                adapter.setJobRequests(jobRequestList);
-        }
+        final Observer<List<JobRequest>> jobRequestListObserver = jobRequestList ->  {
+            // update UI
+            mJobRequestList = jobRequestList;
+            adapter.setJobRequests(jobRequestList);
         };
 
         viewModel.getmAllJobRequests().observe(this, jobRequestListObserver);
@@ -70,6 +58,7 @@ public class JobRequestList extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("TAG","JobRequestList onCreateView");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_job_request_list, container, false);
 
@@ -91,26 +80,16 @@ public class JobRequestList extends Fragment {
 
         // Specify an adapter
         adapter = new JobRequestListAdapter(mJobRequestList);
-        adapter.setOnItemClickListener(new JobRequestListAdapter.OnItemClickListener() {
-            @Override
-            public void onClick(int position) {
-                Log.d("TAG","item click: " + position);
-                // Lets move the the fragment of the selected request
-                Bundle bundle = new Bundle();
-                bundle.putString("jobID",mJobRequestList.get(position).getId());
-                ((MainActivity)getActivity()).getNavController().navigate(R.id.action_jobRequestList_to_jobRequestView,bundle);
-            }
+        adapter.setOnItemClickListener(position ->  {
+            Log.d("TAG","item click: " + position);
+            // Lets move the the fragment of the selected request
+            Bundle bundle = new Bundle();
+            bundle.putString("jobID",mJobRequestList.get(position).getId());
+            Navigation.findNavController(getView()).navigate(R.id.action_jobRequestList_to_jobRequestView,bundle);
         });
 
         jobRequestList.setAdapter(adapter);
 
         return view;
     }
-
-
-    public static JobRequestList newInstance() {
-        JobRequestList fragment = new JobRequestList();
-        return fragment;
-    }
-
 }
