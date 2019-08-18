@@ -186,6 +186,7 @@ public class ModelFirebase {
                 .set(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                Log.d("TAG","Model fire base addComment returned success");
                 listener.onComplete(task.isSuccessful());
             }
         });

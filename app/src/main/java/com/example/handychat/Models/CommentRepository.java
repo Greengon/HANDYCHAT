@@ -27,6 +27,7 @@ public class CommentRepository {
 
 
     public void getCommentFormRemote(String jobId) {
+        Log.d("TAG","Fetching comments form firebase");
         modelFirebase.getAllCommentOfJob(jobId, new ModelFirebase.GetAllCommentListener() {
             @Override
             public void OnSuccess(String jobId, List<Comment> commentList) {
@@ -151,41 +152,5 @@ public class CommentRepository {
         }
     /******************* Delete ***********************/
 
-//    public class CommentListData extends MutableLiveData<List<Comment>> {
-//        private String mJobId;
-//
-//        @Override
-//        protected void onActive() {
-//            super.onActive();
-//            GetCurrentList(mJobId);
-//        }
-//
-//        @Override
-//        protected void onInactive() {
-//            super.onInactive();
-////            modelFirebase.cancelGetAllComments();
-//            Log.d("TAG","cancelGetAllComments");
-//
-//        }
-//
-//        public CommentListData(String jobId){
-//            super();
-//            mJobId = jobId;
-//            GetCurrentList(mJobId);
-//        }
-//
-//        private void GetCurrentList(String jobId){
-//            modelFirebase.getAllCommentOfJob(jobId,new ModelFirebase.GetAllCommentListener() {
-//                @Override
-//                public void OnSuccess(String jobId,List<Comment> commentList) {
-//                    Log.d("TAG","FB data = " + commentList.size());
-//                    // SetValue invokes onChange in the observers listeners
-//                    setValue(commentList);
-//                    for(Comment comment: commentList){
-//                        insert(comment);
-//                    }
-//                }
-//            });
-//        }
-//    }
-    }
+
+}

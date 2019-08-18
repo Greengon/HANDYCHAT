@@ -52,5 +52,6 @@ public class JobRequestViewModel extends AndroidViewModel {
     public void update(JobRequest jobRequest, ModelFirebase.UpdateJobRequestListener listener) {
         mRepository.update(jobRequest,listener);
     }
+
 }
 

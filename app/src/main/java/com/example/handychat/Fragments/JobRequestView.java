@@ -54,6 +54,7 @@ public class JobRequestView extends Fragment {
     private CommentViewModel commentViewModel;
     private CommentListAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+    private NavController navController;
     private ListCommentListener listCommentListener;
     private UserPressedListener userPressedListener;
 
@@ -75,23 +76,6 @@ public class JobRequestView extends Fragment {
 
     public JobRequestView() {
         // Required empty public constructor
-    }
-
-    /*
-    Use this factory method to create a new instance of
-    this fragment using the provided parameters
-     */
-
-    // TODO: Check if next function could be deleted.
-    public static JobRequestView newInstance(String jobID) {
-
-        JobRequestView fragment = new JobRequestView();
-
-        Bundle args = new Bundle();
-
-        args.putString(JOB_ID, jobID);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -121,6 +105,8 @@ public class JobRequestView extends Fragment {
 
         // Observe the LiveData, pass this fragment as the LifecycleOwner and the observer
         commentViewModel.getmCommentList().observe(this,commentListObserver);
+
+        navController = ((MainActivity)getActivity()).getNavController();
     }
 
     @Override
@@ -132,7 +118,6 @@ public class JobRequestView extends Fragment {
         Bundle myBundle = this.getArguments();
         jobId = getArguments().getString(JOB_ID);
 
-        // TODO: this next function creates a problem of producing data = null. Need to fix that
         jobRequestViewModel.getJobRequest(jobId, new JobRequestRepository.GetJobRequestsListener() {
             @Override
             public void onComplete(JobRequest data) {
@@ -150,48 +135,9 @@ public class JobRequestView extends Fragment {
             address = (TextView) view.findViewById(R.id.job_view_address_value);
             description = (TextView) view.findViewById(R.id.job_view_description_value);
 
-            /****** Get job request image ********/
-            if (mJobRequest.getImageUrl() != null){
-                Picasso.get().setIndicatorsEnabled(true);
-                Target target = new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        jobImage.setImageBitmap(bitmap);
-                    }
 
-                    @Override
-                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
 
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                    }
-                };
-                Picasso.get().load(mJobRequest.getImageUrl()).into(target);
-            }
-            userImage.setImageResource(R.drawable.avatar);
-            date.setText(mJobRequest.date);
-            address.setText("Address: " + mJobRequest.address);
-            description.setText(mJobRequest.description);
-
-            if (mJobRequest.getImageUrl() != null && mJobRequest.getImageUrl().isEmpty() && mJobRequest.getImageUrl() != ""){
-                Model.instance.loadImage(mJobRequest.getImageUrl(), new Model.GetImageListener() {
-                    @Override
-                    public void onSuccess(Bitmap image) {
-                        jobImage.setImageBitmap(image);
-                    }
-
-                    @Override
-                    public void onFail() {
-                        Log.d("TAG","failed to get image");
-                    }
-                });
-            }
-
-            /************ Job request Section ***************/
-
+            createView();
             /************ Comments Section ***************/
 
             // Lets create a reference to the recycleView
@@ -215,7 +161,7 @@ public class JobRequestView extends Fragment {
                 public void onClick(int position) {
                     Bundle bundle = new Bundle();
                     bundle.putString("commentID",mCommentList.get(position).getId());
-                    ((MainActivity)getActivity()).getNavController().navigate(R.id.action_jobRequestView_to_viewCommentFragment,bundle);
+                    navController.navigate(R.id.action_jobRequestView_to_viewCommentFragment,bundle);
                 }
             });
 
@@ -231,11 +177,10 @@ public class JobRequestView extends Fragment {
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
                     bundle.putString("jobID",jobId);
-                    ((MainActivity)getActivity()).getNavController().navigate(R.id.action_jobRequestView_to_newCommentFragment,bundle);
+                    navController.navigate(R.id.action_jobRequestView_to_newCommentFragment,bundle);
                 }
             });
 
-            // TODO: Fix async problem here, if you go back faster to list fragment it will reinsert
             deleteJob = (ImageButton) view.findViewById(R.id.delete_job_request);
             deleteJob.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -245,7 +190,7 @@ public class JobRequestView extends Fragment {
                         jobRequestViewModel.delete(jobId, new JobRequestRepository.JobDeletedListener() {
                             @Override
                             public void onComplete() {
-                                ((MainActivity)getActivity()).getNavController().popBackStack();
+                                navController.popBackStack();
                             }
                         });
                     }else{
@@ -263,7 +208,7 @@ public class JobRequestView extends Fragment {
                         progressBar.setVisibility(View.VISIBLE);
                         Bundle bundle = new Bundle();
                         bundle.putString("jobID",jobId);
-                        ((MainActivity)getActivity()).getNavController().navigate(R.id.action_jobRequestView_to_editJobRequestFragment,bundle);
+                        navController.navigate(R.id.action_jobRequestView_to_editJobRequestFragment,bundle);
                     }else{
                         Toast.makeText(getContext(),"Only the created user can do that.",Toast.LENGTH_SHORT).show();
                     }
@@ -275,6 +220,54 @@ public class JobRequestView extends Fragment {
         return view;
     }
 
+    private void exitView() {
+    }
+
+    private void createView() {
+        /****** Get job request image ********/
+        if (mJobRequest.getImageUrl() != null){
+            Picasso.get().setIndicatorsEnabled(true);
+            Target target = new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    jobImage.setImageBitmap(bitmap);
+                }
+
+                @Override
+                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                }
+            };
+            Picasso.get().load(mJobRequest.getImageUrl()).into(target);
+        }
+        userImage.setImageResource(R.drawable.avatar);
+        date.setText(mJobRequest.date);
+        address.setText("Address: " + mJobRequest.address);
+        description.setText(mJobRequest.description);
+
+        if (mJobRequest.getImageUrl() != null && mJobRequest.getImageUrl().isEmpty() && mJobRequest.getImageUrl() != ""){
+            Model.instance.loadImage(mJobRequest.getImageUrl(), new Model.GetImageListener() {
+                @Override
+                public void onSuccess(Bitmap image) {
+                    jobImage.setImageBitmap(image);
+                }
+
+                @Override
+                public void onFail() {
+                    Log.d("TAG","failed to get image");
+                }
+            });
+        }
+
+        /************ Job request Section ***************/
+
+    }
+
     private boolean hasPremmison() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user.getEmail().equals(mJobRequest.getUserCreated())){
@@ -283,6 +276,21 @@ public class JobRequestView extends Fragment {
         return false;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("TAG","JobRequestView onResume");
+        jobRequestViewModel.getJobRequest(jobId, new JobRequestRepository.GetJobRequestsListener() {
+            @Override
+            public void onComplete(JobRequest data) {
+                mJobRequest = data;
+            }
+        });
+
+        commentViewModel.getmCommentList();
+
+        createView();
+    }
 
     public interface ListCommentListener{
         void OnCommentSelected(String id);

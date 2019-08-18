@@ -21,11 +21,12 @@ public class JobRequestRepository {
         modelFirebase = new ModelFirebase();
     }
 
-    public void GetRemoteJobRequestList(){
+    public void GetRemoteJobRequestList(GetAllJobRequestsListener listener){
         modelFirebase.getAllJobRequest(new ModelFirebase.getAllJobRequestListener() {
             @Override
             public void OnSuccess(List<JobRequest> jobRequestList) {
                 if(jobRequestList != null){
+                    listener.onComplete(jobRequestList);
                     for (JobRequest jobRequest: jobRequestList){
                         if (!jobRequest.getId().isEmpty()){
                             insert(jobRequest, new AddJobRequestListener() {
@@ -95,9 +96,12 @@ public class JobRequestRepository {
     }
 
     public void getAllJobRequests(final GetAllJobRequestsListener listener){
-        GetRemoteJobRequestList();
-        JobRequestAsyncDao.getAllJobRequests(listener);
+        GetRemoteJobRequestList(listener);
+        // We can use the next method if we check before for internet connection else
+        // it will create an async problem.
+//        JobRequestAsyncDao.getAllJobRequests(listener);
     }
+
     /******************* Get all ***********************/
 
     /******************* Get Job request ***********************/
@@ -183,43 +187,4 @@ public class JobRequestRepository {
     }
     /******************* Insert ***********************/
 
-//    public class JobRequestListData extends MutableLiveData<List<JobRequest>> {
-//        @Override
-//        protected void onActive() {
-//            super.onActive();
-//            GetCurrentList();
-//        }
-//
-//        @Override
-//        protected void onInactive() {
-//            super.onInactive();
-////            modelFirebase.cancelGetAllJobRequests();
-//            Log.d("TAG","cancelGetAllJobRequests");
-//
-//        }
-//
-//        public JobRequestListData(){
-//            super();
-////            setValue(new LinkedList<JobRequest>());
-//        }
-//
-//        private void GetCurrentList(){
-//            modelFirebase.getAllJobRequest(new ModelFirebase.getAllJobRequestListener() {
-//                @Override
-//                public void OnSuccess(List<JobRequest> jobRequestList) {
-//                    Log.d("TAG","FB data = " + jobRequestList.size());
-//                    // SetValue invokes onChange in the observers listeners
-//                    setValue(jobRequestList);
-//                    for(JobRequest jobRequest: jobRequestList){
-//                        insert(jobRequest, new AddJobRequestListener() {
-//                            @Override
-//                            public void onComplete(boolean success) {
-//                                Log.d("TAG","New FB data with id: " + jobRequest.getId());
-//                            }
-//                        });
-//                    }
-//                }
-//            });
-//        }
-//    }
 }

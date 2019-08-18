@@ -11,6 +11,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
 
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -48,6 +49,8 @@ import static android.app.Activity.RESULT_OK;
  */
 public class NewJobRequestFragment extends Fragment {
 
+    NavController navController;
+
     private View view;
     private ImageView imageView;
     private EditText addressEditText;
@@ -84,6 +87,7 @@ public class NewJobRequestFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mJobRequestViewModel = ViewModelProviders.of(this).get(JobRequestViewModel.class);
+        navController = ((MainActivity)getActivity()).getNavController();
     }
 
     @Override
@@ -152,7 +156,7 @@ public class NewJobRequestFragment extends Fragment {
                         progressBar.setVisibility(View.INVISIBLE);
 
                         // Close fragment and navigate back to list
-                        ((MainActivity)getActivity()).getNavController().popBackStack();
+                        navController.popBackStack();
 
                     }
                 });

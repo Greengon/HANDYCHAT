@@ -57,7 +57,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         }
 
         public void bind(Comment comment) {
-            userName.setText("User name needs to come here");
+            userName.setText(comment.getUserCreated());
             commentText.setText(comment.comment);
             userImage.setImageResource(R.drawable.avatar);
             commentProgressBar.setVisibility(View.INVISIBLE);
