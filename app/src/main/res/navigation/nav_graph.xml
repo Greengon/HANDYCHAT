@@ -10,9 +10,6 @@
         android:label="fragment_job_request_list"
         tools:layout="@layout/fragment_job_request_list" >
         <action
-            android:id="@+id/action_jobRequestList_to_newJobRequestFragment"
-            app:destination="@id/newJobRequestFragment" />
-        <action
             android:id="@+id/action_jobRequestList_to_jobRequestView"
             app:destination="@id/jobRequestView" />
     </fragment>
@@ -54,4 +51,5 @@
         android:name="com.example.handychat.Fragments.EditJobRequestFragment"
         android:label="fragment_edit_job_request"
         tools:layout="@layout/fragment_edit_job_request" />
+    <action android:id="@+id/action_global_newJobRequestFragment" app:destination="@id/newJobRequestFragment" />
 </navigation>

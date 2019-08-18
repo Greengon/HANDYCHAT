@@ -33,13 +33,12 @@ public class MainActivity extends AppCompatActivity {
 
         navController = Navigation.findNavController(this,R.id.nav_host_fragment);
 
-        // TODO: fix the exception that happens when someone press on add button out of
         addNewRequestBtn = (ImageButton) findViewById(R.id.imageButtonAdd);
         navController = Navigation.findNavController(this,R.id.nav_host_fragment);
         addNewRequestBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getNavController().navigate(R.id.action_jobRequestList_to_newJobRequestFragment);
+                getNavController().navigate(R.id.action_global_newJobRequestFragment);
             }
         });
 
