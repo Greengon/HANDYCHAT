@@ -2,20 +2,21 @@ package com.example.handychat.Fragments;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.example.handychat.Models.JobRequest;
 import com.example.handychat.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.io.File;
 import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -69,25 +70,23 @@ public class JobRequestListAdapter extends RecyclerView.Adapter<JobRequestListAd
         TextView dateText;
         TextView descriptionText;
         ProgressBar jobImageProgressBar;
+        Target target;
 
         public jobRequestViewHolder(@NonNull View itemView,final OnItemClickListener listener) {
             super(itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null){
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION){
-                            listener.onClick(position);
-                        }
+            itemView.setOnClickListener(view -> {
+                if (listener != null){
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION){
+                        listener.onClick(position);
                     }
                 }
             });
-            jobImage = (ImageView) itemView.findViewById(R.id.jobImageInRow);
-            userImage = (ImageView) itemView.findViewById(R.id.userImageInRow);
-            dateText = (TextView) itemView.findViewById(R.id.dateTextViewInRow);
-            descriptionText = (TextView) itemView.findViewById(R.id.descriptionTextViewInRow);
-            jobImageProgressBar = (ProgressBar) itemView.findViewById(R.id.jobImageProgressBar);
+            jobImage = itemView.findViewById(R.id.jobImageInRow);
+            userImage = itemView.findViewById(R.id.userImageInRow);
+            dateText = itemView.findViewById(R.id.dateTextViewInRow);
+            descriptionText = itemView.findViewById(R.id.descriptionTextViewInRow);
+            jobImageProgressBar = itemView.findViewById(R.id.jobImageProgressBar);
         }
 
         // Binding all attributes to the view
@@ -98,7 +97,7 @@ public class JobRequestListAdapter extends RecyclerView.Adapter<JobRequestListAd
             /****** Get job request image ********/
             if (jobRequest.getImageUrl() != null){
                 Picasso.get().setIndicatorsEnabled(true);
-                Target target = new Target() {
+                target = new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                         jobImage.setImageBitmap(bitmap);
@@ -115,13 +114,24 @@ public class JobRequestListAdapter extends RecyclerView.Adapter<JobRequestListAd
                         jobImageProgressBar.setVisibility(View.VISIBLE);
                     }
                 };
-                Picasso.get().load(jobRequest.getImageUrl()).into(target);
+                // Step 1: Try to look for the image locally
+                File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                String name = URLUtil.guessFileName(jobRequest.getImageUrl(),null,null);
+                String path = folder.getAbsolutePath() + "/" + name;
+                File localImage = new File(path);
+                if (localImage.exists()){ // Check if we can find our image in the local storage
+                    Picasso.get().load(localImage).into(target);
+                } else {
+                    // Step 2: Try to look for the image on FireBase
+                    Picasso.get().load(jobRequest.getImageUrl()).into(target);
+                }
             }else{
                 jobImageProgressBar.setVisibility(View.INVISIBLE);
             }
             /****** Get job request image ********/
 
             /****** Get user image ********/
+            // TODO: Here we should load the user image, next line is only temporary
             userImage.setImageResource(R.drawable.avatar);
             /****** Get user image ********/
         }

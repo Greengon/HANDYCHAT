@@ -19,13 +19,10 @@ import java.util.List;
 
 public class JobRequestList extends Fragment {
 
-
     private RecyclerView jobRequestList;
     private RecyclerView.LayoutManager layoutManager;
     private JobRequestListAdapter adapter;
     private JobRequestViewModel viewModel;
-    private List<JobRequest> mJobRequestList;
-
 
     public JobRequestList() {
         // Required empty public constructor
@@ -46,11 +43,12 @@ public class JobRequestList extends Fragment {
 
         // Create the observer which updates the UI
         final Observer<List<JobRequest>> jobRequestListObserver = jobRequestList ->  {
-            // update UI
-            mJobRequestList = jobRequestList;
+            // Update UI
+            Log.d("TAG","LiveData of job list activated on change");
             adapter.setJobRequests(jobRequestList);
         };
 
+        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         viewModel.getmAllJobRequests().observe(this, jobRequestListObserver);
 
     }
@@ -63,7 +61,7 @@ public class JobRequestList extends Fragment {
         View view = inflater.inflate(R.layout.fragment_job_request_list, container, false);
 
         // Lets create a reference to the recycleView
-        jobRequestList = (RecyclerView) view.findViewById(R.id.job_request_list);
+        jobRequestList = view.findViewById(R.id.job_request_list);
 
         /*
         use the next setting to improve performance if you know that changes
@@ -75,16 +73,13 @@ public class JobRequestList extends Fragment {
         layoutManager = new LinearLayoutManager(getContext());
         jobRequestList.setLayoutManager(layoutManager);
 
-        // Create first instance of all jobRequest
-        mJobRequestList = viewModel.getmAllJobRequests().getValue();
-
         // Specify an adapter
-        adapter = new JobRequestListAdapter(mJobRequestList);
+        adapter = new JobRequestListAdapter(viewModel.getmAllJobRequests().getValue());
         adapter.setOnItemClickListener(position ->  {
             Log.d("TAG","item click: " + position);
             // Lets move the the fragment of the selected request
             Bundle bundle = new Bundle();
-            bundle.putString("jobID",mJobRequestList.get(position).getId());
+            bundle.putString("jobID",viewModel.getmAllJobRequests().getValue().get(position).getId());
             Navigation.findNavController(getView()).navigate(R.id.action_jobRequestList_to_jobRequestView,bundle);
         });
 
