@@ -45,13 +45,10 @@ public class ModelFirebase {
 
 
     /****************** User handling ********************/
-    public void addUser(User user,final Model.AddUserListener listener){
+    public void addUser(User user){
         db.collection("users").document(user.email)
-                .set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                listener.onComplete(task.isSuccessful());
-            }
+                .set(user).addOnCompleteListener(task -> {
+            Log.d("TAG","Finish adding user to the database");
         });
     }
     /****************** User handling ********************/
@@ -300,7 +297,7 @@ public class ModelFirebase {
 
     /******** Image loading *********/
 
-    public void getImage(String url, final Model.GetImageListener listener){
+    public void getImage(String url, final GetImageFromRemoteListener listener){
         // Create a reference to the image
         StorageReference httpReference = storage.getReferenceFromUrl(url);
         final long ONE_MEGABYTE = 1024 * 1024;
@@ -316,6 +313,10 @@ public class ModelFirebase {
                 Log.d("TAG",e.getMessage());
             }
         });
+    }
+
+    public interface GetImageFromRemoteListener{
+        void onSuccess(Bitmap image);
     }
     /******** Image loading *********/
 

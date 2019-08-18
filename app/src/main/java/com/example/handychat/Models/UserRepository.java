@@ -8,20 +8,17 @@ import java.util.List;
 
 public class UserRepository {
     private UserDao mUserDao;
-    private List<User> mAllUsers;
+    static ModelFirebase modelFirebase;
 
     public UserRepository(Application application){
         AppLocalDbRepository db = ModelSql.getDatabase(application);
         mUserDao = db.userDao();
-        mAllUsers = mUserDao.getAllUsers();
-    }
-
-    public List<User> getAllUsers(){
-        return mAllUsers;
+        modelFirebase = new ModelFirebase();
     }
 
     public void insert(User user){
         new insertAsyncTask(mUserDao).execute(user);
+        modelFirebase.addUser(user);
     }
 
     private class insertAsyncTask extends AsyncTask<User,Void,Void> {

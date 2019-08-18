@@ -9,6 +9,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -27,6 +28,7 @@ import com.example.handychat.Activitys.SignInActivity;
 import com.example.handychat.Models.Model;
 import com.example.handychat.Models.User;
 import com.example.handychat.R;
+import com.example.handychat.ViewModel.UserViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -41,6 +43,8 @@ import java.util.concurrent.Executor;
  */
 public class RegisterFragment extends Fragment {
     private static int RESULT_LOAD_IMAGE = 1;
+
+    UserViewModel viewModel;
 
     // For image adding
     Bitmap imageBitmap;
@@ -78,6 +82,7 @@ public class RegisterFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+        viewModel = ViewModelProviders.of(this).get(UserViewModel.class);
     }
 
     @Override
@@ -192,12 +197,7 @@ public class RegisterFragment extends Fragment {
                                     mCategoriesSpinner.getSelectedItem().toString(),
                                     mAreasSpinner.getSelectedItem().toString()
                                     );
-                            Model.instance.addUser(userObject, new Model.AddUserListener() {
-                                @Override
-                                public void onComplete(boolean success) {
-                                    progressBar.setVisibility(View.GONE);
-                                }
-                            });
+                            viewModel.addUser(userObject);
                             FirebaseUser user = mAuth.getCurrentUser();
                             ((SignInActivity)getActivity()).getNavController().popBackStack();
                         } else{

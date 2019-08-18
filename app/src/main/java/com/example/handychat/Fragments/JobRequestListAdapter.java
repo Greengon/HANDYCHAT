@@ -98,31 +98,28 @@ public class JobRequestListAdapter extends RecyclerView.Adapter<JobRequestListAd
             /****** Get job request image ********/
             if (jobRequest.getImageUrl() != null){
                 Picasso.get().setIndicatorsEnabled(true);
-                target = new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        jobImage.setImageBitmap(bitmap);
-                        jobImageProgressBar.setVisibility(View.INVISIBLE);
-                    }
+                Model.loadImage(jobRequest.getImageUrl(), imageFile -> {
+                    // We will prepare a Target object for Picasso
+                    target = new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            jobImage.setImageBitmap(bitmap);
+                            jobImageProgressBar.setVisibility(View.INVISIBLE);
+                        }
 
-                    @Override
-                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                        jobImageProgressBar.setVisibility(View.INVISIBLE);
-                    }
+                        @Override
+                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                            jobImageProgressBar.setVisibility(View.INVISIBLE);
+                        }
 
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-                        jobImageProgressBar.setVisibility(View.VISIBLE);
-                    }
-                };
-                // Step 1: Try to look for the image locally
-                File localImage = Model.getImageFileRefrenceForLocalStorageLoading(jobRequest.getImageUrl());
-                if (localImage != null){ // Model will return null if file doesn't exists
-                    Picasso.get().load(localImage).into(target);
-                } else {
-                    // Step 2: Try to look for the image on FireBase
-                    Picasso.get().load(jobRequest.getImageUrl()).into(target);
-                }
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+                            jobImageProgressBar.setVisibility(View.VISIBLE);
+                        }
+                    };
+                    // Load the image with Picasso
+                    Picasso.get().load(imageFile).into(target);
+                });
             }else{
                 jobImageProgressBar.setVisibility(View.INVISIBLE);
             }

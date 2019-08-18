@@ -72,6 +72,7 @@ public class JobRequestView extends Fragment {
     private RecyclerView commentList;
     private ProgressBar progressBar;
     private Button addCommentBtn;
+    private Target target;
 
 
     public JobRequestView() {
@@ -185,7 +186,7 @@ public class JobRequestView extends Fragment {
             deleteJob.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (hasPremmison()){
+                    if (hasPermission()){
                         progressBar.setVisibility(View.VISIBLE);
                         jobRequestViewModel.delete(jobId, new JobRequestRepository.JobDeletedListener() {
                             @Override
@@ -204,7 +205,7 @@ public class JobRequestView extends Fragment {
             editJob.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (hasPremmison()){
+                    if (hasPermission()){
                         progressBar.setVisibility(View.VISIBLE);
                         Bundle bundle = new Bundle();
                         bundle.putString("jobID",jobId);
@@ -227,44 +228,36 @@ public class JobRequestView extends Fragment {
         /****** Get job request image ********/
         if (mJobRequest.getImageUrl() != null){
             Picasso.get().setIndicatorsEnabled(true);
-            Target target = new Target() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    jobImage.setImageBitmap(bitmap);
-                }
+            Model.loadImage(mJobRequest.getImageUrl(), imageFile -> {
+                target = new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        jobImage.setImageBitmap(bitmap);
+                    }
 
-                @Override
-                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                    @Override
+                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
 
-                }
+                    }
 
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
 
-                }
-            };
-            Picasso.get().load(mJobRequest.getImageUrl()).into(target);
+                    }
+                };
+                Picasso.get().load(imageFile).into(target);
+            });
         }
         userImage.setImageResource(R.drawable.avatar);
         date.setText(mJobRequest.date);
         address.setText("Address: " + mJobRequest.address);
         description.setText(mJobRequest.description);
 
-        if (mJobRequest.getImageUrl() != null && mJobRequest.getImageUrl().isEmpty() && mJobRequest.getImageUrl() != ""){
-            Model.instance.loadImage(mJobRequest.getImageUrl(), new Model.GetImageListener() {
-                @Override
-                public void onSuccess(Bitmap image) {
-                    jobImage.setImageBitmap(image);
-                }
-
-            });
-        }
-
         /************ Job request Section ***************/
 
     }
 
-    private boolean hasPremmison() {
+    private boolean hasPermission() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user.getEmail().equals(mJobRequest.getUserCreated())){
             return true;
