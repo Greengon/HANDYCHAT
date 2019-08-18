@@ -26,9 +26,9 @@ public class MainActivity extends AppCompatActivity {
         navController = Navigation.findNavController(this,R.id.nav_host_fragment);
 
         // Lets create a reference to all the bar's button
-        searchBtn = findViewById(R.id.imageButtonAdd);
-        userBtn = findViewById(R.id.imageButtonAdd);
-        gpsBtn = findViewById(R.id.imageButtonAdd);
+        searchBtn = findViewById(R.id.imageButtonSearch);
+        userBtn = findViewById(R.id.imageButtonUser);
+        gpsBtn = findViewById(R.id.imageButtonGps);
         addNewRequestBtn = findViewById(R.id.imageButtonAdd);
 
         // Lets now set on click listener on each of them
