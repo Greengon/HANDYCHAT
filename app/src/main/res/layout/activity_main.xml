@@ -22,7 +22,6 @@
             android:adjustViewBounds="true"
             android:layout_gravity="center"
             android:layout_marginTop="25dp"
-            android:onClick="userPressedMainActivity"
             android:background="@color/common_google_signin_btn_text_dark_default"
             android:scaleType="center"
             app:srcCompat="@drawable/searchimagebtn" />
@@ -34,7 +33,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
             android:background="@color/common_google_signin_btn_text_dark_default"
-            android:onClick="userPressedMainActivity"
             android:layout_gravity="center"
             android:scaleType="center"
             app:srcCompat="@drawable/userimagebtn" />
@@ -45,7 +43,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
             android:layout_gravity="center"
-            android:onClick="userPressedMainActivity"
             android:background="@color/common_google_signin_btn_text_dark_default"
             android:scaleType="center"
             app:srcCompat="@drawable/gpsimagebtn" />
@@ -56,7 +53,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
             android:layout_gravity="center"
-            android:onClick="userPressedMainActivity"
             android:background="@color/common_google_signin_btn_text_dark_default"
             android:scaleType="center"
             app:srcCompat="@android:drawable/ic_input_add" />

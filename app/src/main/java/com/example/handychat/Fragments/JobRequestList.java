@@ -1,35 +1,25 @@
 package com.example.handychat.Fragments;
 
 
-import android.content.Context;
 import android.os.Bundle;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.JobRequest;
-import com.example.handychat.Models.Model;
-import com.example.handychat.MyApplication;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.JobRequestViewModel;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -40,7 +30,7 @@ public class JobRequestList extends Fragment {
 
     private RecyclerView jobRequestList;
     private RecyclerView.LayoutManager layoutManager;
-    private jobRequestListAdapter adapter;
+    private JobRequestListAdapter adapter;
     private JobRequestViewModel viewModel;
     List<JobRequest> mJobRequestList;
     String userId;
@@ -100,8 +90,8 @@ public class JobRequestList extends Fragment {
         mJobRequestList = viewModel.getmAllJobRequests().getValue();
 
         // Specify an adapter
-        adapter = new jobRequestListAdapter(mJobRequestList);
-        adapter.setOnItemClickListener(new jobRequestListAdapter.OnItemClickListener() {
+        adapter = new JobRequestListAdapter(mJobRequestList);
+        adapter.setOnItemClickListener(new JobRequestListAdapter.OnItemClickListener() {
             @Override
             public void onClick(int position) {
                 Log.d("TAG","item click: " + position);

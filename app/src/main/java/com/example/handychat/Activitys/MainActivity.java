@@ -1,67 +1,48 @@
 package com.example.handychat.Activitys;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
-import android.content.Context;
-import android.media.Image;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Switch;
-import android.widget.Toast;
-
-import com.example.handychat.Fragments.JobRequestList;
-import com.example.handychat.Fragments.JobRequestView;
-import com.example.handychat.Fragments.NewCommentFragment;
-import com.example.handychat.Fragments.NewJobRequestFragment;
 import com.example.handychat.R;
-import com.example.handychat.ViewModel.JobRequestViewModel;
 
 public class MainActivity extends AppCompatActivity {
+    private ImageButton searchBtn;
+    private ImageButton userBtn;
+    private ImageButton gpsBtn;
     private ImageButton addNewRequestBtn;
     private NavController navController;
+
+    // Getters
+    public NavController getNavController() {
+        return navController;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         navController = Navigation.findNavController(this,R.id.nav_host_fragment);
 
-        addNewRequestBtn = (ImageButton) findViewById(R.id.imageButtonAdd);
-        navController = Navigation.findNavController(this,R.id.nav_host_fragment);
-        addNewRequestBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getNavController().navigate(R.id.action_global_newJobRequestFragment);
-            }
+        // Lets create a reference to all the bar's button
+        searchBtn = findViewById(R.id.imageButtonAdd);
+        userBtn = findViewById(R.id.imageButtonAdd);
+        gpsBtn = findViewById(R.id.imageButtonAdd);
+        addNewRequestBtn = findViewById(R.id.imageButtonAdd);
+
+        // Lets now set on click listener on each of them
+        searchBtn.setOnClickListener(view -> {
+            // TODO: Create this listener for what happens when we press the search button
         });
-
+        userBtn.setOnClickListener(view -> {
+            // TODO: Create this listener for what happens when we press the user button
+        });
+        gpsBtn.setOnClickListener(view -> {
+            // TODO: Create this listener for what happens when we press the gps button
+        });
+        addNewRequestBtn.setOnClickListener(view -> {
+            navController.navigate(R.id.action_global_newJobRequestFragment);
+        });
     }
-
-    public NavController getNavController() {
-        return navController;
-    }
-
-    /************************* Activity functions *******************/
-    public void userPressedMainActivity(View view) {
-        switch(view.getId()){
-            case R.id.imageButtonSearch:
-                Toast.makeText(this,"Search button was pressed.",Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.imageButtonUser:
-                Toast.makeText(this,"User button was pressed.",Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.imageButtonGps:
-                Toast.makeText(this,"GPS button was pressed.",Toast.LENGTH_SHORT).show();
-                break;
-        }
-    }
-
-    /************************* Activity functions *******************/
 }

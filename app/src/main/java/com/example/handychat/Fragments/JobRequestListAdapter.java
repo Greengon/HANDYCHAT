@@ -19,12 +19,12 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class jobRequestListAdapter extends RecyclerView.Adapter<jobRequestListAdapter.jobRequestViewHolder> {
+public class JobRequestListAdapter extends RecyclerView.Adapter<JobRequestListAdapter.jobRequestViewHolder> {
     List<JobRequest> mData;
     private OnItemClickListener mListener;
 
     // Constructor to the adapter that receive the list of objects to display
-    public jobRequestListAdapter(List<JobRequest> data){
+    public JobRequestListAdapter(List<JobRequest> data){
         mData = data;
     }
 
