@@ -3,17 +3,7 @@ package com.example.handychat.Models;
 import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ProgressBar;
-
-import com.google.common.base.Strings;
-
-import java.util.LinkedList;
 import java.util.List;
-
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 public class CommentRepository {
     private CommentDao mCommentDao;

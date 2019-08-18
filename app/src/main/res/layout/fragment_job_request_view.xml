@@ -45,6 +45,7 @@
                         android:id="@+id/job_view_date_value"
                         android:layout_width="match_parent"
                         android:layout_height="23dp"
+                        android:layout_marginLeft="10dp"
                         android:text="TextView"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -55,6 +56,7 @@
                         android:id="@+id/job_view_address_value"
                         android:layout_width="match_parent"
                         android:layout_height="19dp"
+                        android:layout_marginLeft="10dp"
                         android:text="TextView"
                         app:layout_constraintBottom_toTopOf="@+id/job_view_description_value"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -66,6 +68,7 @@
                     <TextView
                         android:id="@+id/job_view_description_value"
                         android:layout_width="match_parent"
+                        android:layout_marginLeft="10dp"
                         android:layout_height="78dp"
                         android:text="TextView"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -95,13 +98,13 @@
                                 tools:src="@tools:sample/avatars" />
                         </LinearLayout>
             </LinearLayout>
-
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/job_request_view_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/colorPrimary"
             android:layout_weight="0.75"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="397dp" />

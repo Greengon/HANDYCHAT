@@ -6,12 +6,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.example.handychat.Models.Comment;
 import com.example.handychat.R;
-
 import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,27 +35,25 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
 
         public CommentListViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null){
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION){
-                            listener.onClick(position);
-                        }
+            itemView.setOnClickListener(view -> {
+                if (listener != null){
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION){
+                        listener.onClick(position);
                     }
                 }
             });
 
-            userImage = (ImageView) itemView.findViewById(R.id.commentUserImageInRow);
-            userName = (TextView) itemView.findViewById(R.id.commentNameTextViewInRow);
-            commentText = (TextView) itemView.findViewById(R.id.commentTextView);
-            commentProgressBar = (ProgressBar) itemView.findViewById(R.id.commentImageProgressBar);
+            userImage = itemView.findViewById(R.id.commentUserImageInRow);
+            userName = itemView.findViewById(R.id.commentNameTextViewInRow);
+            commentText = itemView.findViewById(R.id.commentTextView);
+            commentProgressBar = itemView.findViewById(R.id.commentImageProgressBar);
         }
 
         public void bind(Comment comment) {
             userName.setText(comment.getUserCreated());
             commentText.setText(comment.comment);
+            // TODO: Once we will get user image, we will use Picasso here to load it
             userImage.setImageResource(R.drawable.avatar);
             commentProgressBar.setVisibility(View.INVISIBLE);
         }

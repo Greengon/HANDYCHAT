@@ -2,11 +2,6 @@ package com.example.handychat.Models;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.Toast;
-
-import com.example.handychat.Activitys.MainActivity;
-
 import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
@@ -27,7 +22,8 @@ public class ModelSql {
                 @Override
                 public void onOpen(@NonNull SupportSQLiteDatabase db) {
                     super.onOpen(db);
-//                    new PopulateDbAsync(INSTANCE).execute();
+                    // If we want our app to work with out internet this should be removed
+                    new PopulateDbAsync(INSTANCE).execute();
                 }
             };
 
@@ -46,22 +42,24 @@ public class ModelSql {
     return INSTANCE;
     }
 
-//    private static class PopulateDbAsync extends AsyncTask<Void,Void,Void> {
-//        private final JobRequestDao mJobDao;
-//        private final CommentDao mCommentDao;
-//
-//        public PopulateDbAsync(AppLocalDbRepository instance) {
-//            mJobDao = instance.jobRequestDao();
-//            mCommentDao = instance.commentDao();
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Void... voids) {
-//            mJobDao.deleteAll();
-//            mCommentDao.deleteAll();
-//            Log.d("TAG","Delete all was excuted");
-//            // What to do on open app
-//            return null;
-//        }
-//    }
+    // To delete all content and repopulate the database whenever the app is started
+    private static class PopulateDbAsync extends AsyncTask<Void,Void,Void>{
+        private JobRequestDao mJobRequestDao;
+        private UserDao mUserDao;
+        private CommentDao mCommentDao;
+
+        PopulateDbAsync(AppLocalDbRepository db){
+            mCommentDao = db.commentDao();
+            mJobRequestDao = db.jobRequestDao();
+            mUserDao = db.userDao();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mCommentDao.deleteAll();
+            mJobRequestDao.deleteAll();
+            mUserDao.deleteAll();
+            return null;
+        }
+    }
 }

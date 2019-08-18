@@ -192,7 +192,7 @@ public class EditJobRequestFragment extends Fragment {
                 progressBar.setVisibility(View.INVISIBLE);
 
                 // Close fragment and navigate back to list
-                ((MainActivity)getActivity()).getNavController().popBackStack();
+                ((MainActivity)getActivity()).getNavController().popBackStack(R.id.jobRequestView,true);
 
             }
         });
