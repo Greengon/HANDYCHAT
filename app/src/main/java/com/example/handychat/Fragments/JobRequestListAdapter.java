@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.example.handychat.Models.JobRequest;
+import com.example.handychat.Models.Model;
 import com.example.handychat.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -115,11 +116,8 @@ public class JobRequestListAdapter extends RecyclerView.Adapter<JobRequestListAd
                     }
                 };
                 // Step 1: Try to look for the image locally
-                File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-                String name = URLUtil.guessFileName(jobRequest.getImageUrl(),null,null);
-                String path = folder.getAbsolutePath() + "/" + name;
-                File localImage = new File(path);
-                if (localImage.exists()){ // Check if we can find our image in the local storage
+                File localImage = Model.getImageFileRefrenceForLocalStorageLoading(jobRequest.getImageUrl());
+                if (localImage != null){ // Model will return null if file doesn't exists
                     Picasso.get().load(localImage).into(target);
                 } else {
                     // Step 2: Try to look for the image on FireBase

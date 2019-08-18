@@ -72,10 +72,7 @@ public class JobRequestRepository {
         // Step 3: Delete the job in the remote Database
         modelFirebase.deleteJob(jobId);
 
-        // Step 4: Delete the job image in the local Database
-        Model.instance.deleteImage();
-
-        // Step 5: Delete the job in the local Database
+        // Step 4: Delete the job in the local Database
         // TODO: Check why Job..
         JobRequestAsyncDao.deleteJob(jobId,listener);
     }

@@ -43,6 +43,7 @@ public class ModelFirebase {
         storage = FirebaseStorage.getInstance();
     }
 
+
     /****************** User handling ********************/
     public void addUser(User user,final Model.AddUserListener listener){
         db.collection("users").document(user.email)
@@ -285,6 +286,7 @@ public class ModelFirebase {
         }).addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
+                // Return the result url to the viewModel
                 if (task.isSuccessful()){
                     Uri downloadUri = task.getResult();
                     listener.onComplete(downloadUri.toString());
@@ -312,7 +314,6 @@ public class ModelFirebase {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d("TAG",e.getMessage());
-                listener.onFail();
             }
         });
     }

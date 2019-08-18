@@ -257,10 +257,6 @@ public class JobRequestView extends Fragment {
                     jobImage.setImageBitmap(image);
                 }
 
-                @Override
-                public void onFail() {
-                    Log.d("TAG","failed to get image");
-                }
             });
         }
 

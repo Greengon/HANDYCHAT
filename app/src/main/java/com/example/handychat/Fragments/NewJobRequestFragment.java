@@ -162,11 +162,6 @@ public class NewJobRequestFragment extends Fragment {
                 });
 
             }
-
-            @Override
-            public void fail() {
-                Toast.makeText(getContext(),"Failed to save image",Toast.LENGTH_SHORT).show();
-            }
         });
     }
 

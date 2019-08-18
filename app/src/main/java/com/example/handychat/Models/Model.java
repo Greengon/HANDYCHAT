@@ -7,9 +7,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.webkit.URLUtil;
-
 import com.example.handychat.MyApplication;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,12 +15,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.LinkedList;
-import java.util.List;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
+/*
+Model class is responsible only on image saving and loading
+ */
 public class Model {
     final public static Model instance = new Model();
     static ModelSql modelSql;
@@ -34,7 +30,7 @@ public class Model {
         modelFirebase = new ModelFirebase();
     }
 
-
+    // TODO: Move the next responsebailty to user repository
     /******** User handling **********/
     public interface AddUserListener{
         void onComplete(boolean success);
@@ -49,26 +45,18 @@ public class Model {
     /******** Image saving *********/
     public interface SaveImageListener{
         void onComplete(String url);
-        void fail();
     }
 
-    public void saveImage(final Bitmap imageBitmap, final SaveImageListener listener){
-        // This function is divided to three steps.
+    public void saveImage(final Bitmap imageBitmap, final SaveImageListener viewListener){
+        // This function is divided to two steps.
         // Step 1: save the image remotely
-        modelFirebase.saveImage(imageBitmap, new SaveImageListener() {
-            @Override
-            public void onComplete(String url) {
-                // Step 2: saving the file locally
-                String localName = getLocalImageFileName(url);
-                Log.d("TAG","cache image:" + localName);
-                saveImageToFile(imageBitmap, localName); // Synchronously save image locally
-                listener.onComplete(url);
-            }
-
-            @Override
-            public void fail() {
-                listener.fail();
-            }
+        modelFirebase.saveImage(imageBitmap, url ->  {
+            // Step 2: saving the file locally
+            String localName = getLocalImageFileName(url);
+            saveImageToFile(imageBitmap, localName); // Synchronously save image locally
+            Log.d("TAG","Cached image:" + localName);
+            // Return the result url to the view to save for in imageUrl field
+            viewListener.onComplete(url);
         });
     }
 
@@ -87,7 +75,11 @@ public class Model {
             imageBitmap.compress(Bitmap.CompressFormat.JPEG,100, out);
             out.close();
 
-            addPictureToGallery(imageFile);
+            // Add the picture to the gallery so we don't need to manage the cache size
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            Uri contentUri = Uri.fromFile(imageFile);
+            mediaScanIntent.setData(contentUri);
+            MyApplication.getContext().sendBroadcast(mediaScanIntent);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -96,18 +88,11 @@ public class Model {
         }
     }
 
-    private void addPictureToGallery(File imageFile) {
-        // Add the picture to the gallery so we don't need to manage the cache size
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri contentUri = Uri.fromFile(imageFile);
-        mediaScanIntent.setData(contentUri);
-        MyApplication.getContext().sendBroadcast(mediaScanIntent);
-    }
-
     /******** Image saving *********/
 
     /******** Image loading *********/
 
+    // TODO: Fix next function, 3 function which does basicly the same
     public void loadImage(final String url, final GetImageListener listener){
         // We divide this function to 3 steps
         // Step 1: Try to find the image on the device, else download it.
@@ -124,11 +109,6 @@ public class Model {
 
                     // Step 3: return the image using the listener
                     listener.onSuccess(image);
-                }
-
-                @Override
-                public void onFail() {
-                    listener.onFail();
                 }
             });
         }else{
@@ -154,19 +134,26 @@ public class Model {
 
     public interface GetImageListener {
         void onSuccess(Bitmap image);
-        void onFail();
     }
 
+    public static File getImageFileRefrenceForLocalStorageLoading(String imageUrl) {
+        File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        String name = URLUtil.guessFileName(imageUrl,null,null);
+        String path = folder.getAbsolutePath() + "/" + name;
+        File imageFile = new File(path);
+        if (imageFile.exists()){
+            return imageFile;
+        } else {
+            return null;
+        }
+    }
     /******** Image loading *********/
 
-    /******** Image deleting *********/
-    // TODO: Complete image deleting if there is time
-    public void deleteImage() {
-    }
-    /******** Image deleting *********/
 
+    /******** Helping function *********/
     private String getLocalImageFileName(String url) {
         String name = URLUtil.guessFileName(url,null,null);
         return name;
     }
+    /******** Helping function *********/
 }

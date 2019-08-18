@@ -162,10 +162,6 @@ public class EditJobRequestFragment extends Fragment {
                     resultUrl = url;
                     saveNewJobInDB();
                 }
-
-                @Override
-                public void fail() {
-                }
             });
         }else {
             saveNewJobInDB();
