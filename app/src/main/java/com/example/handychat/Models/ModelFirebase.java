@@ -190,26 +190,6 @@ public class ModelFirebase {
         void onComplete(Comment comment);
     }
 
-    public void getComment(String commentId, final GetCommentListener listener){
-        db.collection("comments").document(commentId).get().
-                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()){
-                            DocumentSnapshot snapshot = task.getResult();
-                            if (snapshot.exists()){
-                                Comment comment = snapshot.toObject(Comment.class);
-                                listener.onComplete(comment);
-                                return;
-                            }
-                        }else{
-                            Log.d("TAG","get failed with ", task.getException());
-                        }
-                        listener.onComplete(null);
-                    }
-                });
-    }
-
     public interface GetAllCommentListener {
         void OnSuccess(List<Comment> commentList);
     }
