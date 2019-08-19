@@ -43,15 +43,14 @@ public class JobRequestRepository {
      }
 
     /******************* Update ***********************/
-    public void update(JobRequest jobRequest, ModelFirebase.UpdateJobRequestListener listener) {
-        modelFirebase.UpdateJobRequest(jobRequest,listener);
-        JobRequestAsyncDao.updateJob(jobRequest);
-    }
-
     public interface UpdateJobRequestListener {
         public void onComplete(boolean success);
     }
 
+    public void update(JobRequest jobRequest, UpdateJobRequestListener listener) {
+        modelFirebase.UpdateJobRequest(jobRequest,listener);
+        JobRequestAsyncDao.updateJob(jobRequest);
+    }
     /******************* Update ***********************/
 
     /******************* Delete ***********************/

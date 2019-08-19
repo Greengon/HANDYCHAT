@@ -91,7 +91,7 @@ public class ModelFirebase {
                 });
     }
 
-    public void UpdateJobRequest(JobRequest jobRequest,UpdateJobRequestListener listener){
+    public void UpdateJobRequest(JobRequest jobRequest,final JobRequestRepository.UpdateJobRequestListener listener){
         HashMap<String, Object> result = new HashMap<>();
         result.put("id", jobRequest.getId());
         result.put("date", jobRequest.getDate());
@@ -100,7 +100,7 @@ public class ModelFirebase {
         result.put("imageUrl", jobRequest.getImageUrl());
         result.put("description", jobRequest.getDescription());
         db.collection("jobRequests").document(jobRequest.getId()).update(result);
-        listener.OnSuccess(true);
+        listener.onComplete(true);
     }
 
 
@@ -171,10 +171,6 @@ public class ModelFirebase {
 
     public interface getAllJobRequestListener {
         void OnSuccess(List<JobRequest> jobRequestList);
-    }
-
-    public interface UpdateJobRequestListener{
-        void OnSuccess(boolean result);
     }
     /****************** JobRequest handling ********************/
 

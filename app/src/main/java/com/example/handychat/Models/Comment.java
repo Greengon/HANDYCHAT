@@ -23,7 +23,7 @@ public class Comment {
     @ColumnInfo(name = "comment")
     public String comment;
 
-    // Empty constructor is needed for firebase loading
+    // Empty constructor is needed for FireBase loading
     public Comment(){
 
     }

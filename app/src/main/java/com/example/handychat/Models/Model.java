@@ -32,7 +32,7 @@ public class Model {
         void onComplete(String url);
     }
 
-    public void saveImage(final Bitmap imageBitmap, final SaveImageListener viewListener){
+    public static void saveImage(final Bitmap imageBitmap, final SaveImageListener viewListener){
         // This function is divided to two steps.
         // Step 1: save the image remotely
         modelFirebase.saveImage(imageBitmap, url ->  {

@@ -1,14 +1,10 @@
 package com.example.handychat.ViewModel;
 
-
 import android.app.Application;
-
 import com.example.handychat.Models.JobRequest;
 import com.example.handychat.Models.JobRequestRepository;
 import com.example.handychat.Models.ModelFirebase;
-
 import java.util.List;
-
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
@@ -21,17 +17,13 @@ public class JobRequestViewModel extends AndroidViewModel {
         mRepository = new JobRequestRepository(application);
     }
 
-
-    public MutableLiveData<List<JobRequest>> getmAllJobRequests() {
+    public MutableLiveData<List<JobRequest>> getAllJobRequests() {
         if (mAllJobRequests == null){
             mAllJobRequests = new MutableLiveData<>();
         }
-        mRepository.getAllJobRequests(new JobRequestRepository.GetAllJobRequestsListener() {
-            @Override
-            public void onComplete(List<JobRequest> data) {
-                if (data != null){
-                    mAllJobRequests.postValue(data);
-                }
+        mRepository.getAllJobRequests(data ->  {
+            if (data != null){
+                mAllJobRequests.postValue(data);
             }
         });
         return mAllJobRequests;
@@ -49,7 +41,7 @@ public class JobRequestViewModel extends AndroidViewModel {
         mRepository.delete(jobId, listener);
     }
 
-    public void update(JobRequest jobRequest, ModelFirebase.UpdateJobRequestListener listener) {
+    public void update(JobRequest jobRequest, JobRequestRepository.UpdateJobRequestListener listener) {
         mRepository.update(jobRequest,listener);
     }
 

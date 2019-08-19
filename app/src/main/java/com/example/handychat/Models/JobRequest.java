@@ -26,7 +26,7 @@ public class JobRequest {
     @ColumnInfo(name = "description")
     public String description;
 
-    // Empty constructor is needed for firebase loading
+    // Empty constructor is needed for FireBase loading
     public JobRequest(){
 
     }

@@ -49,7 +49,7 @@ public class JobRequestList extends Fragment {
         };
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-        viewModel.getmAllJobRequests().observe(this, jobRequestListObserver);
+        viewModel.getAllJobRequests().observe(this, jobRequestListObserver);
 
     }
 
@@ -74,12 +74,12 @@ public class JobRequestList extends Fragment {
         jobRequestList.setLayoutManager(layoutManager);
 
         // Specify an adapter
-        adapter = new JobRequestListAdapter(viewModel.getmAllJobRequests().getValue());
+        adapter = new JobRequestListAdapter(viewModel.getAllJobRequests().getValue());
         adapter.setOnItemClickListener(position ->  {
             Log.d("TAG","item click: " + position);
             // Lets move the the fragment of the selected request
             Bundle bundle = new Bundle();
-            bundle.putString("jobID",viewModel.getmAllJobRequests().getValue().get(position).getId());
+            bundle.putString("jobID",viewModel.getAllJobRequests().getValue().get(position).getId());
             Navigation.findNavController(getView()).navigate(R.id.action_jobRequestList_to_jobRequestView,bundle);
         });
 

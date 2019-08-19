@@ -1,20 +1,17 @@
 package com.example.handychat.Fragments;
 
-
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-
+import androidx.navigation.Navigation;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,13 +21,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.JobRequest;
 import com.example.handychat.Models.JobRequestRepository;
 import com.example.handychat.Models.Model;
-import com.example.handychat.Models.ModelFirebase;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.JobRequestViewModel;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,33 +31,32 @@ import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.io.File;
 import java.util.Calendar;
-import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class EditJobRequestFragment extends Fragment {
     private static final String JOB_ID = "jobID";
-    private JobRequest jobRequest;
+    private JobRequest mJobRequest;
     private JobRequestViewModel jobRequestViewModel;
     public String jobId;
-    public String resultUrl;
-
-    private ImageView jobImage;
-    private EditText addressEditText;
-    private EditText descriptionEditText;
+    public String imageUrl;
     Bitmap imageBitmap;
-    private Button saveBtn;
-    private ProgressBar progressBar;
+    Target target;
+
     private PackageManager packageManager;
     private static final int REQUEST_WRITE_STORAGE = 112;
 
     // Next int is used for takePic function
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
+    // View components
+    private ImageView jobImage;
+    private EditText addressEditText;
+    private EditText descriptionEditText;
+    private Button saveBtn;
+    private ProgressBar progressBar;
 
     public EditJobRequestFragment() {
         // Required empty public constructor
@@ -75,11 +67,9 @@ public class EditJobRequestFragment extends Fragment {
         jobRequestViewModel = ViewModelProviders.of(this).get(JobRequestViewModel.class);
         if (getArguments() != null) {
             jobId = getArguments().getString(JOB_ID);
-            jobRequestViewModel.getJobRequest(jobId, new JobRequestRepository.GetJobRequestsListener() {
-                @Override
-                public void onComplete(JobRequest data) {
-                    jobRequest = data;
-                }
+            // Let's get our job request to edit
+            jobRequestViewModel.getJobRequest(jobId, jobRequest -> {
+                mJobRequest = jobRequest;
             });
         }
     }
@@ -89,61 +79,58 @@ public class EditJobRequestFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_edit_job_request, container, false);
-
-        jobImage = (ImageView) view.findViewById(R.id.editJobImageView);
-        addressEditText = (EditText) view.findViewById(R.id.editJobEditTextAddress);
-        descriptionEditText = (EditText) view.findViewById(R.id.editFragmentEditTextDescription);
         packageManager = view.getContext().getPackageManager();
-        saveBtn = (Button) view.findViewById(R.id.editJobSaveBtn);
-        progressBar = (ProgressBar) view.findViewById(R.id.edit_job_pb);
+
+        // Create reference to the view components
+        jobImage = view.findViewById(R.id.editJobImageView);
+        addressEditText = view.findViewById(R.id.editJobEditTextAddress);
+        descriptionEditText = view.findViewById(R.id.editFragmentEditTextDescription);
+        saveBtn = view.findViewById(R.id.editJobSaveBtn);
+        progressBar = view.findViewById(R.id.edit_job_pb);
         progressBar.setVisibility(View.INVISIBLE);
 
-        resultUrl = jobRequest.getImageUrl();
-        addressEditText.setText(jobRequest.getAddress(), TextView.BufferType.EDITABLE);
-        descriptionEditText.setText(jobRequest.getDescription(), TextView.BufferType.EDITABLE);
+        addressEditText.setText(mJobRequest.getAddress(), TextView.BufferType.EDITABLE);
+        descriptionEditText.setText(mJobRequest.getDescription(), TextView.BufferType.EDITABLE);
 
         /****** Get job request image ********/
-        if (jobRequest.getImageUrl() != null){
+        if (mJobRequest.getImageUrl() != null){
+            imageUrl = mJobRequest.getImageUrl();
             Picasso.get().setIndicatorsEnabled(true);
-            Target target = new Target() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    jobImage.setImageBitmap(bitmap);
-                }
+            Model.loadImage(imageUrl, imageFile -> {
+                target = new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        jobImage.setImageBitmap(bitmap);
+                    }
 
-                @Override
-                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                    @Override
+                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
 
-                }
+                    }
 
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
 
-                }
-            };
-            Picasso.get().load(jobRequest.getImageUrl()).into(target);
+                    }
+                };
+                Picasso.get().load(imageFile).into(target);
+            });
         }
 
-        jobImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                takePic();
-            }
+        // TODO: Enable polling image from gallery
+        jobImage.setOnClickListener(viewObject -> {
+            takePic();
         });
-        saveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                save();
-            }
+        saveBtn.setOnClickListener(viewObject -> {
+            save();
         });
+
         return view;
     }
 
     private void save() {
         // Active progress bar
         progressBar.setVisibility(View.VISIBLE);
-
-        // save image
 
         // First let's make sure we have permission to access
         // the sd card
@@ -152,51 +139,30 @@ public class EditJobRequestFragment extends Fragment {
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_STORAGE);
         }
 
-        // TODO: Do something when user press save without taking a picture
-        // TODO: Enable polling image from gallery
-
-        if (imageBitmap != null){
-            Model.instance.saveImage(imageBitmap, new Model.SaveImageListener() {
-                @Override
-                public void onComplete(String url) {
-                    resultUrl = url;
-                    saveNewJobInDB();
-                }
-            });
-        }else {
-            saveNewJobInDB();
-        }
-
-
-
-    }
-
-    private void saveNewJobInDB() {
         // Lets get the current user for his email
         FirebaseUser user  = FirebaseAuth.getInstance().getCurrentUser();
         // Lets create our new jobRequest object
         JobRequest newJobRequest = new JobRequest(
-                jobRequest.getId(),
-                resultUrl,
+                mJobRequest.getId(),
+                imageUrl,
                 user.getEmail(),
                 Calendar.getInstance().getTime().toString(),
                 addressEditText.getText().toString(),
                 descriptionEditText.getText().toString()
         );
 
-        // Now let's save it to remote firebase and locally
-        jobRequestViewModel.update(newJobRequest, new ModelFirebase.UpdateJobRequestListener() {
+        // Now let's save it to remote FireBase and locally
+        jobRequestViewModel.update(newJobRequest, new JobRequestRepository.UpdateJobRequestListener() {
             @Override
-            public void OnSuccess(boolean result) {
+            public void onComplete(boolean result) {
                 // Stop progress bar
                 progressBar.setVisibility(View.INVISIBLE);
 
                 // Close fragment and navigate back to list
-                ((MainActivity)getActivity()).getNavController().popBackStack(R.id.jobRequestView,true);
+                Navigation.findNavController(getView()).popBackStack(R.id.jobRequestView,true);
 
             }
         });
-
     }
 
     /*
@@ -206,12 +172,12 @@ public class EditJobRequestFragment extends Fragment {
     the intent
      */
     private void takePic() {
+        progressBar.setVisibility(View.VISIBLE);
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(packageManager) != null){
             startActivityForResult(takePictureIntent,REQUEST_IMAGE_CAPTURE);
         }
     }
-
 
     /*
     onActivityResult catches the result of the camera activity for
@@ -223,6 +189,10 @@ public class EditJobRequestFragment extends Fragment {
         if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
             Bundle extras = data.getExtras();
             imageBitmap = (Bitmap) extras.get("data");
+            Model.saveImage(imageBitmap, url ->  {
+                imageUrl = url;
+            });
+            progressBar.setVisibility(View.INVISIBLE);
             jobImage.setImageBitmap(imageBitmap);
         }
     }

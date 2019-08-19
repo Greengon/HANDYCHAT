@@ -1,9 +1,7 @@
 package com.example.handychat.Models;
 
 import java.util.List;
-
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -13,9 +11,6 @@ import androidx.room.Update;
 interface JobRequestDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(JobRequest... jobRequests);
-
-    @Delete
-    void Delete(JobRequest... jobRequests);
 
     @Update
     void Update(JobRequest... jobRequests);
