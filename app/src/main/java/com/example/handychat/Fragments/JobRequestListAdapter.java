@@ -2,21 +2,19 @@ package com.example.handychat.Fragments;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.example.handychat.Models.JobRequest;
 import com.example.handychat.Models.Model;
 import com.example.handychat.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-
-import java.io.File;
 import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -66,6 +64,7 @@ public class JobRequestListAdapter extends RecyclerView.Adapter<JobRequestListAd
 
     static class jobRequestViewHolder extends RecyclerView.ViewHolder{
         // Reference to the views for each data item
+        View viewHolder;
         ImageView jobImage;
         ImageView userImage;
         TextView dateText;
@@ -83,6 +82,7 @@ public class JobRequestListAdapter extends RecyclerView.Adapter<JobRequestListAd
                     }
                 }
             });
+            viewHolder = itemView;
             jobImage = itemView.findViewById(R.id.jobImageInRow);
             userImage = itemView.findViewById(R.id.userImageInRow);
             dateText = itemView.findViewById(R.id.dateTextViewInRow);
@@ -94,6 +94,12 @@ public class JobRequestListAdapter extends RecyclerView.Adapter<JobRequestListAd
         public void bind(final JobRequest jobRequest) {
             dateText.setText(jobRequest.date);
             descriptionText.setText(jobRequest.description);
+
+            // Let's check if the current job request should be highlight
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user.getEmail().equals(jobRequest.getUserCreated())){
+                viewHolder.setBackgroundResource(R.color.colorPrimaryBrightGreen);
+            }
 
             /****** Get job request image ********/
             if (jobRequest.getImageUrl() != null){

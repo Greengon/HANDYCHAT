@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_jobRequestList_to_imageButtonAdd"
             app:destination="@id/imageButtonAdd" />
+        <action
+            android:id="@+id/action_jobRequestList_to_imageButtonUser"
+            app:destination="@id/imageButtonUser" />
     </fragment>
 
     <fragment
@@ -61,7 +64,14 @@
         android:label="fragment_edit_job_request"
         tools:layout="@layout/fragment_edit_job_request" />
 
+    <fragment
+        android:id="@+id/imageButtonUser"
+        android:name="com.example.handychat.Fragments.UserViewFragment"
+        android:label="fragment_user_view"
+        tools:layout="@layout/fragment_user_view" />
+
     <!-- Global actions-->
     <action android:id="@+id/action_global_imageButtonAdd" app:destination="@id/imageButtonAdd" />
+    <action android:id="@+id/action_global_imageButtonUser" app:destination="@id/imageButtonUser"/>
 
 </navigation>

@@ -3,10 +3,7 @@ package com.example.handychat.Activitys;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
-
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageButton;
 import com.example.handychat.R;
 
@@ -16,11 +13,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton gpsBtn;
     private ImageButton addNewRequestBtn;
     private NavController navController;
-
-    // Getters
-    public NavController getNavController() {
-        return navController;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
             // TODO: Create this listener for what happens when we press the search button
         });
         userBtn.setOnClickListener(view -> {
-            // TODO: Create this listener for what happens when we press the user button
+            navController.navigate(R.id.action_global_imageButtonUser);
         });
         gpsBtn.setOnClickListener(view -> {
             // TODO: Create this listener for what happens when we press the gps button
