@@ -1,52 +1,25 @@
 package com.example.handychat.Fragments;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.Comment;
-import com.example.handychat.Models.CommentRepository;
-import com.example.handychat.Models.Model;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.CommentViewModel;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-
-import java.time.LocalDateTime;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.UUID;
 
-import static android.app.Activity.RESULT_OK;
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * to handle interaction events.
- * Use the {@link NewCommentFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class NewCommentFragment extends Fragment {
 
     private static final String JOB_ID = "jobID";
@@ -119,11 +92,14 @@ public class NewCommentFragment extends Fragment {
                 , Calendar.getInstance().getTime().toString(),
                 commentEditText.getText().toString());
         // Now let's save it to remote firebase and locally
-        mCommentViewModel.insert(comment);
-        progressBar.setVisibility(View.INVISIBLE);
+        mCommentViewModel.insert(comment,success -> {
+            /*
+             We will continue when the comment was saved
+             At least locally
+              */
 
-        //TODO: When returning to view comment isn't showing
-        // Close fragment and return to job view
-        ((MainActivity)getActivity()).getNavController().popBackStack();
+            // Close fragment and return to job view
+            ((MainActivity)getActivity()).getNavController().popBackStack();
+        });
     }
 }

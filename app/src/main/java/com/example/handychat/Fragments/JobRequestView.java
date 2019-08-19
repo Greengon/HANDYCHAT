@@ -89,7 +89,7 @@ public class JobRequestView extends Fragment {
         };
 
         // Observe the LiveData, pass this fragment as the LifecycleOwner and the observer
-        commentViewModel.getmCommentList().observe(this,commentListObserver);
+        commentViewModel.getCommentList().observe(this,commentListObserver);
         /******* Comment list preparing *******/
     }
 
@@ -151,11 +151,11 @@ public class JobRequestView extends Fragment {
             commentList.setLayoutManager(layoutManager);
 
             // Specify an adapter
-            adapter = new CommentListAdapter(commentViewModel.getmCommentList().getValue());
+            adapter = new CommentListAdapter(commentViewModel.getCommentList().getValue());
             //TODO: Create delete comment option, not a must...
             adapter.setOnItemClickListener(position ->  {
                 Bundle bundle = new Bundle();
-                bundle.putString("commentID",commentViewModel.getmCommentList().getValue().get(position).getId());
+                bundle.putString("commentID",commentViewModel.getCommentList().getValue().get(position).getId());
                 Navigation.findNavController(getView()).navigate(R.id.action_jobRequestView_to_viewCommentFragment,bundle);
             });
 

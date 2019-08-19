@@ -6,45 +6,23 @@ import android.util.Log;
 import java.util.List;
 
 public class CommentRepository {
-    private CommentDao mCommentDao;
     static ModelFirebase modelFirebase;
 
     public CommentRepository(Application application){
         AppLocalDbRepository db = ModelSql.getDatabase(application);
-        mCommentDao = db.commentDao();
         modelFirebase = new ModelFirebase();
     }
 
-
-    public void getCommentFormRemote(String jobId) {
-        Log.d("TAG","Fetching comments form firebase");
-        modelFirebase.getAllCommentOfJob(jobId, new ModelFirebase.GetAllCommentListener() {
-            @Override
-            public void OnSuccess(String jobId, List<Comment> commentList) {
-                if(commentList != null){
-                    for (Comment comment: commentList){
-                        if (!comment.getId().isEmpty()){
-                            insert(comment);
-                        }
-                    }
-                }
-            }
-        });
-    }
-
+    /******************* Add comment ***********************/
     public interface AddCommentListener{
         void onComplete(boolean success);
     }
 
-    public void insert(Comment comment){
-        new insertAsyncTask(mCommentDao).execute(comment);
-        modelFirebase.addComment(comment, new AddCommentListener() {
-            @Override
-            public void onComplete(boolean success) {
-                Log.d("TAG","Added comment to firebase");
-            }
-        });
+    public void insert(Comment comment,final AddCommentListener listener){
+        CommentAsyncDao.insertComment(comment,listener);
+        modelFirebase.addComment(comment);
     }
+    /******************* Add comment ***********************/
 
     /******************* Get comment ***********************/
     public interface GetCommentListener{
@@ -61,20 +39,34 @@ public class CommentRepository {
     }
 
     public void getAllCommentsOfJob(String jobId, final GetAllCommentsListener listener){
-        getCommentFormRemote(jobId);
-        CommentAsyncDao.getAllCommentsOfJob(jobId, listener);
+        Log.d("TAG","Fetching comments form firebase");
+        modelFirebase.getAllCommentOfJob(jobId, commentList -> {
+            if(commentList != null){
+                for (Comment comment: commentList){
+                    if (!comment.getId().isEmpty()){
+                        insert(comment,success -> {
+                            Log.d("TAG","Inserted comment:" + comment.getId());
+                        });
+                    }
+                }
+            }
+            CommentAsyncDao.getAllCommentsOfJob(jobId, listener);
+        });
     }
     /******************* Get all ***********************/
 
-    /******************* Get Comment request ***********************/
-    public interface GetCommentsListener{
-        void onComplete(Comment data);
+    /******************* Delete ***********************/
+    public static void deleteAllCommentForJob(String jobId) {
+        // Step 1: Delete the remote comments for the job
+        modelFirebase.deleteAllCommentForJob(jobId);
+        // Step 2: Delete the local comments for the job
+        CommentAsyncDao.deleteAllCommentsOfJob(jobId);
     }
+    /******************* Delete ***********************/
 
-    /******************* Get Comment request ***********************/
-
-    public static class CommentAsyncDao {
-        public static void getAllCommentsOfJob(String jobId, final GetAllCommentsListener listener) {
+    // This nested class is responsible for the local database handling
+    private static class CommentAsyncDao {
+        private static void getAllCommentsOfJob(String jobId, final GetAllCommentsListener listener) {
             new AsyncTask<Void, Void, List<Comment>>() {
 
                 @Override
@@ -92,7 +84,7 @@ public class CommentRepository {
             }.execute();
         }
 
-        public static void deleteAllCommentsOfJob(String jobId){
+        private static void deleteAllCommentsOfJob(String jobId){
             new AsyncTask<Void,Void,Void>(){
 
                 @Override
@@ -103,7 +95,7 @@ public class CommentRepository {
             }.execute();
         }
 
-        public static void getComment(String commentId, final GetCommentListener listener){
+        private static void getComment(String commentId, final GetCommentListener listener){
             new AsyncTask<Void,Void,Comment>(){
 
                 @Override
@@ -114,33 +106,20 @@ public class CommentRepository {
                 }
             }.execute();
         }
+
+        private static void insertComment(Comment comment,AddCommentListener listener){
+            new AsyncTask<Void,Void,Void>(){
+
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    ModelSql.INSTANCE.commentDao().insert(comment);
+                    // Notify the view that the comment was saved at least locally
+                    listener.onComplete(true);
+                    return null;
+                }
+            }.execute();
+        }
     }
-
-        /******************* Insert ***********************/
-        // TODO: Merge next class with generic class CommentAsyncTask
-        private class insertAsyncTask extends AsyncTask<Comment, Void, Void> {
-            private CommentDao mAsyncTaskDao;
-
-            public insertAsyncTask(CommentDao dao) {
-                mAsyncTaskDao = dao;
-            }
-
-            @Override
-            protected Void doInBackground(Comment... comments) {
-                mAsyncTaskDao.insert(comments[0]);
-                return null;
-            }
-        }
-        /******************* Insert ***********************/
-
-    /******************* Delete ***********************/
-        public static void deleteAllCommentForJob(String jobId) {
-            // Step 1: Delete the remote comments for the job
-            modelFirebase.deleteAllCommentForJob(jobId);
-            // Step 2: Delete the local comments for the job
-            CommentAsyncDao.deleteAllCommentsOfJob(jobId);
-        }
-    /******************* Delete ***********************/
 
 
 }

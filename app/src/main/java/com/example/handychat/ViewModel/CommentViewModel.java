@@ -1,19 +1,12 @@
 package com.example.handychat.ViewModel;
 
 import android.app.Application;
-import android.widget.ProgressBar;
-
 import com.example.handychat.Models.Comment;
 import com.example.handychat.Models.CommentRepository;
-
 import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -31,17 +24,20 @@ public class CommentViewModel extends AndroidViewModel implements ViewModelProvi
         mParam = param;
     }
 
+    // Next function is important for creating the class connected to specific job
+    @NonNull
+    @Override
+    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+        return (T) new CommentViewModel(mApplication,mParam);
+    }
 
-    public MutableLiveData<List<Comment>> getmCommentList(){
+    public MutableLiveData<List<Comment>> getCommentList(){
         if (mCommentList == null){
-            mCommentList = new MutableLiveData<List<Comment>>();
+            mCommentList = new MutableLiveData<>();
         }
-        mRepository.getAllCommentsOfJob(mParam, new CommentRepository.GetAllCommentsListener() {
-            @Override
-            public void onComplete(List<Comment> data) {
-                if (data != null) {
-                    mCommentList.postValue(data);
-                }
+        mRepository.getAllCommentsOfJob(mParam, data ->  {
+            if (data != null) {
+                mCommentList.postValue(data);
             }
         });
         return mCommentList;
@@ -51,14 +47,7 @@ public class CommentViewModel extends AndroidViewModel implements ViewModelProvi
         mRepository.getComment(commentId, listener);
     }
 
-    public void insert(Comment comment) {
-        mRepository.insert(comment);
-    }
-
-    @NonNull
-    @Override
-    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new CommentViewModel(mApplication,mParam);
-
+    public void insert(Comment comment, final CommentRepository.AddCommentListener listener) {
+        mRepository.insert(comment,listener);
     }
 }
