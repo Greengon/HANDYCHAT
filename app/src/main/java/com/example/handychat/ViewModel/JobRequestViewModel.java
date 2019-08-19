@@ -3,7 +3,6 @@ package com.example.handychat.ViewModel;
 import android.app.Application;
 import com.example.handychat.Models.JobRequest;
 import com.example.handychat.Models.JobRequestRepository;
-import com.example.handychat.Models.ModelFirebase;
 import java.util.List;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;

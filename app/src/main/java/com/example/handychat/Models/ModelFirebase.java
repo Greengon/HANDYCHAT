@@ -128,50 +128,25 @@ public class ModelFirebase {
                 });
     }
 
-    // Testing only
-    public static void getRemoteData(String jobId, final JobRequestRepository.GetJobRequestsListener listener){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-         db.collection("jobRequests").document(jobId).get().
-                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()){
-                            DocumentSnapshot snapshot = task.getResult();
-                            if (snapshot.exists()){
-                                JobRequest jobRequest = snapshot.toObject(JobRequest.class);
-                                listener.onComplete(jobRequest);
-                                return;
-                            }
-                        }else{
-                            Log.d("TAG","get failed with ", task.getException());
-                        }
-                        listener.onComplete(null);
-                    }
-                });
-    }
-
-
-    public void getAllJobRequest(getAllJobRequestListener listener) {
-        db.collection("jobRequests").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                LinkedList<JobRequest> data = new LinkedList<>();
-                if (e != null) {
-                    Log.d("TAG","Failed getting the comments from remote.");
-                    return;
-                }
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots){
-                    JobRequest jobRequest = doc.toObject(JobRequest.class);
-                    data.add(jobRequest);
-                }
-                listener.OnSuccess(data);
-            }
-        });
-    }
-
     public interface getAllJobRequestListener {
         void OnSuccess(List<JobRequest> jobRequestList);
     }
+
+    public void getAllJobRequest(getAllJobRequestListener listener) {
+        db.collection("jobRequests").addSnapshotListener((queryDocumentSnapshots,error) -> {
+            LinkedList<JobRequest> data = new LinkedList<>();
+            if (error != null) {
+                Log.d("TAG","Failed getting the jobs from remote.");
+                return;
+            }
+            for (QueryDocumentSnapshot doc : queryDocumentSnapshots){
+                JobRequest jobRequest = doc.toObject(JobRequest.class);
+                data.add(jobRequest);
+            }
+            listener.OnSuccess(data);
+        });
+    }
+
     /****************** JobRequest handling ********************/
 
     /****************** Comment handling ********************/

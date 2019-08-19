@@ -117,8 +117,19 @@ public class JobRequestListAdapter extends RecyclerView.Adapter<JobRequestListAd
                             jobImageProgressBar.setVisibility(View.VISIBLE);
                         }
                     };
-                    // Load the image with Picasso
-                    Picasso.get().load(imageFile).into(target);
+                    if (imageFile.exists()){
+                        // Load the image with Picasso from local file
+                        Picasso.get().load(imageFile).into(target);
+                    }else{
+                        /*
+                         TODO: This isn't a good way of working, but it solve some async problems
+                         it helps when the app wasn't fast enough to download the  image.
+                         If there's time we should figure out a way to remove the next line and
+                         solve the problem.
+                          */
+                        // Try load the image with Picasso from remote
+                        Picasso.get().load(jobRequest.getImageUrl()).into(target);
+                    }
                 });
             }else{
                 jobImageProgressBar.setVisibility(View.INVISIBLE);

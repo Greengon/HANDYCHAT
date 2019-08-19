@@ -3,13 +3,7 @@ package com.example.handychat.Models;
 import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
-
-import java.util.LinkedList;
 import java.util.List;
-
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.room.Update;
 
 public class JobRequestRepository {
     private JobRequestDao mJobRequestDao;
@@ -20,27 +14,6 @@ public class JobRequestRepository {
         mJobRequestDao = db.jobRequestDao();
         modelFirebase = new ModelFirebase();
     }
-
-    public void GetRemoteJobRequestList(GetAllJobRequestsListener listener){
-        modelFirebase.getAllJobRequest(new ModelFirebase.getAllJobRequestListener() {
-            @Override
-            public void OnSuccess(List<JobRequest> jobRequestList) {
-                if(jobRequestList != null){
-                    listener.onComplete(jobRequestList);
-                    for (JobRequest jobRequest: jobRequestList){
-                        if (!jobRequest.getId().isEmpty()){
-                            insert(jobRequest, new AddJobRequestListener() {
-                                @Override
-                                public void onComplete(boolean success) {
-                                    Log.d("TAG","Added new job request with id: " + jobRequest.getId());
-                                }
-                            });
-                        }
-                    }
-                }
-            }
-        });
-     }
 
     /******************* Update ***********************/
     public interface UpdateJobRequestListener {
@@ -72,11 +45,10 @@ public class JobRequestRepository {
         modelFirebase.deleteJob(jobId);
 
         // Step 4: Delete the job in the local Database
-        // TODO: Check why Job..
-        JobRequestAsyncDao.deleteJob(jobId,listener);
     }
     /******************* Delete ***********************/
 
+    /******************* Insert ***********************/
     public interface AddJobRequestListener{
         void onComplete(boolean success);
     }
@@ -85,6 +57,7 @@ public class JobRequestRepository {
         new insertAsyncTask(mJobRequestDao).execute(jobRequest);
         modelFirebase.addJobRequest(jobRequest,listener);
     }
+    /******************* Insert ***********************/
 
     /******************* Get all ***********************/
     public interface GetAllJobRequestsListener{
@@ -92,10 +65,31 @@ public class JobRequestRepository {
     }
 
     public void getAllJobRequests(final GetAllJobRequestsListener listener){
-        GetRemoteJobRequestList(listener);
-        // We can use the next method if we check before for internet connection else
-        // it will create an async problem.
-//        JobRequestAsyncDao.getAllJobRequests(listener);
+        /*
+        TODO: Create the solution of checking if we are online,
+        TODO: notice that db is now programmed to clean itself on APP onOpen()
+        Here we won't use local data get all jobRequest that to avoid Async issues
+        If we want our app to work with out internet, an option for loading form
+        local db should be here.
+          */
+        modelFirebase.getAllJobRequest(new ModelFirebase.getAllJobRequestListener() {
+            @Override
+            public void OnSuccess(List<JobRequest> jobRequestList) {
+                if(jobRequestList != null){
+                    for (JobRequest jobRequest: jobRequestList){
+                        if (!jobRequest.getId().isEmpty()){
+                            insert(jobRequest, new AddJobRequestListener() {
+                                @Override
+                                public void onComplete(boolean success) {
+                                    Log.d("TAG","Added new job request with id: " + jobRequest.getId());
+                                }
+                            });
+                        }
+                    }
+                    listener.onComplete(jobRequestList);
+                }
+            }
+        });
     }
 
     /******************* Get all ***********************/
@@ -112,24 +106,6 @@ public class JobRequestRepository {
     /******************* Get Job request ***********************/
 
     public static class JobRequestAsyncDao {
-        public static void getAllJobRequests(final GetAllJobRequestsListener listener){
-            new AsyncTask<Void,Void,List<JobRequest>>(){
-
-                @Override
-                protected List<JobRequest> doInBackground(Void... voids) {
-                    List<JobRequest> list = ModelSql.INSTANCE.jobRequestDao().getAllJobRequests();
-                    listener.onComplete(list);
-                    return list;
-                }
-
-                @Override
-                protected void onPostExecute(List<JobRequest> jobRequestList) {
-                    super.onPostExecute(jobRequestList);
-                    listener.onComplete(jobRequestList);
-                }
-            }.execute();
-        }
-
         public static void getJobRequests(String id,GetJobRequestsListener listener) {
             new AsyncTask<Void,Void,JobRequest>(){
 
