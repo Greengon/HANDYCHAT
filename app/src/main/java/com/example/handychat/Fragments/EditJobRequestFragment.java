@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.example.handychat.Models.JobRequest;
-import com.example.handychat.Models.JobRequestRepository;
 import com.example.handychat.Models.Model;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.JobRequestViewModel;
@@ -150,16 +149,12 @@ public class EditJobRequestFragment extends Fragment {
         );
 
         // Now let's save it to remote FireBase and locally
-        jobRequestViewModel.update(newJobRequest, new JobRequestRepository.UpdateJobRequestListener() {
-            @Override
-            public void onComplete(boolean result) {
-                // Stop progress bar
-                progressBar.setVisibility(View.INVISIBLE);
+        jobRequestViewModel.update(newJobRequest, () -> {
+            // Stop progress bar
+            progressBar.setVisibility(View.INVISIBLE);
 
-                // Close fragment and navigate back to list
-                Navigation.findNavController(getView()).popBackStack(R.id.jobRequestView,true);
-
-            }
+            // Close fragment and navigate back to list
+            Navigation.findNavController(getView()).popBackStack(R.id.jobRequestView,true);
         });
     }
 

@@ -13,7 +13,7 @@ interface JobRequestDao {
     void insert(JobRequest... jobRequests);
 
     @Update
-    void Update(JobRequest... jobRequests);
+    void update(JobRequest... jobRequests);
 
     @Query("DELETE FROM job_requests")
     void deleteAll();

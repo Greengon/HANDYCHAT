@@ -36,8 +36,8 @@ public class JobRequestViewModel extends AndroidViewModel {
         mRepository.insert(jobRequest, listener);
     }
 
-    public void delete(String jobId, JobRequestRepository.JobDeletedListener listener) {
-        mRepository.delete(jobId, listener);
+    public void delete(String jobId) {
+        mRepository.delete(jobId);
     }
 
     public void update(JobRequest jobRequest, JobRequestRepository.UpdateJobRequestListener listener) {

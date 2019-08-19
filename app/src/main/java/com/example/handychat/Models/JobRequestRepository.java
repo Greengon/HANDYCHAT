@@ -2,22 +2,19 @@ package com.example.handychat.Models;
 
 import android.app.Application;
 import android.os.AsyncTask;
-import android.util.Log;
 import java.util.List;
 
 public class JobRequestRepository {
-    private JobRequestDao mJobRequestDao;
     static ModelFirebase modelFirebase;
 
     public JobRequestRepository(Application application){
         AppLocalDbRepository db = ModelSql.getDatabase(application);
-        mJobRequestDao = db.jobRequestDao();
         modelFirebase = new ModelFirebase();
     }
 
     /******************* Update ***********************/
     public interface UpdateJobRequestListener {
-        public void onComplete(boolean success);
+        public void onComplete();
     }
 
     public void update(JobRequest jobRequest, UpdateJobRequestListener listener) {
@@ -27,34 +24,29 @@ public class JobRequestRepository {
     /******************* Update ***********************/
 
     /******************* Delete ***********************/
-    // TODO: Below solution didn't fix the problem
-    /*
-    Note that a listener was created here because
-    deleting job takes time and happens async,
-    so we want to force the user to wait for the final delete
-    to avoid reinserting
-     */
     public interface JobDeletedListener{
         void onComplete();
     }
-    public void delete(String jobId, final JobDeletedListener listener) {
+
+    public void delete(String jobId) {
         // Step 1+2: Delete the remote and local comments for the job
         CommentRepository.deleteAllCommentForJob(jobId);
 
         // Step 3: Delete the job in the remote Database
-        modelFirebase.deleteJob(jobId);
-
-        // Step 4: Delete the job in the local Database
+        modelFirebase.deleteJob(jobId,()->{
+            // Step 4: Delete the job in the local Database
+            JobRequestAsyncDao.deleteJob(jobId);
+        });
     }
     /******************* Delete ***********************/
 
     /******************* Insert ***********************/
     public interface AddJobRequestListener{
-        void onComplete(boolean success);
+        void onComplete();
     }
 
     public void insert(JobRequest jobRequest, AddJobRequestListener listener){
-        new insertAsyncTask(mJobRequestDao).execute(jobRequest);
+        JobRequestAsyncDao.insertJob(jobRequest);
         modelFirebase.addJobRequest(jobRequest,listener);
     }
     /******************* Insert ***********************/
@@ -72,22 +64,14 @@ public class JobRequestRepository {
         If we want our app to work with out internet, an option for loading form
         local db should be here.
           */
-        modelFirebase.getAllJobRequest(new ModelFirebase.getAllJobRequestListener() {
-            @Override
-            public void OnSuccess(List<JobRequest> jobRequestList) {
-                if(jobRequestList != null){
-                    for (JobRequest jobRequest: jobRequestList){
-                        if (!jobRequest.getId().isEmpty()){
-                            insert(jobRequest, new AddJobRequestListener() {
-                                @Override
-                                public void onComplete(boolean success) {
-                                    Log.d("TAG","Added new job request with id: " + jobRequest.getId());
-                                }
-                            });
-                        }
+        modelFirebase.getAllJobRequest(jobRequestList -> {
+            if(jobRequestList != null){
+                for (JobRequest jobRequest: jobRequestList){
+                    if (!jobRequest.getId().isEmpty()){
+                        JobRequestAsyncDao.insertJob(jobRequest);
                     }
-                    listener.onComplete(jobRequestList);
                 }
+                listener.onComplete(jobRequestList);
             }
         });
     }
@@ -102,9 +86,9 @@ public class JobRequestRepository {
     public void getJobRequest(String id,final GetJobRequestsListener listener){
         JobRequestAsyncDao.getJobRequests(id,listener);
     }
-
     /******************* Get Job request ***********************/
 
+    // This nested class is responsible for the local database handling
     public static class JobRequestAsyncDao {
         public static void getJobRequests(String id,GetJobRequestsListener listener) {
             new AsyncTask<Void,Void,JobRequest>(){
@@ -118,13 +102,12 @@ public class JobRequestRepository {
             }.execute();
         }
 
-        public static void deleteJob(String jobId,JobDeletedListener listener) {
+        public static void deleteJob(String jobId) {
             new AsyncTask<Void,Void,Void>(){
 
                 @Override
                 protected Void doInBackground(Void... voids) {
                     ModelSql.INSTANCE.jobRequestDao().DeleteById(jobId);
-                    listener.onComplete();
                     return null;
                 }
             }.execute();
@@ -135,28 +118,21 @@ public class JobRequestRepository {
 
                 @Override
                 protected Void doInBackground(Void... Voids) {
-                    ModelSql.INSTANCE.jobRequestDao().Update(jobRequest);
+                    ModelSql.INSTANCE.jobRequestDao().update(jobRequest);
+                    return null;
+                }
+            }.execute();
+        }
+
+        public static void insertJob(JobRequest jobRequest){
+            new AsyncTask<Void,Void,Void>(){
+
+                @Override
+                protected Void doInBackground(Void... Voids) {
+                    ModelSql.INSTANCE.jobRequestDao().insert(jobRequest);
                     return null;
                 }
             }.execute();
         }
     }
-
-    /******************* Insert ***********************/
-    // TODO: Merge next function with JobRequestAsyncDao
-    private class insertAsyncTask extends AsyncTask<JobRequest,Void,Void> {
-        private JobRequestDao mAsyncTaskDao;
-
-        public insertAsyncTask(JobRequestDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(JobRequest... jobRequests) {
-            mAsyncTaskDao.insert(jobRequests[0]);
-            return null;
-        }
-    }
-    /******************* Insert ***********************/
-
 }

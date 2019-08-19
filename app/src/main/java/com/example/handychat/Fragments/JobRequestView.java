@@ -177,9 +177,8 @@ public class JobRequestView extends Fragment {
             deleteJob.setOnClickListener(viewObject -> {
                 if (hasPermission()){
                     progressBar.setVisibility(View.VISIBLE);
-                    jobRequestViewModel.delete(jobId, () -> {
-                        Navigation.findNavController(getView()).popBackStack();
-                    });
+                    jobRequestViewModel.delete(jobId);
+                    Navigation.findNavController(getView()).popBackStack();
                 }else{
                     Toast.makeText(getContext(),"Only the created user can do that.",Toast.LENGTH_SHORT).show();
                 }

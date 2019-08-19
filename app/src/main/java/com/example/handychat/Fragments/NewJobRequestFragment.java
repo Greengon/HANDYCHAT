@@ -148,17 +148,13 @@ public class NewJobRequestFragment extends Fragment {
                         addressEditText.getText().toString(),
                         descriptionEditText.getText().toString());
 
-                // Now let's save it to remote firebase and locally
-                mJobRequestViewModel.insert(jobRequest, new JobRequestRepository.AddJobRequestListener() {
-                    @Override
-                    public void onComplete(boolean success) {
-                        // Stop progress bar
-                        progressBar.setVisibility(View.INVISIBLE);
+                // Now let's save it to remote FireBase and locally
+                mJobRequestViewModel.insert(jobRequest, () -> {
+                    // Stop progress bar
+                    progressBar.setVisibility(View.INVISIBLE);
 
-                        // Close fragment and navigate back to list
-                        navController.popBackStack();
-
-                    }
+                    // Close fragment and navigate back to list
+                    navController.popBackStack();
                 });
 
             }
