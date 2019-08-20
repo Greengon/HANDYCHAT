@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -25,6 +26,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Spinner;
@@ -72,6 +75,7 @@ public class RegisterFragment extends Fragment {
     private Spinner mAreasSpinner;
     private Button saveBtn;
     private Button addPhotoBtn;
+    private ImageView avatarImgView;
     private static final int REQUEST_WRITE_STORAGE = 112;
 
     public RegisterFragment() {
@@ -113,6 +117,7 @@ public class RegisterFragment extends Fragment {
         saveBtn = (Button) view.findViewById(R.id.saveBtn);
         addPhotoBtn = (Button) view.findViewById(R.id.addPictureBtn);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        avatarImgView=(ImageView)  view.findViewById(R.id.avatarImgView);
 
         // Lets creates the categories mCategoriesSpinner.
         // Create an ArrayAdapter using the string array and a default mCategoriesSpinner layout
@@ -149,6 +154,34 @@ public class RegisterFragment extends Fragment {
                 photoPickerIntent.setType("image/*");
                 if (photoPickerIntent.resolveActivity( packageManager) != null){
                     startActivityForResult(photoPickerIntent, GALLERY_REQUEST_CODE);
+                }
+            }
+        });
+
+        mCustomerRadioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mCustomerRadioButton.isSelected()){
+                    mCustomerRadioButton.setChecked(false);
+                    mCustomerRadioButton.setSelected(false);
+                }
+                else{
+                    mCustomerRadioButton.setChecked(true);
+                    mCustomerRadioButton.setSelected(true);
+                }
+            }
+        });
+
+        mHandyManRadioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mHandyManRadioButton.isSelected()){
+                    mHandyManRadioButton.setChecked(false);
+                    mHandyManRadioButton.setSelected(false);
+                }
+                else{
+                    mHandyManRadioButton.setChecked(true);
+                    mHandyManRadioButton.setSelected(true);
                 }
             }
         });
@@ -285,6 +318,9 @@ public class RegisterFragment extends Fragment {
                 }
 
             }
+        if (imageBitmap!= null){
+            avatarImgView.setImageBitmap(imageBitmap);
+        }
 
 
     }
