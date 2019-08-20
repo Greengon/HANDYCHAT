@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,12 +45,17 @@ public class ViewCommentFragment extends Fragment {
             commentId = getArguments().getString(COMMENT_ID);
             commentViewModel = ViewModelProviders.of(this,new CommentViewModel(getActivity().getApplication(),commentId)).get(CommentViewModel.class);
 
-            // Let's get the comment we are showing
-            commentViewModel.getComment(commentId, comment -> {
-                    mComment = comment;
-            });
+            // Create the observer which updates the UI
+            final Observer<Comment> commentObserver = comment -> {
+                mComment = comment;
+                updateUI();
+            };
+
+            // Observe the LiveData, pass this fragment as the LifecycleOwner and the observer
+            commentViewModel.getComment(commentId).observe(this,commentObserver);
         }
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,6 +69,12 @@ public class ViewCommentFragment extends Fragment {
         commentDate = view.findViewById(R.id.comment_date);
         commentText = view.findViewById(R.id.comment_view_text);
 
+        updateUI();
+
+        return view;
+    }
+
+    private void updateUI() {
         // Put the data in the attributes
         if (mComment != null) {
             /****** Get user image ********/
@@ -107,10 +119,6 @@ public class ViewCommentFragment extends Fragment {
             userCreatedName.setText(mComment.getUserCreated());
             commentDate.setText(mComment.getDate());
             commentText.setText(mComment.getComment());
-
-            } else {
-                Toast.makeText(getContext(), "Problem loading the comment", Toast.LENGTH_SHORT).show();
-            }
-        return view;
+        }
     }
 }

@@ -4,31 +4,20 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
-
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 import androidx.annotation.NonNull;
 
@@ -196,26 +185,22 @@ public class ModelFirebase {
 
         UploadTask uploadTask = imageStorageRef.putBytes(data);
 
-        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            @Override
-            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                if(!task.isSuccessful()){
-                    throw task.getException();
-                }
+        Task<Uri> urlTask = uploadTask.continueWithTask(task -> {
 
-                // Continue with the task to get the download URL
-                return imageStorageRef.getDownloadUrl();
+            if(!task.isSuccessful()){
+                throw task.getException();
             }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                // Return the result url to the viewModel
-                if (task.isSuccessful()){
-                    Uri downloadUri = task.getResult();
-                    listener.onComplete(downloadUri.toString());
-                } else {
-                    listener.onComplete(null);
-                }
+
+            // Continue with the task to get the download URL
+            return imageStorageRef.getDownloadUrl();
+
+        }).addOnCompleteListener( task -> {
+            // Return the result url to the viewModel
+            if (task.isSuccessful()){
+                Uri downloadUri = task.getResult();
+                listener.onComplete(downloadUri.toString());
+            } else {
+                listener.onComplete(null);
             }
         });
     }
@@ -227,17 +212,11 @@ public class ModelFirebase {
         // Create a reference to the image
         StorageReference httpReference = storage.getReferenceFromUrl(url);
         final long ONE_MEGABYTE = 1024 * 1024;
-        httpReference.getBytes(3 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                Bitmap image = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                listener.onSuccess(image);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("TAG",e.getMessage());
-            }
+        httpReference.getBytes(3 * ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+            Bitmap image = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+            listener.onSuccess(image);
+        }).addOnFailureListener(error ->{
+            Log.d("TAG",error.getMessage());
         });
     }
 
@@ -250,11 +229,8 @@ public class ModelFirebase {
     private void deleteImageOfJob(String imageUrl) {
         // Create a reference to the image
         StorageReference httpReference = storage.getReferenceFromUrl(imageUrl);
-        httpReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d("TAG","Success in deleting the image");
-            }
+        httpReference.delete().addOnSuccessListener(aVoid ->  {
+            Log.d("TAG","Success in deleting the image");
         });
     }
     /******** Image deleting *********/

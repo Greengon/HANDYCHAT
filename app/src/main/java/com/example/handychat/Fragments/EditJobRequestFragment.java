@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import android.provider.MediaStore;
@@ -67,12 +68,17 @@ public class EditJobRequestFragment extends Fragment {
         jobRequestViewModel = ViewModelProviders.of(this).get(JobRequestViewModel.class);
         if (getArguments() != null) {
             jobId = getArguments().getString(JOB_ID);
-            // Let's get our job request to edit
-            jobRequestViewModel.getJobRequest(jobId, jobRequest -> {
+            // Create the observer which updates the UI
+            final Observer<JobRequest> jobRequestObserver = jobRequest -> {
                 mJobRequest = jobRequest;
-            });
+                createJobView();
+            };
+
+            // Observe the LiveData, pass this fragment as the LifecycleOwner and the observer
+            jobRequestViewModel.getJobRequest(jobId).observe(this,jobRequestObserver);
         }
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -89,33 +95,6 @@ public class EditJobRequestFragment extends Fragment {
         progressBar = view.findViewById(R.id.edit_job_pb);
         progressBar.setVisibility(View.INVISIBLE);
 
-        addressEditText.setText(mJobRequest.getAddress(), TextView.BufferType.EDITABLE);
-        descriptionEditText.setText(mJobRequest.getDescription(), TextView.BufferType.EDITABLE);
-
-        /****** Get job request image ********/
-        if (mJobRequest.getImageUrl() != null){
-            imageUrl = mJobRequest.getImageUrl();
-            Picasso.get().setIndicatorsEnabled(true);
-            Model.loadImage(imageUrl, imageFile -> {
-                target = new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        jobImage.setImageBitmap(bitmap);
-                    }
-
-                    @Override
-                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                    }
-                };
-                Picasso.get().load(imageFile).into(target);
-            });
-        }
 
         // TODO: Enable polling image from gallery
         jobImage.setOnClickListener(viewObject -> {
@@ -189,6 +168,38 @@ public class EditJobRequestFragment extends Fragment {
             });
             progressBar.setVisibility(View.INVISIBLE);
             jobImage.setImageBitmap(imageBitmap);
+        }
+    }
+
+    private void createJobView() {
+        if (mJobRequest != null){
+            addressEditText.setText(mJobRequest.getAddress(), TextView.BufferType.EDITABLE);
+            descriptionEditText.setText(mJobRequest.getDescription(), TextView.BufferType.EDITABLE);
+
+            /****** Get job request image ********/
+            if (mJobRequest.getImageUrl() != null){
+                imageUrl = mJobRequest.getImageUrl();
+                Picasso.get().setIndicatorsEnabled(true);
+                Model.loadImage(imageUrl, imageFile -> {
+                    target = new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            jobImage.setImageBitmap(bitmap);
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                        }
+                    };
+                    Picasso.get().load(imageFile).into(target);
+                });
+            }
         }
     }
 }

@@ -73,9 +73,14 @@ public class JobRequestView extends Fragment {
         // Get a copy of the job request that's been viewed by the id given from the list
         if (getArguments() != null){
             jobId = getArguments().getString(JOB_ID);
-            jobRequestViewModel.getJobRequest(jobId, jobRequest -> {
+            // Create the observer which updates the UI
+            final Observer<JobRequest> jobRequestObserver = jobRequest -> {
                 mJobRequest = jobRequest;
-            });
+                createJobView();
+            };
+
+            // Observe the LiveData, pass this fragment as the LifecycleOwner and the observer
+            jobRequestViewModel.getJobRequest(jobId).observe(this,jobRequestObserver);
         }
         /******* Job request preparing *******/
 
@@ -108,32 +113,8 @@ public class JobRequestView extends Fragment {
             address = view.findViewById(R.id.job_view_address_value);
             description = view.findViewById(R.id.job_view_description_value);
 
-            if (mJobRequest.getImageUrl() != null){
-                Picasso.get().setIndicatorsEnabled(true);
-                Model.loadImage(mJobRequest.getImageUrl(), imageFile -> {
-                    target = new Target() {
-                        @Override
-                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                            jobImage.setImageBitmap(bitmap);
-                        }
-
-                        @Override
-                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-
-                        }
-
-                        @Override
-                        public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                        }
-                    };
-                    Picasso.get().load(imageFile).into(target);
-                });
-            }
-            userImage.setImageResource(R.drawable.avatar);
-            date.setText(mJobRequest.date);
-            address.setText("Address: " + mJobRequest.address);
-            description.setText(mJobRequest.description);
+            createJobView();
+            /************ Job request Section ***************/
 
             /************ Comments Section ***************/
 
@@ -198,6 +179,37 @@ public class JobRequestView extends Fragment {
 
         }
         return view;
+    }
+
+    private void createJobView() {
+        if (mJobRequest != null){
+            if (mJobRequest.getImageUrl() != null){
+                Picasso.get().setIndicatorsEnabled(true);
+                Model.loadImage(mJobRequest.getImageUrl(), imageFile -> {
+                    target = new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            jobImage.setImageBitmap(bitmap);
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                        }
+                    };
+                    Picasso.get().load(imageFile).into(target);
+                });
+            }
+            userImage.setImageResource(R.drawable.avatar);
+            date.setText(mJobRequest.date);
+            address.setText("Address: " + mJobRequest.address);
+            description.setText(mJobRequest.description);
+        }
     }
 
     private boolean hasPermission() {

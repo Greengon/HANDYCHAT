@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 public class CommentViewModel extends AndroidViewModel implements ViewModelProvider.Factory {
     private CommentRepository mRepository;
     private MutableLiveData<List<Comment>> mCommentList;
+    private MutableLiveData<Comment> mComment;
     private Application mApplication;
     private String mParam;
 
@@ -43,8 +44,16 @@ public class CommentViewModel extends AndroidViewModel implements ViewModelProvi
         return mCommentList;
     }
 
-    public void getComment(String commentId, CommentRepository.GetCommentListener listener){
-        mRepository.getComment(commentId, listener);
+    public MutableLiveData<Comment> getComment(String commentId){
+        if (mComment == null){
+            mComment = new MutableLiveData<>();
+        }
+        mRepository.getComment(commentId, data -> {
+            if (data != null){
+                mComment.postValue(data);
+            }
+        });
+        return mComment;
     }
 
     public void insert(Comment comment, final CommentRepository.AddCommentListener listener) {
