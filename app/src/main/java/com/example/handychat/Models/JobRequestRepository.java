@@ -2,49 +2,19 @@ package com.example.handychat.Models;
 
 import android.app.Application;
 import android.os.AsyncTask;
-import android.util.Log;
-
-import java.util.LinkedList;
 import java.util.List;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.room.Update;
-
 public class JobRequestRepository {
-    private JobRequestDao mJobRequestDao;
     static ModelFirebase modelFirebase;
 
     public JobRequestRepository(Application application){
         AppLocalDbRepository db = ModelSql.getDatabase(application);
-        mJobRequestDao = db.jobRequestDao();
         modelFirebase = new ModelFirebase();
     }
 
-    public void GetRemoteJobRequestList(GetAllJobRequestsListener listener){
-        modelFirebase.getAllJobRequest(new ModelFirebase.getAllJobRequestListener() {
-            @Override
-            public void OnSuccess(List<JobRequest> jobRequestList) {
-                if(jobRequestList != null){
-                    listener.onComplete(jobRequestList);
-                    for (JobRequest jobRequest: jobRequestList){
-                        if (!jobRequest.getId().isEmpty()){
-                            insert(jobRequest, new AddJobRequestListener() {
-                                @Override
-                                public void onComplete(boolean success) {
-                                    Log.d("TAG","Added new job request with id: " + jobRequest.getId());
-                                }
-                            });
-                        }
-                    }
-                }
-            }
-        });
-     }
-
     /******************* Update ***********************/
     public interface UpdateJobRequestListener {
-        public void onComplete(boolean success);
+        public void onComplete();
     }
 
     public void update(JobRequest jobRequest, UpdateJobRequestListener listener) {
@@ -54,37 +24,32 @@ public class JobRequestRepository {
     /******************* Update ***********************/
 
     /******************* Delete ***********************/
-    // TODO: Below solution didn't fix the problem
-    /*
-    Note that a listener was created here because
-    deleting job takes time and happens async,
-    so we want to force the user to wait for the final delete
-    to avoid reinserting
-     */
     public interface JobDeletedListener{
         void onComplete();
     }
-    public void delete(String jobId, final JobDeletedListener listener) {
+
+    public void delete(String jobId) {
         // Step 1+2: Delete the remote and local comments for the job
         CommentRepository.deleteAllCommentForJob(jobId);
 
         // Step 3: Delete the job in the remote Database
-        modelFirebase.deleteJob(jobId);
-
-        // Step 4: Delete the job in the local Database
-        // TODO: Check why Job..
-        JobRequestAsyncDao.deleteJob(jobId,listener);
+        modelFirebase.deleteJob(jobId,()->{
+            // Step 4: Delete the job in the local Database
+            JobRequestAsyncDao.deleteJob(jobId);
+        });
     }
     /******************* Delete ***********************/
 
+    /******************* Insert ***********************/
     public interface AddJobRequestListener{
-        void onComplete(boolean success);
+        void onComplete();
     }
 
     public void insert(JobRequest jobRequest, AddJobRequestListener listener){
-        new insertAsyncTask(mJobRequestDao).execute(jobRequest);
+        JobRequestAsyncDao.insertJob(jobRequest);
         modelFirebase.addJobRequest(jobRequest,listener);
     }
+    /******************* Insert ***********************/
 
     /******************* Get all ***********************/
     public interface GetAllJobRequestsListener{
@@ -92,10 +57,23 @@ public class JobRequestRepository {
     }
 
     public void getAllJobRequests(final GetAllJobRequestsListener listener){
-        GetRemoteJobRequestList(listener);
-        // We can use the next method if we check before for internet connection else
-        // it will create an async problem.
-//        JobRequestAsyncDao.getAllJobRequests(listener);
+        /*
+        TODO: Create the solution of checking if we are online,
+        TODO: notice that db is now programmed to clean itself on APP onOpen()
+        Here we won't use local data get all jobRequest that to avoid Async issues
+        If we want our app to work with out internet, an option for loading form
+        local db should be here.
+          */
+        modelFirebase.getAllJobRequest(jobRequestList -> {
+            if(jobRequestList != null){
+                for (JobRequest jobRequest: jobRequestList){
+                    if (!jobRequest.getId().isEmpty()){
+                        JobRequestAsyncDao.insertJob(jobRequest);
+                    }
+                }
+                listener.onComplete(jobRequestList);
+            }
+        });
     }
 
     /******************* Get all ***********************/
@@ -108,28 +86,10 @@ public class JobRequestRepository {
     public void getJobRequest(String id,final GetJobRequestsListener listener){
         JobRequestAsyncDao.getJobRequests(id,listener);
     }
-
     /******************* Get Job request ***********************/
 
+    // This nested class is responsible for the local database handling
     public static class JobRequestAsyncDao {
-        public static void getAllJobRequests(final GetAllJobRequestsListener listener){
-            new AsyncTask<Void,Void,List<JobRequest>>(){
-
-                @Override
-                protected List<JobRequest> doInBackground(Void... voids) {
-                    List<JobRequest> list = ModelSql.INSTANCE.jobRequestDao().getAllJobRequests();
-                    listener.onComplete(list);
-                    return list;
-                }
-
-                @Override
-                protected void onPostExecute(List<JobRequest> jobRequestList) {
-                    super.onPostExecute(jobRequestList);
-                    listener.onComplete(jobRequestList);
-                }
-            }.execute();
-        }
-
         public static void getJobRequests(String id,GetJobRequestsListener listener) {
             new AsyncTask<Void,Void,JobRequest>(){
 
@@ -142,13 +102,12 @@ public class JobRequestRepository {
             }.execute();
         }
 
-        public static void deleteJob(String jobId,JobDeletedListener listener) {
+        public static void deleteJob(String jobId) {
             new AsyncTask<Void,Void,Void>(){
 
                 @Override
                 protected Void doInBackground(Void... voids) {
                     ModelSql.INSTANCE.jobRequestDao().DeleteById(jobId);
-                    listener.onComplete();
                     return null;
                 }
             }.execute();
@@ -159,28 +118,21 @@ public class JobRequestRepository {
 
                 @Override
                 protected Void doInBackground(Void... Voids) {
-                    ModelSql.INSTANCE.jobRequestDao().Update(jobRequest);
+                    ModelSql.INSTANCE.jobRequestDao().update(jobRequest);
+                    return null;
+                }
+            }.execute();
+        }
+
+        public static void insertJob(JobRequest jobRequest){
+            new AsyncTask<Void,Void,Void>(){
+
+                @Override
+                protected Void doInBackground(Void... Voids) {
+                    ModelSql.INSTANCE.jobRequestDao().insert(jobRequest);
                     return null;
                 }
             }.execute();
         }
     }
-
-    /******************* Insert ***********************/
-    // TODO: Merge next function with JobRequestAsyncDao
-    private class insertAsyncTask extends AsyncTask<JobRequest,Void,Void> {
-        private JobRequestDao mAsyncTaskDao;
-
-        public insertAsyncTask(JobRequestDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(JobRequest... jobRequests) {
-            mAsyncTaskDao.insert(jobRequests[0]);
-            return null;
-        }
-    }
-    /******************* Insert ***********************/
-
 }

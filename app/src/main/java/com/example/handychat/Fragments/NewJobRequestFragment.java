@@ -1,18 +1,15 @@
 package com.example.handychat.Fragments;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.NavController;
-
+import androidx.navigation.Navigation;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,72 +19,43 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.JobRequest;
-import com.example.handychat.Models.JobRequestRepository;
 import com.example.handychat.Models.Model;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.JobRequestViewModel;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-
 import java.util.Calendar;
-import java.util.Date;
 import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * to handle interaction events.
- * Use the {@link NewJobRequestFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class NewJobRequestFragment extends Fragment {
-
-    NavController navController;
-
-    private View view;
-    private ImageView imageView;
-    private EditText addressEditText;
-    private EditText descriptionEditText;
     Bitmap imageBitmap;
-    private Button saveBtn;
-    private ProgressBar progressBar;
-    private PackageManager packageManager;
+    private View view;
     private static final int REQUEST_WRITE_STORAGE = 112;
     private JobRequestViewModel mJobRequestViewModel;
 
     // Next int is used for takePic function
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
+    // View components
+    private ImageView imageView;
+    private EditText addressEditText;
+    private EditText descriptionEditText;
+    private Button saveBtn;
+    private ProgressBar progressBar;
+    private PackageManager packageManager;
+
+
     public NewJobRequestFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment NewJobRequestFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static NewJobRequestFragment newInstance() {
-        NewJobRequestFragment fragment = new NewJobRequestFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mJobRequestViewModel = ViewModelProviders.of(this).get(JobRequestViewModel.class);
-        navController = ((MainActivity)getActivity()).getNavController();
     }
 
     @Override
@@ -95,25 +63,21 @@ public class NewJobRequestFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_new_job_request, container, false);
-        imageView = (ImageView) view.findViewById(R.id.newJobImageView);
-        addressEditText = (EditText) view.findViewById(R.id.newJobEditTextAddress);
-        descriptionEditText = (EditText) view.findViewById(R.id.newFragmentEditTextDescription);
         packageManager = view.getContext().getPackageManager();
-        saveBtn = (Button) view.findViewById(R.id.newJobSaveBtn);
-        progressBar = (ProgressBar) view.findViewById(R.id.new_job_pb);
+
+        // Create references to view components
+        imageView = view.findViewById(R.id.newJobImageView);
+        addressEditText = view.findViewById(R.id.newJobEditTextAddress);
+        descriptionEditText = view.findViewById(R.id.newFragmentEditTextDescription);
+        saveBtn = view.findViewById(R.id.newJobSaveBtn);
+        progressBar = view.findViewById(R.id.new_job_pb);
         progressBar.setVisibility(View.INVISIBLE);
 
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                takePic();
-            }
+        imageView.setOnClickListener(viewObject -> {
+            takePic();
         });
-        saveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                save();
-            }
+        saveBtn.setOnClickListener(viewObject -> {
+            save();
         });
         return view;
     }
@@ -131,15 +95,12 @@ public class NewJobRequestFragment extends Fragment {
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_STORAGE);
         }
 
-        // TODO: Do something when user press save without taking a picture
         // TODO: Enable polling image from gallery
 
-        // Lets get the current user for his email
-        FirebaseUser user  = FirebaseAuth.getInstance().getCurrentUser();
-        Model.instance.saveImage(imageBitmap, new Model.SaveImageListener() {
-            @Override
-            public void onComplete(String url) {
-
+        if (imageBitmap != null){ // Checks if the user took a picture
+            // Lets get the current user for his email
+            FirebaseUser user  = FirebaseAuth.getInstance().getCurrentUser();
+            Model.instance.saveImage(imageBitmap, url ->  {
                 // Lets create our new jobRequest object
                 JobRequest jobRequest = new JobRequest(UUID.randomUUID().toString(),
                         url,
@@ -148,21 +109,19 @@ public class NewJobRequestFragment extends Fragment {
                         addressEditText.getText().toString(),
                         descriptionEditText.getText().toString());
 
-                // Now let's save it to remote firebase and locally
-                mJobRequestViewModel.insert(jobRequest, new JobRequestRepository.AddJobRequestListener() {
-                    @Override
-                    public void onComplete(boolean success) {
-                        // Stop progress bar
-                        progressBar.setVisibility(View.INVISIBLE);
+                // Now let's save it to remote FireBase and locally
+                mJobRequestViewModel.insert(jobRequest, () -> {
+                    // Stop progress bar
+                    progressBar.setVisibility(View.INVISIBLE);
 
-                        // Close fragment and navigate back to list
-                        navController.popBackStack();
-
-                    }
+                    // Close fragment and navigate back to list
+                    Navigation.findNavController(getView()).popBackStack();
                 });
-
-            }
-        });
+            });
+        } else {
+            Toast.makeText(getContext(),"Please take a picture in order to move forward.",Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.INVISIBLE);
+        }
     }
 
     /*
@@ -178,7 +137,6 @@ public class NewJobRequestFragment extends Fragment {
         }
     }
 
-
     /*
     onActivityResult catches the result of the camera activity for
     us getting the image taken
@@ -192,16 +150,4 @@ public class NewJobRequestFragment extends Fragment {
             imageView.setImageBitmap(imageBitmap);
         }
     }
-
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
 }

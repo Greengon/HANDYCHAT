@@ -23,7 +23,7 @@ public class ModelSql {
                 public void onOpen(@NonNull SupportSQLiteDatabase db) {
                     super.onOpen(db);
                     // If we want our app to work with out internet this should be removed
-                    new PopulateDbAsync(INSTANCE).execute();
+                    new CleanDbAsync(INSTANCE).execute();
                 }
             };
 
@@ -43,12 +43,12 @@ public class ModelSql {
     }
 
     // To delete all content and repopulate the database whenever the app is started
-    private static class PopulateDbAsync extends AsyncTask<Void,Void,Void>{
+    private static class CleanDbAsync extends AsyncTask<Void,Void,Void>{
         private JobRequestDao mJobRequestDao;
         private UserDao mUserDao;
         private CommentDao mCommentDao;
 
-        PopulateDbAsync(AppLocalDbRepository db){
+        CleanDbAsync(AppLocalDbRepository db){
             mCommentDao = db.commentDao();
             mJobRequestDao = db.jobRequestDao();
             mUserDao = db.userDao();

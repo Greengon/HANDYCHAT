@@ -1,5 +1,6 @@
 package com.example.handychat.Fragments;
 
+import android.app.DownloadManager;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -12,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.JobRequest;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.JobRequestViewModel;
@@ -23,6 +26,8 @@ public class JobRequestList extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
     private JobRequestListAdapter adapter;
     private JobRequestViewModel viewModel;
+    private String query;
+
 
     public JobRequestList() {
         // Required empty public constructor
@@ -48,9 +53,10 @@ public class JobRequestList extends Fragment {
             adapter.setJobRequests(jobRequestList);
         };
 
-        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-        viewModel.getAllJobRequests().observe(this, jobRequestListObserver);
+        query = ((MainActivity)getActivity()).getQuery();
 
+        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+        viewModel.getAllJobRequestsByQuery(query).observe(this, jobRequestListObserver);
     }
 
     @Override
@@ -74,12 +80,12 @@ public class JobRequestList extends Fragment {
         jobRequestList.setLayoutManager(layoutManager);
 
         // Specify an adapter
-        adapter = new JobRequestListAdapter(viewModel.getAllJobRequests().getValue());
+        adapter = new JobRequestListAdapter(viewModel.getAllJobRequestsByQuery(query).getValue());
         adapter.setOnItemClickListener(position ->  {
             Log.d("TAG","item click: " + position);
             // Lets move the the fragment of the selected request
             Bundle bundle = new Bundle();
-            bundle.putString("jobID",viewModel.getAllJobRequests().getValue().get(position).getId());
+            bundle.putString("jobID",viewModel.getAllJobRequestsByQuery(query).getValue().get(position).getId());
             Navigation.findNavController(getView()).navigate(R.id.action_jobRequestList_to_jobRequestView,bundle);
         });
 

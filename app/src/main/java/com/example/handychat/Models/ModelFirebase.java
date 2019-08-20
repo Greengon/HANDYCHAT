@@ -59,12 +59,12 @@ public class ModelFirebase {
                 .set(jobRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                listener.onComplete(task.isSuccessful());
+                listener.onComplete();
             }
         });
     }
 
-    public void deleteJob(String jobId) {
+    public void deleteJob(String jobId,final JobRequestRepository.JobDeletedListener listener) {
         // Step 1: Find the job
         db.collection("jobRequests").document(jobId).get().
                 addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -81,8 +81,9 @@ public class ModelFirebase {
                                     Log.d("TAG","No image url was saved for this job");
                                 }
                                 // Step 3: Delete job
-                                db.collection("jobRequests").document(jobId).delete();
-                                return;
+                                db.collection("jobRequests").document(jobId).delete().addOnSuccessListener(aVoid -> {
+                                    listener.onComplete();
+                                });
                             }
                         }else{
                             Log.d("TAG","get failed with ", task.getException());
@@ -100,78 +101,28 @@ public class ModelFirebase {
         result.put("imageUrl", jobRequest.getImageUrl());
         result.put("description", jobRequest.getDescription());
         db.collection("jobRequests").document(jobRequest.getId()).update(result);
-        listener.onComplete(true);
-    }
-
-
-    public interface GetJobRequestListener{
-        void onComplete(JobRequest jobRequest);
-    }
-
-    public void getJobRequest(String jobId, final GetJobRequestListener listener){
-        db.collection("jobRequests").document(jobId).get().
-                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()){
-                            DocumentSnapshot snapshot = task.getResult();
-                            if (snapshot.exists()){
-                                JobRequest jobRequest = snapshot.toObject(JobRequest.class);
-                                listener.onComplete(jobRequest);
-                                return;
-                            }
-                        }else{
-                            Log.d("TAG","get failed with ", task.getException());
-                        }
-                        listener.onComplete(null);
-                    }
-                });
-    }
-
-    // Testing only
-    public static void getRemoteData(String jobId, final JobRequestRepository.GetJobRequestsListener listener){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-         db.collection("jobRequests").document(jobId).get().
-                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()){
-                            DocumentSnapshot snapshot = task.getResult();
-                            if (snapshot.exists()){
-                                JobRequest jobRequest = snapshot.toObject(JobRequest.class);
-                                listener.onComplete(jobRequest);
-                                return;
-                            }
-                        }else{
-                            Log.d("TAG","get failed with ", task.getException());
-                        }
-                        listener.onComplete(null);
-                    }
-                });
-    }
-
-
-    public void getAllJobRequest(getAllJobRequestListener listener) {
-        db.collection("jobRequests").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                LinkedList<JobRequest> data = new LinkedList<>();
-                if (e != null) {
-                    Log.d("TAG","Failed getting the comments from remote.");
-                    return;
-                }
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots){
-                    JobRequest jobRequest = doc.toObject(JobRequest.class);
-                    data.add(jobRequest);
-                }
-                listener.OnSuccess(data);
-            }
-        });
+        listener.onComplete();
     }
 
     public interface getAllJobRequestListener {
         void OnSuccess(List<JobRequest> jobRequestList);
     }
+
+    public void getAllJobRequest(getAllJobRequestListener listener) {
+        db.collection("jobRequests").addSnapshotListener((queryDocumentSnapshots,error) -> {
+            LinkedList<JobRequest> data = new LinkedList<>();
+            if (error != null) {
+                Log.d("TAG","Failed getting the jobs from remote.");
+                return;
+            }
+            for (QueryDocumentSnapshot doc : queryDocumentSnapshots){
+                JobRequest jobRequest = doc.toObject(JobRequest.class);
+                data.add(jobRequest);
+            }
+            listener.OnSuccess(data);
+        });
+    }
+
     /****************** JobRequest handling ********************/
 
     /****************** Comment handling ********************/

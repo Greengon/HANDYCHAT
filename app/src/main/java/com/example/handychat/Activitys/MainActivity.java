@@ -3,10 +3,9 @@ package com.example.handychat.Activitys;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
-
+import android.app.SearchManager;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageButton;
 import com.example.handychat.R;
 
@@ -16,16 +15,19 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton gpsBtn;
     private ImageButton addNewRequestBtn;
     private NavController navController;
-
-    // Getters
-    public NavController getNavController() {
-        return navController;
-    }
+    private String query = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Try to catch a search query if it was created
+        Intent intent = getIntent();
+        if(Intent.ACTION_SEARCH.equals(intent.getAction())){
+            query = intent.getStringExtra(SearchManager.QUERY);
+        }
+
         navController = Navigation.findNavController(this,R.id.nav_host_fragment);
 
         // Lets create a reference to all the bar's button
@@ -36,10 +38,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Lets now set on click listener on each of them
         searchBtn.setOnClickListener(view -> {
-            // TODO: Create this listener for what happens when we press the search button
+            onSearchRequested();
         });
         userBtn.setOnClickListener(view -> {
-            // TODO: Create this listener for what happens when we press the user button
+            navController.navigate(R.id.action_global_imageButtonUser);
         });
         gpsBtn.setOnClickListener(view -> {
             // TODO: Create this listener for what happens when we press the gps button
@@ -47,5 +49,9 @@ public class MainActivity extends AppCompatActivity {
         addNewRequestBtn.setOnClickListener(view -> {
             navController.navigate(R.id.action_global_imageButtonAdd);
         });
+    }
+
+    public String getQuery() {
+        return query;
     }
 }

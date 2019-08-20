@@ -66,8 +66,6 @@ public class ViewCommentFragment extends Fragment {
         } else {
             Toast.makeText(getContext(),"Problem loading the comment",Toast.LENGTH_SHORT).show();
         }
-
         return view;
     }
-
 }

@@ -44,7 +44,8 @@ public class CommentRepository {
             if(commentList != null){
                 for (Comment comment: commentList){
                     if (!comment.getId().isEmpty()){
-                        insert(comment,success -> {
+                        // Let's insert the comments locally
+                        CommentAsyncDao.insertComment(comment,success -> {
                             Log.d("TAG","Inserted comment:" + comment.getId());
                         });
                     }
