@@ -1,5 +1,7 @@
 package com.example.handychat.Fragments;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -11,8 +13,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.handychat.Models.Comment;
+import com.example.handychat.Models.Model;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.CommentViewModel;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
 
 public class ViewCommentFragment extends Fragment {
     private static final String COMMENT_ID = "commentID";
@@ -25,6 +31,7 @@ public class ViewCommentFragment extends Fragment {
     private TextView userCreatedName;
     private TextView commentDate;
     private TextView commentText;
+    private Target target;
 
     public ViewCommentFragment() {
         // Required empty public constructor
@@ -57,15 +64,53 @@ public class ViewCommentFragment extends Fragment {
         commentText = view.findViewById(R.id.comment_view_text);
 
         // Put the data in the attributes
-        if (mComment != null){
-            // TODO: create the code to load user image here
-            userCreatedImage.setImageResource(R.drawable.avatar);
+        if (mComment != null) {
+            /****** Get user image ********/
+            // Image
+            if (mComment.getUserImage() == null || mComment.getUserImage().isEmpty()) {
+                userCreatedImage.setImageResource(R.drawable.avatar);
+            } else {
+                Picasso.get().setIndicatorsEnabled(true);
+                Model.loadImage(mComment.getUserImage(), imageFile -> {
+                    // We will prepare a Target object for Picasso
+                    target = new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            userCreatedImage.setImageBitmap(bitmap);
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+                        }
+                    };
+                    if (imageFile.exists()) {
+                        // Load the image with Picasso from local file
+                        Picasso.get().load(imageFile).into(target);
+                    } else {
+                            /*
+                             TODO: This isn't a good way of working, but it solve some async problems
+                             it helps when the app wasn't fast enough to download the  image.
+                             If there's time we should figure out a way to remove the next line and
+                             solve the problem.
+                              */
+                        // Try load the image with Picasso from remote
+                        Picasso.get().load(mComment.getUserImage()).into(target);
+                    }
+                });
+            }
+            /****** Get user image ********/
+
             userCreatedName.setText(mComment.getUserCreated());
             commentDate.setText(mComment.getDate());
             commentText.setText(mComment.getComment());
-        } else {
-            Toast.makeText(getContext(),"Problem loading the comment",Toast.LENGTH_SHORT).show();
-        }
+
+            } else {
+                Toast.makeText(getContext(), "Problem loading the comment", Toast.LENGTH_SHORT).show();
+            }
         return view;
     }
 }

@@ -1,15 +1,20 @@
 package com.example.handychat.Activitys;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.handychat.Models.User;
 import com.example.handychat.R;
+import com.example.handychat.ViewModel.UserViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -20,11 +25,24 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton addNewRequestBtn;
     private NavController navController;
     private String query = "";
+    private User user;
+    private UserViewModel mUserViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mUserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+
+        // Create the observer which updates the UI
+        final Observer<User> userObserver = resultUser ->  {
+            // Update UI
+            Log.d("TAG","LiveData of user activated on change");
+            user = resultUser;
+        };
+
+        String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        mUserViewModel.getUser(userEmail).observe(this,userObserver);
 
         // Try to catch a search query if it was created
         Intent intent = getIntent();
@@ -61,5 +79,9 @@ public class MainActivity extends AppCompatActivity {
 
     public String getQuery() {
         return query;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

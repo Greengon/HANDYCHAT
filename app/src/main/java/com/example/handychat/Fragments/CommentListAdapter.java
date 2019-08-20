@@ -1,5 +1,7 @@
 package com.example.handychat.Fragments;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,7 +9,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.example.handychat.Models.Comment;
+import com.example.handychat.Models.Model;
 import com.example.handychat.R;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
 import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +38,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         private TextView userName;
         private TextView commentText;
         private ProgressBar commentProgressBar;
+        private Target target;
 
         public CommentListViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
@@ -53,8 +60,44 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         public void bind(Comment comment) {
             userName.setText(comment.getUserCreated());
             commentText.setText(comment.comment);
-            // TODO: Once we will get user image, we will use Picasso here to load it
-            userImage.setImageResource(R.drawable.avatar);
+            /****** Get user image ********/
+            // Image
+            if (comment.getUserImage() == null || comment.getUserImage().isEmpty()) {
+                userImage.setImageResource(R.drawable.avatar);
+            } else {
+                Picasso.get().setIndicatorsEnabled(true);
+                Model.loadImage(comment.getUserImage(), imageFile -> {
+                    // We will prepare a Target object for Picasso
+                    target = new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            userImage.setImageBitmap(bitmap);
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+                        }
+                    };
+                    if (imageFile.exists()) {
+                        // Load the image with Picasso from local file
+                        Picasso.get().load(imageFile).into(target);
+                    } else {
+                        /*
+                         TODO: This isn't a good way of working, but it solve some async problems
+                         it helps when the app wasn't fast enough to download the  image.
+                         If there's time we should figure out a way to remove the next line and
+                         solve the problem.
+                          */
+                        // Try load the image with Picasso from remote
+                        Picasso.get().load(comment.getUserImage()).into(target);
+                    }
+                });
+                /****** Get user image ********/
+            }
             commentProgressBar.setVisibility(View.INVISIBLE);
         }
     }

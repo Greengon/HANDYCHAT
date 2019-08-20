@@ -62,7 +62,7 @@ public class JobRequestListAdapter extends RecyclerView.Adapter<JobRequestListAd
         return mData.size();
     }
 
-    static class jobRequestViewHolder extends RecyclerView.ViewHolder{
+    static class jobRequestViewHolder extends RecyclerView.ViewHolder {
         // Reference to the views for each data item
         View viewHolder;
         ImageView jobImage;
@@ -72,12 +72,12 @@ public class JobRequestListAdapter extends RecyclerView.Adapter<JobRequestListAd
         ProgressBar jobImageProgressBar;
         Target target;
 
-        public jobRequestViewHolder(@NonNull View itemView,final OnItemClickListener listener) {
+        public jobRequestViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
             itemView.setOnClickListener(view -> {
-                if (listener != null){
+                if (listener != null) {
                     int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION){
+                    if (position != RecyclerView.NO_POSITION) {
                         listener.onClick(position);
                     }
                 }
@@ -97,12 +97,12 @@ public class JobRequestListAdapter extends RecyclerView.Adapter<JobRequestListAd
 
             // Let's check if the current job request should be highlight
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            if (user.getEmail().equals(jobRequest.getUserCreated())){
+            if (user.getEmail().equals(jobRequest.getUserCreated())) {
                 viewHolder.setBackgroundResource(R.color.colorPrimaryBrightGreen);
             }
 
             /****** Get job request image ********/
-            if (jobRequest.getImageUrl() != null){
+            if (jobRequest.getImageUrl() != null) {
                 Picasso.get().setIndicatorsEnabled(true);
                 Model.loadImage(jobRequest.getImageUrl(), imageFile -> {
                     // We will prepare a Target object for Picasso
@@ -123,10 +123,10 @@ public class JobRequestListAdapter extends RecyclerView.Adapter<JobRequestListAd
                             jobImageProgressBar.setVisibility(View.VISIBLE);
                         }
                     };
-                    if (imageFile.exists()){
+                    if (imageFile.exists()) {
                         // Load the image with Picasso from local file
                         Picasso.get().load(imageFile).into(target);
-                    }else{
+                    } else {
                         /*
                          TODO: This isn't a good way of working, but it solve some async problems
                          it helps when the app wasn't fast enough to download the  image.
@@ -137,15 +137,49 @@ public class JobRequestListAdapter extends RecyclerView.Adapter<JobRequestListAd
                         Picasso.get().load(jobRequest.getImageUrl()).into(target);
                     }
                 });
-            }else{
+            } else {
                 jobImageProgressBar.setVisibility(View.INVISIBLE);
             }
             /****** Get job request image ********/
 
             /****** Get user image ********/
-            // TODO: Here we should load the user image, next line is only temporary
-            userImage.setImageResource(R.drawable.avatar);
-            /****** Get user image ********/
+            // Image
+            if (jobRequest.getUserImage() == null || jobRequest.getUserImage().isEmpty()) {
+                userImage.setImageResource(R.drawable.avatar);
+            } else {
+                Picasso.get().setIndicatorsEnabled(true);
+                Model.loadImage(jobRequest.getUserImage(), imageFile -> {
+                    // We will prepare a Target object for Picasso
+                    target = new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            userImage.setImageBitmap(bitmap);
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+                        }
+                    };
+                    if (imageFile.exists()) {
+                        // Load the image with Picasso from local file
+                        Picasso.get().load(imageFile).into(target);
+                    } else {
+                        /*
+                         TODO: This isn't a good way of working, but it solve some async problems
+                         it helps when the app wasn't fast enough to download the  image.
+                         If there's time we should figure out a way to remove the next line and
+                         solve the problem.
+                          */
+                        // Try load the image with Picasso from remote
+                        Picasso.get().load(jobRequest.getUserImage()).into(target);
+                    }
+                });
+                /****** Get user image ********/
+            }
         }
     }
 

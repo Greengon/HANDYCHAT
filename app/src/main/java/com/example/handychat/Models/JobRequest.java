@@ -17,6 +17,9 @@ public class JobRequest {
     @ColumnInfo(name = "user_created")
     public String userCreated;
 
+    @ColumnInfo(name = "user_image")
+    public String userImage;
+
     @ColumnInfo(name = "date")
     public String date;
 
@@ -31,10 +34,11 @@ public class JobRequest {
 
     }
 
-    public JobRequest(@NonNull String id, String imageUrl, String userCreated, String date, String address, String description) {
+    public JobRequest(@NonNull String id, String imageUrl, String userCreated,String userImage, String date, String address, String description) {
         this.id = id;
         this.imageUrl = imageUrl;
         this.userCreated = userCreated;
+        this.userImage = userImage;
         this.date = date;
         this.address = address;
         this.description = description;
@@ -49,6 +53,9 @@ public class JobRequest {
     }
     public String getUserCreated() {
         return userCreated;
+    }
+    public String getUserImage(){
+        return userImage;
     }
     public String getDate() {
         return date;
@@ -69,6 +76,9 @@ public class JobRequest {
     }
     public void setUserCreated(String userCreated) {
         this.userCreated = userCreated;
+    }
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
     }
     public void setDate(String date) {
         this.date = date;
