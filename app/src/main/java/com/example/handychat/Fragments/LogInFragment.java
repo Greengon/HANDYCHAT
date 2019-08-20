@@ -68,7 +68,7 @@ public class LogInFragment extends Fragment {
         mForgotPassTxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("TAG", "hello");
+                ((SignInActivity)getActivity()).getNavController().navigate(R.id.action_logInFragment_to_forgotPassFragment);
 
             }
         });
