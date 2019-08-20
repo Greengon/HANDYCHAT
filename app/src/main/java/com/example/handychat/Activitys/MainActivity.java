@@ -7,7 +7,11 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
 import com.example.handychat.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
     private ImageButton searchBtn;
@@ -41,10 +45,14 @@ public class MainActivity extends AppCompatActivity {
             onSearchRequested();
         });
         userBtn.setOnClickListener(view -> {
-            navController.navigate(R.id.action_global_imageButtonUser);
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            Bundle bundle = new Bundle();
+            bundle.putString("userEmail",user.getEmail());
+            navController.navigate(R.id.action_global_imageButtonUser,bundle);
         });
         gpsBtn.setOnClickListener(view -> {
             // TODO: Create this listener for what happens when we press the gps button
+            Toast.makeText(this,"On construction, stay tuned",Toast.LENGTH_SHORT).show();
         });
         addNewRequestBtn.setOnClickListener(view -> {
             navController.navigate(R.id.action_global_imageButtonAdd);

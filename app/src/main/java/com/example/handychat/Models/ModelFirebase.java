@@ -51,6 +51,20 @@ public class ModelFirebase {
             Log.d("TAG","Finish adding user to the database");
         });
     }
+
+    public void getUser(String userEmail, final UserRepository.GetUserListener listener){
+        db.collection("users").whereEqualTo("email",userEmail).addSnapshotListener((queryDocumentSnapshots,error) -> {
+            if (error != null) {
+                Log.d("TAG","Failed getting the user from remote.");
+                return;
+            }
+            for (QueryDocumentSnapshot doc : queryDocumentSnapshots){
+                User user = doc.toObject(User.class);
+                listener.onComplete(user);
+                UserRepository.insert(user);
+            }
+        });
+    }
     /****************** User handling ********************/
 
     /****************** JobRequest handling ********************/
@@ -131,10 +145,6 @@ public class ModelFirebase {
                 .set(comment).addOnCompleteListener(task ->  {
             Log.d("TAG","Model fire base addComment returned success");
         });
-    }
-
-    public interface GetCommentListener{
-        void onComplete(Comment comment);
     }
 
     public interface GetAllCommentListener {
