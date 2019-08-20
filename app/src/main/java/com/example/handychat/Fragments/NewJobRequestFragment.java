@@ -19,12 +19,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.JobRequest;
 import com.example.handychat.Models.Model;
+import com.example.handychat.Models.User;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.JobRequestViewModel;
+import com.example.handychat.ViewModel.UserViewModel;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -56,6 +59,7 @@ public class NewJobRequestFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mJobRequestViewModel = ViewModelProviders.of(this).get(JobRequestViewModel.class);
+        // Lets get the current user for his email and image
     }
 
     @Override
@@ -96,15 +100,13 @@ public class NewJobRequestFragment extends Fragment {
         }
 
         // TODO: Enable polling image from gallery
-
         if (imageBitmap != null){ // Checks if the user took a picture
-            // Lets get the current user for his email
-            FirebaseUser user  = FirebaseAuth.getInstance().getCurrentUser();
             Model.instance.saveImage(imageBitmap, url ->  {
                 // Lets create our new jobRequest object
                 JobRequest jobRequest = new JobRequest(UUID.randomUUID().toString(),
                         url,
-                        user.getEmail(),
+                        ((MainActivity)getActivity()).getUser().getEmail(),
+                        ((MainActivity)getActivity()).getUser().getImage(),
                         Calendar.getInstance().getTime().toString(),
                         addressEditText.getText().toString(),
                         descriptionEditText.getText().toString());
@@ -117,8 +119,7 @@ public class NewJobRequestFragment extends Fragment {
                     // Close fragment and navigate back to list
                     Navigation.findNavController(getView()).popBackStack();
                 });
-            });
-        } else {
+            }); } else {
             Toast.makeText(getContext(),"Please take a picture in order to move forward.",Toast.LENGTH_SHORT).show();
             progressBar.setVisibility(View.INVISIBLE);
         }

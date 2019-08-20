@@ -17,6 +17,9 @@ public class Comment {
     @ColumnInfo(name = "user_created")
     public String userCreated;
 
+    @ColumnInfo(name = "user_image")
+    public String userImage;
+
     @ColumnInfo(name = "date")
     public String date;
 
@@ -28,10 +31,11 @@ public class Comment {
 
     }
 
-    public Comment(@NonNull String id, String job_request_id, String userCreated, String date, String comment) {
+    public Comment(@NonNull String id, String job_request_id, String userCreated,String userImage ,String date, String comment) {
         this.id = id;
         this.job_request_id = job_request_id;
         this.userCreated = userCreated;
+        this.userImage = userImage;
         this.date = date;
         this.comment = comment;
     }
@@ -45,6 +49,9 @@ public class Comment {
     }
     public String getUserCreated() {
         return userCreated;
+    }
+    public String getUserImage() {
+        return userImage;
     }
     public String getDate() {
         return date;
@@ -62,6 +69,9 @@ public class Comment {
     }
     public void setUserCreated(String userCreated) {
         this.userCreated = userCreated;
+    }
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
     }
     public void setDate(String date) {
         this.date = date;

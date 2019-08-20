@@ -21,12 +21,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.JobRequest;
 import com.example.handychat.Models.Model;
+import com.example.handychat.Models.User;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.JobRequestViewModel;
+import com.example.handychat.ViewModel.UserViewModel;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import java.util.Calendar;
@@ -136,13 +139,12 @@ public class EditJobRequestFragment extends Fragment {
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_STORAGE);
         }
 
-        // Lets get the current user for his email
-        FirebaseUser user  = FirebaseAuth.getInstance().getCurrentUser();
         // Lets create our new jobRequest object
         JobRequest newJobRequest = new JobRequest(
                 mJobRequest.getId(),
                 imageUrl,
-                user.getEmail(),
+                ((MainActivity)getActivity()).getUser().getEmail(),
+                ((MainActivity)getActivity()).getUser().getImage(),
                 Calendar.getInstance().getTime().toString(),
                 addressEditText.getText().toString(),
                 descriptionEditText.getText().toString()

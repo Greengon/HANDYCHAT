@@ -10,11 +10,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+
+import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.Comment;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.CommentViewModel;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -59,14 +59,13 @@ public class NewCommentFragment extends Fragment {
             // Active progress bar
             progressBar.setVisibility(View.VISIBLE);
 
-            // Lets get the current user for his email
-            FirebaseUser user  = FirebaseAuth.getInstance().getCurrentUser();
 
             // Lets create our new comment object
             Comment comment = new Comment(
                     UUID.randomUUID().toString(),
                     jobId,
-                    user.getEmail(),
+                    ((MainActivity)getActivity()).getUser().getEmail(),
+                    ((MainActivity)getActivity()).getUser().getImage(),
                     Calendar.getInstance().getTime().toString(),
                     commentEditText.getText().toString()
             );
