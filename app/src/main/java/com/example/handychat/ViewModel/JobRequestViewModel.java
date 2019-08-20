@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 public class JobRequestViewModel extends AndroidViewModel {
     private JobRequestRepository mRepository;
     private MutableLiveData<List<JobRequest>> mAllJobRequests;
+    private MutableLiveData<JobRequest> mJobRequest;
 
     public JobRequestViewModel(Application application){
         super(application);
@@ -47,8 +48,17 @@ public class JobRequestViewModel extends AndroidViewModel {
         return mAllJobRequests;
     }
 
-    public void getJobRequest(String id, JobRequestRepository.GetJobRequestsListener listener){
-        mRepository.getJobRequest(id,listener);
+    public MutableLiveData<JobRequest> getJobRequest(String id){
+        if (mJobRequest == null){
+            mJobRequest = new MutableLiveData<>();
+        }
+
+        mRepository.getJobRequest(id,data -> {
+            if (data != null){
+                mJobRequest.postValue(data);
+            }
+        });
+        return mJobRequest;
     }
 
     public void insert(JobRequest jobRequest, JobRequestRepository.AddJobRequestListener listener) {
