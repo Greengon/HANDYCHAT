@@ -1,16 +1,22 @@
 package com.example.handychat.Fragments;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,6 +42,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import static android.app.Activity.RESULT_OK;
+
+import java.io.IOException;
 import java.util.concurrent.Executor;
 
 /**
@@ -43,7 +51,7 @@ import java.util.concurrent.Executor;
  */
 public class RegisterFragment extends Fragment {
     private static int RESULT_LOAD_IMAGE = 1;
-
+    private static final int GALLERY_REQUEST_CODE = 100;
     UserViewModel viewModel;
 
     // For image adding
@@ -64,7 +72,7 @@ public class RegisterFragment extends Fragment {
     private Spinner mAreasSpinner;
     private Button saveBtn;
     private Button addPhotoBtn;
-
+    private static final int REQUEST_WRITE_STORAGE = 112;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -92,7 +100,6 @@ public class RegisterFragment extends Fragment {
 
         // For image adding
         packageManager = view.getContext().getPackageManager();
-        Bitmap imageBitmap;
 
         // Lets find all our view components
         mNameField = (EditText) view.findViewById(R.id.editTextName);
@@ -109,7 +116,7 @@ public class RegisterFragment extends Fragment {
 
         // Lets creates the categories mCategoriesSpinner.
         // Create an ArrayAdapter using the string array and a default mCategoriesSpinner layout
-        ArrayAdapter<CharSequence> categoriesAdapter = ArrayAdapter.createFromResource(getContext(),R.array.categories,R.layout.support_simple_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> categoriesAdapter = ArrayAdapter.createFromResource(getContext(), R.array.categories, R.layout.support_simple_spinner_dropdown_item);
 
         // Specify the layout to use when the list of choices appears
         categoriesAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
@@ -119,7 +126,7 @@ public class RegisterFragment extends Fragment {
 
         // And the same for areas
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> areasAdapter = ArrayAdapter.createFromResource(getContext(),R.array.areas,R.layout.support_simple_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> areasAdapter = ArrayAdapter.createFromResource(getContext(), R.array.areas, R.layout.support_simple_spinner_dropdown_item);
 
         // Specify the layout to use when the list of choices appears
         areasAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
@@ -131,25 +138,46 @@ public class RegisterFragment extends Fragment {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createAccount(mEmailField.getText().toString(),mPasswordField.getText().toString());
+                save();
             }
         });
-
         // Let's create a listener for adding photo
         addPhotoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                 photoPickerIntent.setType("image/*");
-                if (photoPickerIntent.resolveActivity(packageManager) != null){
-                    startActivityForResult(photoPickerIntent, RESULT_LOAD_IMAGE);
+                if (photoPickerIntent.resolveActivity( packageManager) != null){
+                    startActivityForResult(photoPickerIntent, GALLERY_REQUEST_CODE);
                 }
             }
         });
 
         // Inflate the layout for this fragment
         return view;
+
     }
+        private void save()
+        {
+            // Active progress bar
+            progressBar.setVisibility(View.VISIBLE);
+
+            // save image
+
+            // First let's make sure we have permission to access
+            // the sd card
+            boolean hasPermission = (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+            if (!hasPermission) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_STORAGE);
+            }
+            Model.instance.saveImage(imageBitmap, new Model.SaveImageListener() {
+                @Override
+                public void onComplete(String url) {
+                    createAccount(mEmailField.getText().toString(),mPasswordField.getText().toString(),url);
+                }
+            });
+        }
+
 
     @Override
     public void onAttach(Context context) {
@@ -168,7 +196,7 @@ public class RegisterFragment extends Fragment {
     }
 
     /************************* Auth functions *******************/
-    private void createAccount(final String email, String password){
+    private void createAccount(final String email, String password,String imageUrl){
         Log.d(TAG, "createAccount:" + email);
         if (!validateFrom()){
             return;
@@ -190,7 +218,7 @@ public class RegisterFragment extends Fragment {
                             User userObject = new User(
                                     mNameField.getText().toString(),
                                     mEmailField.getText().toString(),
-                                    "",
+                                    imageUrl,
                                     mAddressField.getText().toString(),
                                     mCustomerRadioButton.isChecked(),
                                     mHandyManRadioButton.isChecked(),
@@ -245,9 +273,20 @@ public class RegisterFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK){
-            Bundle extras = data.getExtras();
-            imageBitmap = (Bitmap) extras.get("data");
-        }
+        if(requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK){
+          //  Bundle extras = data.getExtras();
+          //  imageBitmap = (Bitmap) extras.get("data");
+          ContentResolver result = (ContentResolver)view.getContext().getContentResolver();
+          Uri imageUri = data.getData();
+             try {
+                    imageBitmap = MediaStore.Images.Media.getBitmap(result, imageUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+
     }
+
 }

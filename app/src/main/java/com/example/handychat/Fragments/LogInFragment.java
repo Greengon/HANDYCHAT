@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.handychat.Activitys.MainActivity;
@@ -26,6 +27,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import org.w3c.dom.Text;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,7 +41,7 @@ public class LogInFragment extends Fragment {
     private Button mRegisterBtn;
     private Button mForgetPasswordBtn;
     private FirebaseAuth mAuth;
-
+    private TextView mForgotPassTxt;
     public LogInFragment() {
         // Required empty public constructor
     }
@@ -60,8 +63,17 @@ public class LogInFragment extends Fragment {
         mEmailField = (EditText) view.findViewById(R.id.editTextEmail);
         mPasswordField = (EditText) view.findViewById(R.id.editTextPassword);
         mProgressBar = (ProgressBar) view.findViewById(R.id.signin_progressbar);
-
+        mForgotPassTxt=(TextView)  view.findViewById(R.id.forget_password_text);
         mLoginBtn = (Button) view.findViewById(R.id.signin_login_btn);
+        mForgotPassTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("TAG", "hello");
+
+            }
+        });
+
+
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
