@@ -101,25 +101,6 @@ public class EditJobRequestFragment extends Fragment {
         progressBar = view.findViewById(R.id.edit_job_pb);
         progressBar.setVisibility(View.INVISIBLE);
 
-        // Lets creates the categories mCategoriesSpinner.
-        // Create an ArrayAdapter using the string array and a default mCategoriesSpinner layout
-        ArrayAdapter<CharSequence> categoriesAdapter = ArrayAdapter.createFromResource(getContext(), R.array.categories, R.layout.support_simple_spinner_dropdown_item);
-
-        // Specify the layout to use when the list of choices appears
-        categoriesAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-
-        // Apply the categoriesAdapter to the mCategoriesSpinner
-        mCategoriesSpinner.setAdapter(categoriesAdapter);
-
-        // And the same for areas
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> areasAdapter = ArrayAdapter.createFromResource(getContext(), R.array.areas, R.layout.support_simple_spinner_dropdown_item);
-
-        // Specify the layout to use when the list of choices appears
-        areasAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-
-        // Apply the areasAdapter to the spinner
-        mAreasSpinner.setAdapter(areasAdapter);
 
         // TODO: Enable polling image from gallery
         jobImage.setOnClickListener(viewObject -> {
@@ -202,6 +183,25 @@ public class EditJobRequestFragment extends Fragment {
         if (mJobRequest != null){
             addressEditText.setText(mJobRequest.getAddress(), TextView.BufferType.EDITABLE);
             descriptionEditText.setText(mJobRequest.getDescription(), TextView.BufferType.EDITABLE);
+            // Lets creates the categories mCategoriesSpinner.
+            // Create an ArrayAdapter using the string array and a default mCategoriesSpinner layout
+            ArrayAdapter<CharSequence> categoriesAdapter = ArrayAdapter.createFromResource(getContext(), R.array.categories, R.layout.support_simple_spinner_dropdown_item);
+
+            // Specify the layout to use when the list of choices appears
+            categoriesAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+
+            // Apply the categoriesAdapter to the mCategoriesSpinner
+            mCategoriesSpinner.setAdapter(categoriesAdapter);
+
+            // And the same for areas
+            // Create an ArrayAdapter using the string array and a default spinner layout
+            ArrayAdapter<CharSequence> areasAdapter = ArrayAdapter.createFromResource(getContext(), R.array.areas, R.layout.support_simple_spinner_dropdown_item);
+
+            // Specify the layout to use when the list of choices appears
+            areasAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+
+            // Apply the areasAdapter to the spinner
+            mAreasSpinner.setAdapter(areasAdapter);
 
             /****** Get job request image ********/
             if (mJobRequest.getImageUrl() != null){

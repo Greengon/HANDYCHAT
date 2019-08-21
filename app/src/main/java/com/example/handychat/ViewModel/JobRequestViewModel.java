@@ -25,9 +25,24 @@ public class JobRequestViewModel extends AndroidViewModel {
         mRepository.getAllJobRequests(data ->  {
             if (data != null){
                 // Two option for this listener
-                if (query == null || query.isEmpty()){
+                if (query == null || query.isEmpty()) {
                     // One: there is a null/empty query which mean we want all jobs
                     mAllJobRequests.postValue(data);
+                } else if(query.startsWith("HANDYMAN|")){
+                    // Get the value needed
+                    String category = query.split("\\|")[1];
+                    String area = query.split("\\|")[2];
+                    String email = query.split("\\|")[3];
+
+                    // Create the list from data
+                    List<JobRequest> list = new LinkedList<>();
+                    for (JobRequest jobRequest: data){
+                        if ((jobRequest.getArea().equals(area) && jobRequest.getCategory().equals(category)) || jobRequest.getUserCreated().equals(email)
+                        ) {
+                            list.add(jobRequest);
+                        }
+                    }
+                    mAllJobRequests.postValue(list);
                 } else {
                     // There was a query and we want to look for something
                     List<JobRequest> list = new LinkedList<>();

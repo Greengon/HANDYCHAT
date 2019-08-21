@@ -33,24 +33,41 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mUserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        navController = Navigation.findNavController(this,R.id.nav_host_fragment);
 
         // Create the observer which updates the UI
         final Observer<User> userObserver = resultUser ->  {
             // Update UI
             Log.d("TAG","LiveData of user activated on change");
             user = resultUser;
+            // Only when we will get the user from the db then we should go to the main fragment.
+            // Let's build our query
+            // First let's check if user used the search option and the query isn't empty
+            // it this case we would do nothing.
+            if (query.isEmpty()){
+                // Lets check if our user is a handyman, if not do nothing.
+                if (user.handyMan){
+                    query += "HANDYMAN|";
+                    query += user.getCategory();
+                    query += "|";
+                    query += user.getArea();
+                    query += "|";
+                    query += user.getEmail();
+                }
+            }
+            Toast.makeText(this,"Loading job request that may be interesting for you",Toast.LENGTH_SHORT).show();
+            navController.navigate(R.id.jobRequestList);
         };
 
         String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         mUserViewModel.getUser(userEmail).observe(this,userObserver);
+
 
         // Try to catch a search query if it was created
         Intent intent = getIntent();
         if(Intent.ACTION_SEARCH.equals(intent.getAction())){
             query = intent.getStringExtra(SearchManager.QUERY);
         }
-
-        navController = Navigation.findNavController(this,R.id.nav_host_fragment);
 
         // Lets create a reference to all the bar's button
         searchBtn = findViewById(R.id.imageButtonSearch);
