@@ -56,7 +56,11 @@
         android:id="@+id/viewCommentFragment"
         android:name="com.example.handychat.Fragments.ViewCommentFragment"
         android:label="fragment_view_comment"
-        tools:layout="@layout/fragment_view_comment" />
+        tools:layout="@layout/fragment_view_comment" >
+        <action
+            android:id="@+id/action_viewCommentFragment_to_editCommentFragment"
+            app:destination="@id/editCommentFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/editJobRequestFragment"
@@ -74,5 +78,10 @@
     <action android:id="@+id/action_global_imageButtonAdd" app:destination="@id/imageButtonAdd" />
     <action android:id="@+id/action_global_imageButtonUser" app:destination="@id/imageButtonUser"/>
     <action android:id="@+id/action_global_imageButtonHome" app:destination="@id/jobRequestList"/>
+    <fragment
+        android:id="@+id/editCommentFragment"
+        android:name="com.example.handychat.Fragments.EditCommentFragment"
+        android:label="edit_comment_fragment"
+        tools:layout="@layout/edit_comment_fragment" />
 
 </navigation>

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#ffffff"
     android:clickable="true"
-    tools:context=".Fragments.NewCommentFragment">
+    tools:context=".Fragments.EditCommentFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

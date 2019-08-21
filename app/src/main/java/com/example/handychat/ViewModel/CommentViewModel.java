@@ -3,6 +3,9 @@ package com.example.handychat.ViewModel;
 import android.app.Application;
 import com.example.handychat.Models.Comment;
 import com.example.handychat.Models.CommentRepository;
+import com.example.handychat.Models.JobRequest;
+import com.example.handychat.Models.JobRequestRepository;
+
 import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -58,5 +61,9 @@ public class CommentViewModel extends AndroidViewModel implements ViewModelProvi
 
     public void insert(Comment comment, final CommentRepository.AddCommentListener listener) {
         mRepository.insert(comment,listener);
+    }
+
+    public void update(Comment comment, CommentRepository.UpdateCommentListener listener) {
+        mRepository.update(comment,listener);
     }
 }

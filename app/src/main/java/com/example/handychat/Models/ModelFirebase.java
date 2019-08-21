@@ -107,6 +107,18 @@ public class ModelFirebase {
         listener.onComplete();
     }
 
+    public void UpdateComment(Comment comment, CommentRepository.UpdateCommentListener listener) {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("id", comment.getId());
+        result.put("date", comment.getDate());
+        result.put("job_request_id", comment.getJobRequestId());
+        result.put("userCreated", comment.getUserCreated());
+        result.put("userImage", comment.getUserImage());
+        result.put("comment", comment.getComment());
+        db.collection("comments").document(comment.getId()).update(result);
+        listener.onComplete();
+    }
+
     public interface getAllJobRequestListener {
         void OnSuccess(List<JobRequest> jobRequestList);
     }

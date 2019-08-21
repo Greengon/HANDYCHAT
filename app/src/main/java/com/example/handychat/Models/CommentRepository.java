@@ -3,6 +3,9 @@ package com.example.handychat.Models;
 import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import androidx.room.Query;
+
 import java.util.List;
 
 public class CommentRepository {
@@ -12,6 +15,17 @@ public class CommentRepository {
         AppLocalDbRepository db = ModelSql.getDatabase(application);
         modelFirebase = new ModelFirebase();
     }
+    /******************* Update ***********************/
+    public interface UpdateCommentListener {
+        public void onComplete();
+    }
+
+    public void update(Comment comment, CommentRepository.UpdateCommentListener listener) {
+        modelFirebase.UpdateComment(comment,listener);
+        CommentRepository.CommentAsyncDao.updateComment(comment);
+    }
+    /******************* Update ***********************/
+
 
     /******************* Add comment ***********************/
     public interface AddCommentListener{
@@ -81,6 +95,17 @@ public class CommentRepository {
                 protected void onPostExecute(List<Comment> commentList) {
                     super.onPostExecute(commentList);
                     listener.onComplete(commentList);
+                }
+            }.execute();
+        }
+
+        private static void updateComment(Comment comment){
+            new AsyncTask<Void,Void,Void>(){
+
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    ModelSql.INSTANCE.commentDao().update(comment);
+                    return null;
                 }
             }.execute();
         }

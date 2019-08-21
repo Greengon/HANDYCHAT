@@ -13,6 +13,9 @@ interface CommentDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Comment... comments);
 
+    @Update
+    void update(Comment... comments);
+
     @Query("DELETE FROM comments")
     void deleteAll();
 

@@ -108,6 +108,8 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         void onClick(int position);
     }
 
+
+
     void setOnItemClickListener(OnItemClickListener listener){
         mListener = listener;
     }

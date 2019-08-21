@@ -143,6 +143,7 @@ public class JobRequestView extends Fragment {
             commentList.setAdapter(adapter);
             /************ Comments Section ***************/
 
+
             /************ Buttons Section ***************/
             progressBar = view.findViewById(R.id.job_request_view_pb);
             progressBar.setVisibility(View.INVISIBLE);

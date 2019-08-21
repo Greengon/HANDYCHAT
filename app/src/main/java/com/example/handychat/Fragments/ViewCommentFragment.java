@@ -7,9 +7,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +35,7 @@ public class ViewCommentFragment extends Fragment {
     private TextView userCreatedName;
     private TextView commentDate;
     private TextView commentText;
+    private Button editBtn;
     private Target target;
 
     public ViewCommentFragment() {
@@ -68,6 +72,13 @@ public class ViewCommentFragment extends Fragment {
         userCreatedName = view.findViewById(R.id.comment_user_name);
         commentDate = view.findViewById(R.id.comment_date);
         commentText = view.findViewById(R.id.comment_view_text);
+        editBtn = view.findViewById(R.id.editCommentBtn);
+
+        editBtn.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("commentID",getArguments().getString(COMMENT_ID));
+            Navigation.findNavController(getView()).navigate(R.id.action_viewCommentFragment_to_editCommentFragment,bundle);
+        });
 
         updateUI();
 
