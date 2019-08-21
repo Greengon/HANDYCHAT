@@ -1,6 +1,7 @@
 package com.example.handychat.Activitys;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
@@ -9,9 +10,11 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.handychat.Fragments.JobRequestList;
 import com.example.handychat.Models.User;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.UserViewModel;
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton userBtn;
     private ImageButton gpsBtn;
     private ImageButton addNewRequestBtn;
+    private ImageButton homeBtn;
     private NavController navController;
     private String query = "";
     private User user;
@@ -74,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         userBtn = findViewById(R.id.imageButtonUser);
         gpsBtn = findViewById(R.id.imageButtonGps);
         addNewRequestBtn = findViewById(R.id.imageButtonAdd);
+        homeBtn=findViewById(R.id.imageButtonHome);
 
         // Lets now set on click listener on each of them
         searchBtn.setOnClickListener(view -> {
@@ -92,7 +97,13 @@ public class MainActivity extends AppCompatActivity {
         addNewRequestBtn.setOnClickListener(view -> {
             navController.navigate(R.id.action_global_imageButtonAdd);
         });
-    }
+        homeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.action_global_imageButtonHome);
+            }
+        });
+    };
 
     public String getQuery() {
         return query;

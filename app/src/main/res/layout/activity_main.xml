@@ -16,6 +16,18 @@
         android:orientation="vertical">
 
         <ImageButton
+            android:id="@+id/imageButtonHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/main_app_menu"
+            android:layout_gravity="center"
+            android:layout_marginTop="25dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/home" />
+
+        <ImageButton
             android:id="@+id/imageButtonSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

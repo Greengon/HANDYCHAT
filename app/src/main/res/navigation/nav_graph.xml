@@ -73,5 +73,6 @@
     <!-- Global actions-->
     <action android:id="@+id/action_global_imageButtonAdd" app:destination="@id/imageButtonAdd" />
     <action android:id="@+id/action_global_imageButtonUser" app:destination="@id/imageButtonUser"/>
+    <action android:id="@+id/action_global_imageButtonHome" app:destination="@id/jobRequestList"/>
 
 </navigation>

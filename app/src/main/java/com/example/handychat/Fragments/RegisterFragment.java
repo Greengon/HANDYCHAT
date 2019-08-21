@@ -48,6 +48,8 @@ import static android.app.Activity.RESULT_OK;
 
 import java.io.IOException;
 import java.util.concurrent.Executor;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -143,6 +145,10 @@ public class RegisterFragment extends Fragment {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!validateFrom()){
+                    return;
+                }
+
                 save();
             }
         });
@@ -231,9 +237,7 @@ public class RegisterFragment extends Fragment {
     /************************* Auth functions *******************/
     private void createAccount(final String email, String password,String imageUrl){
         Log.d(TAG, "createAccount:" + email);
-        if (!validateFrom()){
-            return;
-        }
+
 
         // Show Progress bar to user
         progressBar.setVisibility(View.VISIBLE);
@@ -283,19 +287,32 @@ public class RegisterFragment extends Fragment {
         if (TextUtils.isEmpty(email)){
             mEmailField.setError("Required.");
             valid = false;
-        } else {
+        }
+        else if (!isValidEmailId(email.trim())){
+            mEmailField.setError("Email address is not valid.");
+            valid = false;
+        }
+        else {
             mEmailField.setError(null);
         }
 
         // Validate password
         String password = mPasswordField.getText().toString();
-        if (TextUtils.isEmpty(password)){
+        if (TextUtils.isEmpty(password)) {
             mPasswordField.setError("Required.");
             valid = false;
-        } else {
+        }
+        else if(password.length()<6 &&!isValidPassword(password)){
+            mPasswordField.setError("password must be at least 6 characters or password not valid");
+            valid = false;
+        }
+        else {
             mPasswordField.setError(null);
         }
-
+        if (imageBitmap== null){
+            Toast.makeText(getActivity(),"must add picture ",Toast.LENGTH_SHORT).show();
+            valid = false;
+        }
         return valid;
     }
 
@@ -323,6 +340,28 @@ public class RegisterFragment extends Fragment {
         }
 
 
+    }
+
+    public static boolean isValidPassword(final String password) {
+
+        Pattern pattern;
+        Matcher matcher;
+        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{4,}$";
+        pattern = Pattern.compile(PASSWORD_PATTERN);
+        matcher = pattern.matcher(password);
+
+        return matcher.matches();
+
+    }
+
+    private boolean isValidEmailId(String email){
+
+        return Pattern.compile("^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]{1}|[\\w-]{2,}))@"
+                + "((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+                + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\."
+                + "([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+                + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
+                + "([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$").matcher(email).matches();
     }
 
 }
