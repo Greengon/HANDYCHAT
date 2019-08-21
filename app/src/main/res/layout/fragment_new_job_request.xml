@@ -80,6 +80,30 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="132dp"
+            android:orientation="vertical">
+
+            <Spinner
+                android:id="@+id/DropDownCategories"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="15dp"
+                android:layout_weight="1"
+                android:background="?attr/colorButtonNormal"
+                android:spinnerMode="dropdown" />
+
+            <Spinner
+                android:id="@+id/DropDownAreas"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="15dp"
+                android:layout_weight="1"
+                android:background="?attr/colorButtonNormal"
+                android:spinnerMode="dropdown" />
+        </LinearLayout>
+
         <!-- Save button -->
         <Button
             android:id="@+id/newJobSaveBtn"

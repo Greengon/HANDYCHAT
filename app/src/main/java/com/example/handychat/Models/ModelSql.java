@@ -8,7 +8,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {JobRequest.class,User.class,Comment.class}, version = 4)
+@Database(entities = {JobRequest.class,User.class,Comment.class}, version = 6)
 abstract class AppLocalDbRepository extends RoomDatabase {
     public abstract JobRequestDao jobRequestDao();
     public abstract UserDao userDao();

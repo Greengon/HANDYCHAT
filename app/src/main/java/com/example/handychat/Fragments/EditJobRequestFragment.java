@@ -17,10 +17,12 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.handychat.Activitys.MainActivity;
@@ -57,6 +59,8 @@ public class EditJobRequestFragment extends Fragment {
     private EditText addressEditText;
     private EditText descriptionEditText;
     private Button saveBtn;
+    private Spinner mCategoriesSpinner;
+    private Spinner mAreasSpinner;
     private ProgressBar progressBar;
 
     public EditJobRequestFragment() {
@@ -91,10 +95,31 @@ public class EditJobRequestFragment extends Fragment {
         jobImage = view.findViewById(R.id.editJobImageView);
         addressEditText = view.findViewById(R.id.editJobEditTextAddress);
         descriptionEditText = view.findViewById(R.id.editFragmentEditTextDescription);
+        mCategoriesSpinner = view.findViewById(R.id.DropDownCategories);
+        mAreasSpinner = view.findViewById(R.id.DropDownAreas);
         saveBtn = view.findViewById(R.id.editJobSaveBtn);
         progressBar = view.findViewById(R.id.edit_job_pb);
         progressBar.setVisibility(View.INVISIBLE);
 
+        // Lets creates the categories mCategoriesSpinner.
+        // Create an ArrayAdapter using the string array and a default mCategoriesSpinner layout
+        ArrayAdapter<CharSequence> categoriesAdapter = ArrayAdapter.createFromResource(getContext(), R.array.categories, R.layout.support_simple_spinner_dropdown_item);
+
+        // Specify the layout to use when the list of choices appears
+        categoriesAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+
+        // Apply the categoriesAdapter to the mCategoriesSpinner
+        mCategoriesSpinner.setAdapter(categoriesAdapter);
+
+        // And the same for areas
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> areasAdapter = ArrayAdapter.createFromResource(getContext(), R.array.areas, R.layout.support_simple_spinner_dropdown_item);
+
+        // Specify the layout to use when the list of choices appears
+        areasAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+
+        // Apply the areasAdapter to the spinner
+        mAreasSpinner.setAdapter(areasAdapter);
 
         // TODO: Enable polling image from gallery
         jobImage.setOnClickListener(viewObject -> {
@@ -126,7 +151,9 @@ public class EditJobRequestFragment extends Fragment {
                 ((MainActivity)getActivity()).getUser().getImage(),
                 Calendar.getInstance().getTime().toString(),
                 addressEditText.getText().toString(),
-                descriptionEditText.getText().toString()
+                descriptionEditText.getText().toString(),
+                mCategoriesSpinner.getSelectedItem().toString(),
+                mAreasSpinner.getSelectedItem().toString()
         );
 
         // Now let's save it to remote FireBase and locally
