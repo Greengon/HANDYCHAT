@@ -47,7 +47,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="23dp"
                         android:layout_marginLeft="10dp"
-                        android:text="TextView"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -58,12 +57,24 @@
                         android:layout_width="match_parent"
                         android:layout_height="19dp"
                         android:layout_marginLeft="10dp"
-                        android:text="TextView"
-                        app:layout_constraintBottom_toTopOf="@+id/job_view_description_value"
+                        app:layout_constraintBottom_toTopOf="@+id/job_view_description_title"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.108"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/job_view_date_value"
+                        app:layout_constraintVertical_bias="0.19" />
+
+                    <TextView
+                        android:id="@+id/job_view_description_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="19dp"
+                        android:layout_marginLeft="10dp"
+                        android:text="Description:"
+                        app:layout_constraintBottom_toTopOf="@+id/job_view_description_value"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.108"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/job_view_address_value"
                         app:layout_constraintVertical_bias="0.19" />
 
                     <androidx.core.widget.NestedScrollView
@@ -71,21 +82,26 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginLeft="10dp"
                         android:layout_height="match_parent"
-                        android:background="@color/colorPrimaryBlack"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/job_view_user_image"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/job_view_address_value"
                         >
-                        <TextView
-                            android:id="@+id/job_view_description_value"
+                        <androidx.cardview.widget.CardView
+                            android:padding="10dp"
+                            android:layout_margin="10dp"
+                            app:cardCornerRadius="5dp"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:padding="2dp"
-                            android:layout_margin="2dp"
-                            android:background="@color/colorPrimaryWhite"
-                            android:text="TextView"
-                            />
+                            android:layout_height="match_parent">
+                            <TextView
+                                android:id="@+id/job_view_description_value"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="2dp"
+                                android:layout_margin="2dp"
+                                android:background="@color/colorPrimaryWhite"
+                                />
+                        </androidx.cardview.widget.CardView>
                     </androidx.core.widget.NestedScrollView>
                 </LinearLayout>
 
