@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-
 import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.Comment;
 import com.example.handychat.R;

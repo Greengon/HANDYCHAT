@@ -1,22 +1,16 @@
 package com.example.handychat.Fragments;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,36 +20,24 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import com.example.handychat.Activitys.SignInActivity;
 import com.example.handychat.Models.Model;
 import com.example.handychat.Models.User;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.UserViewModel;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import static android.app.Activity.RESULT_OK;
-
 import java.io.IOException;
-import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import static android.app.Activity.RESULT_OK;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class RegisterFragment extends Fragment {
-    private static int RESULT_LOAD_IMAGE = 1;
     private static final int GALLERY_REQUEST_CODE = 100;
     UserViewModel viewModel;
 
@@ -84,14 +66,6 @@ public class RegisterFragment extends Fragment {
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
-    public static RegisterFragment newInstance() {
-        RegisterFragment fragment = new RegisterFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,18 +82,18 @@ public class RegisterFragment extends Fragment {
         packageManager = view.getContext().getPackageManager();
 
         // Lets find all our view components
-        mNameField = (EditText) view.findViewById(R.id.editTextName);
-        mEmailField = (EditText) view.findViewById(R.id.editTextEmail);
-        mPasswordField = (EditText) view.findViewById(R.id.editTextPassword);
-        mAddressField = (EditText) view.findViewById(R.id.editTextAddress);
-        mCustomerRadioButton = (RadioButton) view.findViewById(R.id.CustomerRadioButton);
-        mHandyManRadioButton = (RadioButton) view.findViewById(R.id.HandyManRadioButton);
-        mCategoriesSpinner = (Spinner) view.findViewById(R.id.DropDownCategories);
-        mAreasSpinner = (Spinner) view.findViewById(R.id.DropDownAreas);
-        saveBtn = (Button) view.findViewById(R.id.saveBtn);
-        addPhotoBtn = (Button) view.findViewById(R.id.addPictureBtn);
-        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-        avatarImgView=(ImageView)  view.findViewById(R.id.avatarImgView);
+        mNameField = view.findViewById(R.id.editTextName);
+        mEmailField = view.findViewById(R.id.editTextEmail);
+        mPasswordField = view.findViewById(R.id.editTextPassword);
+        mAddressField = view.findViewById(R.id.editTextAddress);
+        mCustomerRadioButton = view.findViewById(R.id.CustomerRadioButton);
+        mHandyManRadioButton = view.findViewById(R.id.HandyManRadioButton);
+        mCategoriesSpinner = view.findViewById(R.id.DropDownCategories);
+        mAreasSpinner = view.findViewById(R.id.DropDownAreas);
+        saveBtn = view.findViewById(R.id.saveBtn);
+        addPhotoBtn = view.findViewById(R.id.addPictureBtn);
+        progressBar = view.findViewById(R.id.progressBar);
+        avatarImgView= view.findViewById(R.id.avatarImgView);
 
         // Lets creates the categories mCategoriesSpinner.
         // Create an ArrayAdapter using the string array and a default mCategoriesSpinner layout
@@ -142,53 +116,42 @@ public class RegisterFragment extends Fragment {
         mAreasSpinner.setAdapter(areasAdapter);
 
         // Create a listener to catch if someone pressed on the save.
-        saveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!validateFrom()){
-                    return;
-                }
-
-                save();
+        saveBtn.setOnClickListener( viewObject -> {
+            if (!validateFrom()){
+                return;
             }
+
+            save();
         });
+
         // Let's create a listener for adding photo
-        addPhotoBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                photoPickerIntent.setType("image/*");
-                if (photoPickerIntent.resolveActivity( packageManager) != null){
-                    startActivityForResult(photoPickerIntent, GALLERY_REQUEST_CODE);
-                }
+        addPhotoBtn.setOnClickListener( viewObject -> {
+            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+            photoPickerIntent.setType("image/*");
+            if (photoPickerIntent.resolveActivity( packageManager) != null){
+                startActivityForResult(photoPickerIntent, GALLERY_REQUEST_CODE);
             }
         });
 
-        mCustomerRadioButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mCustomerRadioButton.isSelected()){
-                    mCustomerRadioButton.setChecked(false);
-                    mCustomerRadioButton.setSelected(false);
-                }
-                else{
-                    mCustomerRadioButton.setChecked(true);
-                    mCustomerRadioButton.setSelected(true);
-                }
+        mCustomerRadioButton.setOnClickListener( viewObject -> {
+            if(mCustomerRadioButton.isSelected()){
+                mCustomerRadioButton.setChecked(false);
+                mCustomerRadioButton.setSelected(false);
+            }
+            else{
+                mCustomerRadioButton.setChecked(true);
+                mCustomerRadioButton.setSelected(true);
             }
         });
 
-        mHandyManRadioButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mHandyManRadioButton.isSelected()){
-                    mHandyManRadioButton.setChecked(false);
-                    mHandyManRadioButton.setSelected(false);
-                }
-                else{
-                    mHandyManRadioButton.setChecked(true);
-                    mHandyManRadioButton.setSelected(true);
-                }
+        mHandyManRadioButton.setOnClickListener( viewObject -> {
+            if(mHandyManRadioButton.isSelected()){
+                mHandyManRadioButton.setChecked(false);
+                mHandyManRadioButton.setSelected(false);
+            }
+            else{
+                mHandyManRadioButton.setChecked(true);
+                mHandyManRadioButton.setSelected(true);
             }
         });
 
@@ -196,37 +159,25 @@ public class RegisterFragment extends Fragment {
         return view;
 
     }
-        private void save()
-        {
-            // Active progress bar
-            progressBar.setVisibility(View.VISIBLE);
 
-            // save image
+    private void save()
+    {
+        // Active progress bar
+        progressBar.setVisibility(View.VISIBLE);
 
-            // First let's make sure we have permission to access
-            // the sd card
-            boolean hasPermission = (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
-            if (!hasPermission) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_STORAGE);
-            }
-            Model.instance.saveImage(imageBitmap, new Model.SaveImageListener() {
-                @Override
-                public void onComplete(String url) {
-                    createAccount(mEmailField.getText().toString(),mPasswordField.getText().toString(),url);
-                }
-            });
+        // save image
+
+        // First let's make sure we have permission to access
+        // the sd card
+        boolean hasPermission = (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+        if (!hasPermission) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_STORAGE);
         }
-
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+        Model.instance.saveImage(imageBitmap, url -> {
+            createAccount(mEmailField.getText().toString(),mPasswordField.getText().toString(),url);
+        });
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
 
     @Override
     public void onResume() {
@@ -243,34 +194,30 @@ public class RegisterFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         // Start creating user with email
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()){
-                            // Sign in success, Update UI with the singed-in user's information.
-                            Log.d(TAG, "createUserWithEmail:success");
+                .addOnCompleteListener( task -> {
+                    if (task.isSuccessful()){
+                        // Sign in success, Update UI with the singed-in user's information.
+                        Log.d(TAG, "createUserWithEmail:success");
 
-                            // Create user object
-                            //TODO: Get user image url
-                            User userObject = new User(
-                                    mNameField.getText().toString(),
-                                    mEmailField.getText().toString(),
-                                    imageUrl,
-                                    mAddressField.getText().toString(),
-                                    mCustomerRadioButton.isChecked(),
-                                    mHandyManRadioButton.isChecked(),
-                                    mCategoriesSpinner.getSelectedItem().toString(),
-                                    mAreasSpinner.getSelectedItem().toString()
-                                    );
-                            viewModel.addUser(userObject);
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            ((SignInActivity)getActivity()).getNavController().popBackStack();
-                        } else{
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(getContext(),"Authentication failed.",Toast.LENGTH_SHORT).show();
-                            progressBar.setVisibility(View.INVISIBLE);
-                        }
+                        // Create user object
+                        User userObject = new User(
+                                mNameField.getText().toString(),
+                                mEmailField.getText().toString(),
+                                imageUrl,
+                                mAddressField.getText().toString(),
+                                mCustomerRadioButton.isChecked(),
+                                mHandyManRadioButton.isChecked(),
+                                mCategoriesSpinner.getSelectedItem().toString(),
+                                mAreasSpinner.getSelectedItem().toString()
+                                );
+                        viewModel.addUser(userObject);
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        ((SignInActivity)getActivity()).getNavController().popBackStack();
+                    } else{
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                        Toast.makeText(getContext(),"Authentication failed.",Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.INVISIBLE);
                     }
                 });
         // End of creating user with email
@@ -324,9 +271,7 @@ public class RegisterFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK){
-          //  Bundle extras = data.getExtras();
-          //  imageBitmap = (Bitmap) extras.get("data");
-          ContentResolver result = (ContentResolver)view.getContext().getContentResolver();
+          ContentResolver result = view.getContext().getContentResolver();
           Uri imageUri = data.getData();
              try {
                     imageBitmap = MediaStore.Images.Media.getBitmap(result, imageUri);

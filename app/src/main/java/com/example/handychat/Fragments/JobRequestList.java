@@ -1,6 +1,5 @@
 package com.example.handychat.Fragments;
 
-import android.app.DownloadManager;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -13,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.JobRequest;
 import com.example.handychat.R;

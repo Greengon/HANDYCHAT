@@ -24,15 +24,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.JobRequest;
 import com.example.handychat.Models.Model;
-import com.example.handychat.Models.User;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.JobRequestViewModel;
-import com.example.handychat.ViewModel.UserViewModel;
-import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import java.util.Calendar;

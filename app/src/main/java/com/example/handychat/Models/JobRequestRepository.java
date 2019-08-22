@@ -58,8 +58,6 @@ public class JobRequestRepository {
 
     public void getAllJobRequests(final GetAllJobRequestsListener listener){
         /*
-        TODO: Create the solution of checking if we are online,
-        TODO: notice that db is now programmed to clean itself on APP onOpen()
         Here we won't use local data get all jobRequest that to avoid Async issues
         If we want our app to work with out internet, an option for loading form
         local db should be here.

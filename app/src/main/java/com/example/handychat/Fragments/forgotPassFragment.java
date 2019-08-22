@@ -1,6 +1,5 @@
 package com.example.handychat.Fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -10,11 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.example.handychat.Activitys.SignInActivity;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.UserViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;

@@ -21,15 +21,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.JobRequest;
 import com.example.handychat.Models.Model;
-import com.example.handychat.Models.User;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.JobRequestViewModel;
-import com.example.handychat.ViewModel.UserViewModel;
-import com.google.firebase.auth.FirebaseAuth;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -125,7 +121,6 @@ public class NewJobRequestFragment extends Fragment {
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_STORAGE);
         }
 
-        // TODO: Enable polling image from gallery
         if (imageBitmap != null){ // Checks if the user took a picture
             Model.instance.saveImage(imageBitmap, url ->  {
                 // Lets create our new jobRequest object

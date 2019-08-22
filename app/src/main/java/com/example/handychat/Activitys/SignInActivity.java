@@ -6,8 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import org.w3c.dom.Text;
-
 public class SignInActivity extends AppCompatActivity {
     private NavController navController;
 

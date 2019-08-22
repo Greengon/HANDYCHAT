@@ -21,11 +21,12 @@
             android:layout_height="134dp"
             android:layout_marginStart="77dp"
             android:layout_marginEnd="78dp"
-            android:layout_marginBottom="11dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toTopOf="@+id/dateTextViewInRow"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
             app:srcCompat="@android:color/darker_gray" />
 
         <ImageView
@@ -46,27 +47,41 @@
             android:layout_width="182dp"
             android:layout_height="16dp"
             android:layout_marginStart="70dp"
-            android:layout_marginTop="11dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="121dp"
-            android:layout_marginBottom="13dp"
+            android:layout_marginBottom="5dp"
             android:text="Date"
-            app:layout_constraintBottom_toTopOf="@+id/descriptionTextViewInRow"
+            app:layout_constraintBottom_toTopOf="@+id/userNameTextViewInRow"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/jobImageInRow" />
+
+        <TextView
+            android:id="@+id/userNameTextViewInRow"
+            android:layout_width="182dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="70dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="121dp"
+            android:layout_marginBottom="5dp"
+            android:text="username"
+            app:layout_constraintBottom_toTopOf="@+id/descriptionTextViewInRow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dateTextViewInRow" />
 
         <TextView
             android:id="@+id/descriptionTextViewInRow"
             android:layout_width="182dp"
             android:layout_height="57dp"
             android:layout_marginStart="70dp"
-            android:layout_marginTop="13dp"
             android:layout_marginEnd="20dp"
+            android:layout_marginTop="5dp"
             android:text="TextView"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/userImageInRow"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dateTextViewInRow" />
+            app:layout_constraintTop_toBottomOf="@+id/userNameTextViewInRow" />
 
         <ProgressBar
             android:id="@+id/jobImageProgressBar"

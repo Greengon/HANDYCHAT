@@ -52,6 +52,7 @@ public class JobRequestView extends Fragment {
     private ImageButton editJob;
     private TextView date;
     private TextView address;
+    private TextView userName;
     private TextView description;
     private RecyclerView commentList;
     private ProgressBar progressBar;
@@ -111,6 +112,7 @@ public class JobRequestView extends Fragment {
             userImage = view.findViewById(R.id.job_view_user_image);
             date = view.findViewById(R.id.job_view_date_value);
             address = view.findViewById(R.id.job_view_address_value);
+            userName = view.findViewById(R.id.job_view_user_name);
             description = view.findViewById(R.id.job_view_description_value);
 
             createJobView();
@@ -133,7 +135,6 @@ public class JobRequestView extends Fragment {
 
             // Specify an adapter
             adapter = new CommentListAdapter(commentViewModel.getCommentList().getValue());
-            //TODO: Create delete comment option, not a must...
             adapter.setOnItemClickListener(position ->  {
                 Bundle bundle = new Bundle();
                 bundle.putString("commentID",commentViewModel.getCommentList().getValue().get(position).getId());
@@ -230,8 +231,9 @@ public class JobRequestView extends Fragment {
                 userImage.setImageResource(R.drawable.avatar);
             }
 
-            date.setText(mJobRequest.date);
+            date.setText(mJobRequest.getDate().substring(0,19) + mJobRequest.getDate().substring(mJobRequest.getDate().length()-5));
             address.setText("Address: " + mJobRequest.address);
+            userName.setText(mJobRequest.getUserCreated());
             description.setText(mJobRequest.description);
         }
     }

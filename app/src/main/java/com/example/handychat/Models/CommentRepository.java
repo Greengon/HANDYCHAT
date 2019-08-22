@@ -3,9 +3,6 @@ package com.example.handychat.Models;
 import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
-
-import androidx.room.Query;
-
 import java.util.List;
 
 public class CommentRepository {

@@ -13,7 +13,6 @@ import com.example.handychat.Models.Model;
 import com.example.handychat.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-
 import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +35,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         // Reference to the views for each data item
         private ImageView userImage;
         private TextView userName;
+        private TextView date;
         private TextView commentText;
         private ProgressBar commentProgressBar;
         private Target target;
@@ -52,12 +52,14 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
             });
 
             userImage = itemView.findViewById(R.id.commentUserImageInRow);
+            date = itemView.findViewById(R.id.commentDateTextViewInRow);
             userName = itemView.findViewById(R.id.commentNameTextViewInRow);
             commentText = itemView.findViewById(R.id.commentTextView);
             commentProgressBar = itemView.findViewById(R.id.commentImageProgressBar);
         }
 
         public void bind(Comment comment) {
+            date.setText(comment.getDate().substring(0,10) + comment.getDate().substring(comment.getDate().length()-5));
             userName.setText(comment.getUserCreated());
             commentText.setText(comment.comment);
             /****** Get user image ********/
@@ -87,7 +89,6 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                         Picasso.get().load(imageFile).into(target);
                     } else {
                         /*
-                         TODO: This isn't a good way of working, but it solve some async problems
                          it helps when the app wasn't fast enough to download the  image.
                          If there's time we should figure out a way to remove the next line and
                          solve the problem.

@@ -1,7 +1,5 @@
 package com.example.handychat.Fragments;
 
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,20 +7,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
-
-import com.example.handychat.Activitys.MainActivity;
 import com.example.handychat.Models.Comment;
-import com.example.handychat.Models.JobRequest;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.CommentViewModel;
-import com.example.handychat.ViewModel.JobRequestViewModel;
-import com.squareup.picasso.Target;
 
 import java.util.Calendar;
 

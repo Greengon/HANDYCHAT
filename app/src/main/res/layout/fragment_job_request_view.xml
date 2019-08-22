@@ -57,11 +57,23 @@
                         android:layout_width="match_parent"
                         android:layout_height="19dp"
                         android:layout_marginLeft="10dp"
-                        app:layout_constraintBottom_toTopOf="@+id/job_view_description_title"
+                        app:layout_constraintBottom_toTopOf="@+id/job_view_user_name"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.108"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/job_view_date_value"
+                        app:layout_constraintVertical_bias="0.19" />
+
+                    <TextView
+                        android:id="@+id/job_view_user_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="19dp"
+                        android:layout_marginLeft="10dp"
+                        app:layout_constraintBottom_toTopOf="@+id/job_view_description_title"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.108"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/job_view_address_value"
                         app:layout_constraintVertical_bias="0.19" />
 
                     <TextView
@@ -74,7 +86,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.108"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/job_view_address_value"
+                        app:layout_constraintTop_toBottomOf="@+id/job_view_user_name"
                         app:layout_constraintVertical_bias="0.19" />
 
                     <androidx.core.widget.NestedScrollView
@@ -88,7 +100,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/job_view_address_value"
                         >
                         <androidx.cardview.widget.CardView
-                            android:padding="10dp"
+                            android:padding="5dp"
                             android:layout_margin="10dp"
                             app:cardCornerRadius="5dp"
                             android:layout_width="match_parent"
@@ -132,15 +144,18 @@
             android:id="@+id/job_request_view_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
             android:background="@color/colorPrimary"
-            android:layout_weight="1"
+            android:layout_weight="1.25"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="397dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1.75"
+
+            android:layout_weight="2"
             android:orientation="horizontal">
 
             <Button

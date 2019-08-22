@@ -68,6 +68,7 @@ public class JobRequestListAdapter extends RecyclerView.Adapter<JobRequestListAd
         ImageView jobImage;
         ImageView userImage;
         TextView dateText;
+        TextView userName;
         TextView descriptionText;
         ProgressBar jobImageProgressBar;
         Target target;
@@ -86,13 +87,15 @@ public class JobRequestListAdapter extends RecyclerView.Adapter<JobRequestListAd
             jobImage = itemView.findViewById(R.id.jobImageInRow);
             userImage = itemView.findViewById(R.id.userImageInRow);
             dateText = itemView.findViewById(R.id.dateTextViewInRow);
+            userName = itemView.findViewById(R.id.userNameTextViewInRow);
             descriptionText = itemView.findViewById(R.id.descriptionTextViewInRow);
             jobImageProgressBar = itemView.findViewById(R.id.jobImageProgressBar);
         }
 
         // Binding all attributes to the view
         public void bind(final JobRequest jobRequest) {
-            dateText.setText(jobRequest.date);
+            dateText.setText(jobRequest.getDate().substring(0,19) + jobRequest.getDate().substring(jobRequest.getDate().length()-5));
+            userName.setText(jobRequest.getUserCreated());
             descriptionText.setText(jobRequest.description);
 
             // Let's check if the current job request should be highlight

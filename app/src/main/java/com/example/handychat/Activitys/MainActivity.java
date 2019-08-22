@@ -1,7 +1,6 @@
 package com.example.handychat.Activitys;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
@@ -13,8 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
-import com.example.handychat.Fragments.JobRequestList;
 import com.example.handychat.Models.User;
 import com.example.handychat.R;
 import com.example.handychat.ViewModel.UserViewModel;
