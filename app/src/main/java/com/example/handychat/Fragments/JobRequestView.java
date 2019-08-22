@@ -206,7 +206,26 @@ public class JobRequestView extends Fragment {
                     Picasso.get().load(imageFile).into(target);
                 });
             }
-            userImage.setImageResource(R.drawable.avatar);
+            Model.loadImage(mJobRequest.getUserImage(), imageFile -> {
+                target = new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        userImage.setImageBitmap(bitmap);
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                    }
+                };
+                Picasso.get().load(imageFile).into(target);
+            });
+
             date.setText(mJobRequest.date);
             address.setText("Address: " + mJobRequest.address);
             description.setText(mJobRequest.description);
